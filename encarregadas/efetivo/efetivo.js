@@ -91,6 +91,11 @@ async function carregarNomes() {
             console.log(`✅ Adicionado: ${colaborador} → ${equipe}`);
         }
 
+        // Ordena os colaboradores de cada equipe em ordem alfabética
+        for (let equipe in equipes) {
+            equipes[equipe].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+        }
+
         console.log("✅ Estrutura final de equipes:", equipes);
         console.log(`📋 Total de equipes carregadas: ${Object.keys(equipes).length}`);
 
