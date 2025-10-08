@@ -1,67 +1,82 @@
-console.log("✅ Script carregado!");
-// Variável global para armazenar os dados
-let dadosRecebimento = {};
+console.log("✅ Dimensionamento.js carregado!");
 
-// Função para gerar a mensagem
-document.getElementById("gerarBtn").addEventListener("click", function() {
-    // Data
-    let dataInput = document.getElementById("dataRecebimento").value;
-    let dataStr;
-    if (dataInput) {
-        const parts = dataInput.split("-");
-        dataStr = `${parts[2]}/${parts[1]}/${parts[0]}`;
-    } else {
-        const data = new Date();
-        const dia = String(data.getDate()).padStart(2, '0');
-        const mes = String(data.getMonth() + 1).padStart(2, '0');
-        const ano = data.getFullYear();
-        dataStr = `${dia}/${mes}/${ano}`;
-    }
+document.addEventListener('DOMContentLoaded', () => {
+  // Função para gerar a mensagem
+  document.getElementById("gerarBtn").addEventListener("click", function() {
+      // Data
+      let dataInput = document.getElementById("dataRecebimento").value;
+      let dataStr;
+      if (dataInput) {
+          const parts = dataInput.split("-");
+          dataStr = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      } else {
+          const data = new Date();
+          const dia = String(data.getDate()).padStart(2, '0');
+          const mes = String(data.getMonth() + 1).padStart(2, '0');
+          const ano = data.getFullYear();
+          dataStr = `${dia}/${mes}/${ano}`;
+      }
 
-    // Responsável
-    const responsavel = document.getElementById("responsavel").value || "";
+      // Responsável
+      const responsavel = document.getElementById("responsavel").value || "";
 
-    // Enxoval
-    const lencolCarrinho = parseInt(document.getElementById("lencolCarrinho").value || 0);
-    const lencolPrateleira = parseInt(document.getElementById("lencolPrateleira").value || 0);
-    const camisolaQtd = parseInt(document.getElementById("camisolaQtd").value || 0);
-    const cobertorQtd = parseInt(document.getElementById("cobertorQtd").value || 0);
-    const fronhaQtd = parseInt(document.getElementById("fronhaQtd").value || 0);
+      // Montar mensagem por andar
+      let msg = `📋 DIMENSIONAMENTO ${responsavel.toUpperCase()} 📋\n🗓️ Data: ${dataStr}\n\n`;
 
-    // Montar mensagem
-    let msg = `👕 ROUPARIA ${responsavel.toUpperCase()} 👕\n📋 Passagem de plantão: ${dataStr}\n\n`;
-    msg += `📌 Lençóis no carrinho: ${lencolCarrinho}\n`;
-    msg += `📌 Lençóis na prateleira: ${lencolPrateleira}\n`;
-    msg += `📌 Camisola: ${camisolaQtd}\n`;
-    msg += `📌 Cobertor: ${cobertorQtd}\n`;
-    msg += `📌 Fronha: ${fronhaQtd}`;
+      // 5º Andar
+      msg += "🏢 5º Andar\n";
+      msg += `- Prolongados : ${document.getElementById("5PL").value || ""}\n`;
+      msg += `- Giro rápido : ${document.getElementById("5GR").value || ""}\n`;
+      msg += `- UTI : ${document.getElementById("5UTI").value || ""}\n\n`;
 
-    // Exibir mensagem
-    document.getElementById("resultado").value = msg;
+      // 4º Andar
+      msg += "🏢 4º Andar\n";
+      msg += `- Lado A : ${document.getElementById("4A").value || ""}\n`;
+      msg += `- Lado B : ${document.getElementById("4B").value || ""}\n\n`;
 
-    // Armazenar dados
-    dadosRecebimento = {
-        data: dataStr,
-        responsavel,
-        lencolCarrinho,
-        lencolPrateleira,
-        camisolaQtd,
-        cobertorQtd,
-        fronhaQtd
-    };
-});
+      // 3º Andar
+      msg += "🏢 3º Andar\n";
+      msg += `- : ${document.getElementById("3A").value || ""}\n\n`;
 
-// Botão copiar
-document.getElementById("copiarBtn").addEventListener("click", function() {
-    const textarea = document.getElementById("resultado");
-    if (textarea.value.trim() === "") {
-        alert("Não há mensagem para copiar!");
-        return;
-    }
-    navigator.clipboard.writeText(textarea.value)
-        .then(() => alert("Mensagem copiada com sucesso! ✅"))
-        .catch(err => {
-            console.error("Erro ao copiar: ", err);
-            alert("Não foi possível copiar a mensagem.");
-        });
+      // 2º Andar
+      msg += "🏢 2º Andar\n";
+      msg += `- Lado A : ${document.getElementById("2A").value || ""}\n`;
+      msg += `- Bloco : ${document.getElementById("2B").value || ""}\n\n`;
+
+      // 1º Andar
+      msg += "🏢 1º Andar\n";
+      msg += `- Saúde mental feminina : ${document.getElementById("USR").value || ""}\n`;
+      msg += `- Saúde mental masculina : ${document.getElementById("USM").value || ""}\n\n`;
+
+      // Térreo
+      msg += "🏢 Térreo\n";
+      msg += `- Prédio internação : ${document.getElementById("TINT").value || ""}\n`;
+      msg += `- Prédio ADM : ${document.getElementById("TADM").value || ""}\n\n`;
+
+      // Outros setores
+      msg += "🛏 Rouparia\n";
+      msg += `- : ${document.getElementById("ROUPARIA").value || ""}\n\n`;
+
+      msg += "🗑 Resíduos\n";
+      msg += `- 1 : ${document.getElementById("R1").value || ""}\n`;
+      msg += `- 2 : ${document.getElementById("R2").value || ""}\n`;
+
+      // Exibir mensagem
+      document.getElementById("resultado").value = msg;
+  });
+
+  // Botão copiar
+  document.getElementById("copiarBtn").addEventListener("click", function() {
+      const textarea = document.getElementById("resultado");
+      if (textarea.value.trim() === "") {
+          alert("Não há mensagem para copiar!");
+          return;
+      }
+      navigator.clipboard.writeText(textarea.value)
+          .then(() => alert("Mensagem copiada com sucesso! ✅"))
+          .catch(err => {
+              console.error("Erro ao copiar: ", err);
+              alert("Não foi possível copiar a mensagem.");
+          });
+  });
 });
