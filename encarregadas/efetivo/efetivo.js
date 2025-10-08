@@ -70,13 +70,17 @@ async function carregarNomes() {
             }
 
             const colaborador = linha[0].trim();
-            const equipe = linha[1].trim();
+            const equipeOriginal = linha[1].trim();
 
             // Ignora linhas com dados vazios
-            if (!colaborador || !equipe) {
+            if (!colaborador || !equipeOriginal) {
                 console.warn(`⚠️ Linha ${i} ignorada (dados vazios):`, linha);
                 continue;
             }
+
+            // Normaliza o nome da equipe (primeira letra maiúscula, resto minúscula)
+            // GRACIELA -> Graciela
+            const equipe = equipeOriginal.charAt(0).toUpperCase() + equipeOriginal.slice(1).toLowerCase();
 
             // Adiciona o colaborador à equipe
             if (!equipes[equipe]) {
