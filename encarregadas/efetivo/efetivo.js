@@ -128,7 +128,10 @@ selectResponsavel.addEventListener("change", function() {
         h2.textContent = "Colaboradores da equipe";
         colaboradoresSection.appendChild(h2);
 
-        lista.forEach(nome => {
+        // Ordena a lista antes de exibir
+        const listaOrdenada = [...lista].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+        listaOrdenada.forEach(nome => {
             const label = document.createElement("label");
             label.textContent = nome;
             colaboradoresSection.appendChild(label);
@@ -171,7 +174,9 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         return;
     }
 
-    let colaboradoresStr = listaColaboradores.join(", ");
+    // Garante que está em ordem alfabética
+    const colaboradoresOrdenados = [...listaColaboradores].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    let colaboradoresStr = colaboradoresOrdenados.join(", ");
 
     let msg = `📋 EFETIVO ${responsavel.toUpperCase()} 📋\nData: ${dataStr}\n\n`;
     msg += `👥 Colaboradores: ${colaboradoresStr}`;
