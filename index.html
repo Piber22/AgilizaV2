@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agiliza ai!</title>
+
+  <!-- Fonte -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <main>
+    <div class="login-container">
+      <form class="login-box" id="login-form">
+
+        <!-- Logo -->
+        <div class="logo-placeholder">
+          <img src="img/logo.png" alt="Logo da Manserv" class="logo">
+        </div>
+
+        <!-- Botões de acesso -->
+        <button type="button" class="login-option" id="recebimento">Recebimento de enxoval</button>
+        <button type="button" class="login-option disabled">Troca de plantão (Em breve)</button>
+        <button type="button" class="login-option disabled">Efetivo (Em breve)</button>
+
+        <!-- Mensagem de erro / aviso -->
+        <p class="login-error" id="login-error"></p>
+      </form>
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="footer">
+    <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Script -->
+  <script src="login.js"></script>
+</body>
+</html>

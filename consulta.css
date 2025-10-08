@@ -1,0 +1,153 @@
+/* =====================
+   RESET & BASE
+===================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #201F20;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 40px;
+}
+
+main {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 0px;
+}
+
+/* =====================
+   HEADER / TÍTULO
+===================== */
+.header {
+    font-size: 1.0em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Cabeçalho ocupa toda a largura */
+    padding: 10px 20px;
+    background-color: #201F20;
+    position: relative;
+    margin-bottom: 0px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+
+.logo-link {
+    position: absolute;
+    left: 60px;
+}
+
+.logo {
+    width: 150px;
+    height: auto;
+}
+
+/* =====================
+   SEÇÃO DE CONSULTA
+===================== */
+section {
+    background-color: #201F20;
+    padding: 25px 30px;
+    margin: 10px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+
+/* =====================
+   LOADING
+===================== */
+#loading {
+    font-size: 16px;
+    color: #ccc;
+    margin: 20px 0;
+    text-align: center;
+}
+
+/* =====================
+   TABELA DE RECEBIMENTOS
+===================== */
+.table-container {
+    width: 100%;
+    max-width: 95%;
+    overflow-x: auto;
+    background: #201F20;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+thead {
+    background: #E94B22;
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+thead th {
+    padding: 10px;
+    text-align: center;
+    font-weight: 700;
+    border: 1px solid #2a2a2a;
+}
+
+tbody td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #2a2a2a;
+    color: #ddd;
+}
+
+tbody tr:nth-child(even) {
+    background: #252525;
+}
+
+tbody tr:nth-child(odd) {
+    background: #1a1a1a;
+}
+
+tbody tr:hover {
+    background: #333;
+}
+
+/* =====================
+   RESPONSIVO
+===================== */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.4em;
+        padding: 8px 16px;
+    }
+    table {
+        font-size: 12px;
+    }
+    thead th, tbody td {
+        padding: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.2em;
+        padding: 6px 12px;
+    }
+    table {
+        font-size: 11px;
+    }
+}

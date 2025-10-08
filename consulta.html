@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Recebimentos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="consulta.css">
+</head>
+<body>
+<header class="header">
+    <a href="index.html" class="logo-link">
+        <img src="img/logo.png" alt="Logo Manserv" class="logo">
+    </a>
+    <h1>Consulta de Recebimentos</h1>
+</header>
+
+<p id="loading">Carregando...</p>
+
+<div class="table-container">
+    <table border="1" id="tabela" style="display: none;">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Hora</th>
+                <th>Responsável</th>
+                <th>Lençol Qtd</th>
+                <th>Lençol Peso</th>
+                <th>Camisola Qtd</th>
+                <th>Camisola Peso</th>
+                <th>Cobertor Qtd</th>
+                <th>Cobertor Peso</th>
+                <th>Fronha Qtd</th>
+                <th>Fronha Peso</th>
+                <th>Jaleco P</th>
+                <th>Jaleco M</th>
+                <th>Jaleco G</th>
+                <th>Jaleco GG</th>
+                <th>Jaleco EG</th>
+                <th>Jaleco Peso</th>
+                <th>Calça P</th>
+                <th>Calça M</th>
+                <th>Calça G</th>
+                <th>Calça GG</th>
+                <th>Calça EG</th>
+                <th>Calça Peso</th>
+                <th>Peso Total</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+        </tbody>
+    </table>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyD74e3F87-ONFwl2E1VR9rcfMsS-_FEw1k",
+    authDomain: "recebimento-267e5.firebaseapp.com",
+    projectId: "recebimento-267e5",
+    storageBucket: "recebimento-267e5.firebasestorage.app",
+    messagingSenderId: "519510160991",
+    appId: "1:519510160991:web:1d616fd85658e236664dea"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function carregar() {
+    const querySnapshot = await getDocs(collection(db, "recebimentos"));
+    const tbody = document.getElementById("tbody");
+
+    // Transformar em array e ordenar por timestamp decrescente
+    const dadosArray = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    dadosArray.sort((a, b) => {
+        const ta = a.timestamp ? a.timestamp.toDate() : new Date(a.dataEnvio);
+        const tb = b.timestamp ? b.timestamp.toDate() : new Date(b.dataEnvio);
+        return tb - ta; // mais recente primeiro
+    });
+
+    dadosArray.forEach((d) => {
+        const tr = document.createElement("tr");
+
+        // Extrair data e hora
+        const dataHora = d.timestamp ? d.timestamp.toDate() : new Date(d.dataEnvio);
+        const dataStr = `${String(dataHora.getDate()).padStart(2,'0')}/${String(dataHora.getMonth()+1).padStart(2,'0')}/${dataHora.getFullYear()}`;
+        const horaStr = `${String(dataHora.getHours()).padStart(2,'0')}:${String(dataHora.getMinutes()).padStart(2,'0')}:${String(dataHora.getSeconds()).padStart(2,'0')}`;
+
+        tr.innerHTML = `
+            <td>${dataStr}</td>
+            <td>${horaStr}</td>
+            <td>${d.responsavel || ''}</td>
+            <td>${d.lencolQtd || 0} ${d.lencolQtdStatus || ''}</td>
+            <td>${d.lencolPeso || 0}</td>
+            <td>${d.camisolaQtd || 0} ${d.camisolaQtdStatus || ''}</td>
+            <td>${d.camisolaPeso || 0}</td>
+            <td>${d.cobertorQtd || 0} ${d.cobertorQtdStatus || ''}</td>
+            <td>${d.cobertorPeso || 0}</td>
+            <td>${d.fronhaQtd || 0} ${d.fronhaQtdStatus || ''}</td>
+            <td>${d.fronhaPeso || 0}</td>
+            <td>${d.jalecoP || 0} ${d.jalecoPStatus || ''}</td>
+            <td>${d.jalecoM || 0} ${d.jalecoMStatus || ''}</td>
+            <td>${d.jalecoG || 0} ${d.jalecoGStatus || ''}</td>
+            <td>${d.jalecoGG || 0} ${d.jalecoGGStatus || ''}</td>
+            <td>${d.jalecoEG || 0} ${d.jalecoEGStatus || ''}</td>
+            <td>${d.jalecoPeso || 0}</td>
+            <td>${d.calcaP || 0} ${d.calcaPStatus || ''}</td>
+            <td>${d.calcaM || 0} ${d.calcaMStatus || ''}</td>
+            <td>${d.calcaG || 0} ${d.calcaGStatus || ''}</td>
+            <td>${d.calcaGG || 0} ${d.calcaGGStatus || ''}</td>
+            <td>${d.calcaEG || 0} ${d.calcaEGStatus || ''}</td>
+            <td>${d.calcaPeso || 0}</td>
+            <td>${d.pesoTotal || 0}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("tabela").style.display = "table";
+}
+
+carregar();
+</script>
+</body>
+</html>
