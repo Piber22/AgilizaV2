@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Encarregadas</title>
+
+  <!-- Fonte -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS da pasta principal -->
+  <link rel="stylesheet" href="../../login.css" />
+</head>
+<body>
+  <main>
+    <div class="login-container">
+      <form class="login-box" id="login-form">
+
+        <!-- Logo -->
+        <div class="logo-placeholder">
+          <img src="../../img/logo.png" alt="Logo da Manserv" class="logo">
+        </div>
+
+        <!-- Cabeçalho -->
+        <h1>Rouparia</h1>
+
+        <!-- Botões de formulários -->
+        <button type="button" class="login-option" onclick="window.location.href='recebimento/recebimento.html'">
+          Recebimento de Enxoval
+        </button>
+
+        <button type="button" class="login-option" onclick="window.location.href='troca-de-plantao-rouparia/rp_trocaplantao.html'">
+          Troca de Plantão
+        </button>
+
+        <!-- Futuras funcionalidades
+        <button type="button" class="login-option disabled">Efetivo (Em breve)</button>
+        -->
+
+        <!-- Mensagem de erro / aviso -->
+        <p class="login-error" id="login-error"></p>
+      </form>
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="footer">
+    <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Script -->
+  <script src="../../login.js"></script>
+</body>
+</html>

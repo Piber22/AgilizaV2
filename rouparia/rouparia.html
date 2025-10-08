@@ -3,40 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agiliza ai!</title>
+  <title>Rouparia</title>
 
   <!-- Fonte -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 
   <!-- Estilos -->
-  <link rel="stylesheet" href="login.css" />
+  <link rel="stylesheet" href="../login.css" />
 </head>
 <body>
   <main>
     <div class="login-container">
-      <div class="login-box">
+      <form class="login-box">
 
         <!-- Logo -->
         <div class="logo-placeholder">
-          <img src="img/logo.png" alt="Logo da Manserv" class="logo">
+          <img src="../img/logo.png" alt="Logo da Manserv" class="logo">
         </div>
 
-        <!-- Botões de categoria -->
-        <button type="button" class="login-option" onclick="window.location.href='rouparia/rouparia.html'">
-          Rouparia
+        <!-- Botões de acesso -->
+        <button type="button" class="login-option" onclick="window.location.href='recebimento/recebimento.html'">
+          Recebimento de Enxoval
         </button>
-
-        <button type="button" class="login-option disabled">
-          Encarregadas (Em breve)
+        <button type="button" class="login-option" onclick="window.location.href='troca-de-plantao-rouparia/rp_trocaplantao.html'">
+          Troca de Plantão
         </button>
+        <button type="button" class="login-option disabled">Em breve</button>
 
-        <button type="button" class="login-option disabled">
-          Almoxarifado (Em breve)
-        </button>
-
-        <!-- Mensagem de erro / aviso -->
+        <!-- Mensagem de aviso -->
         <p class="login-error" id="login-error"></p>
-      </div>
+      </form>
     </div>
   </main>
 
@@ -45,7 +41,5 @@
     <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
   </footer>
 
-  <!-- Script -->
-  <script src="login.js"></script>
 </body>
 </html>

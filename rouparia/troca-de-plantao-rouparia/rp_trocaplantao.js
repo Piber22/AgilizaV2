@@ -19,7 +19,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     }
 
     // Responsável
-    const responsavel = document.getElementById("responsavel").value || "DEIVID";
+    const responsavel = document.getElementById("responsavel").value || "";
 
     // Enxoval
     const lencolCarrinho = parseInt(document.getElementById("lencolCarrinho").value || 0);

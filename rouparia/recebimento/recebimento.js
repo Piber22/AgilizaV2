@@ -41,7 +41,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     }
 
     // Responsável
-    const responsavel = document.getElementById("responsavel").value || "DEIVID";
+    const responsavel = document.getElementById("responsavel").value || "";
 
     // Enxoval
     const lencolQtd = parseInt(document.getElementById("lencolQtd").value || 0);
