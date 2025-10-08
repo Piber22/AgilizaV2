@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troca de plantão</title>
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- CSS específico -->
+    <link rel="stylesheet" href="dimensionamento.css">
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../encarregadas.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Dimensionamento</h1>
+        </header>
+
+        <!-- Informações -->
+        <section id="info">
+            <h2>Informações</h2>
+            <label>Data: <input type="date" id="dataRecebimento"></label>
+            <label>Responsável: <input type="text" id="responsavel" placeholder="Nome:"></label>
+        </section>
+
+        <!-- Setores -->
+        <section id="setor">
+            <h2>Setores</h2>
+            <label>5º Andar - Prolongados: <input type="text" id="5PL" placeholder="Nome:"></label>
+            <label>5º Andar - Giro rápido: <input type="text" id="5GR" placeholder="Nome:"></label>
+            <label>5º Andar - UTI: <input type="text" id="5UTI" placeholder="Nome:"></label>
+            <br>
+            <label>4º Andar - lado A: <input type="text" id="4A" placeholder="Nome:"></label>
+            <label>4º Andar - lado B: <input type="text" id="4B" placeholder="Nome:"></label>
+            <br>
+            <label>3º Andar: <input type="text" id="3A" placeholder="Nome:"></label>
+            <br>
+            <label>2º Andar: <input type="text" id="2A" placeholder="Nome:"></label>
+            <label>2º Andar - Bloco:: <input type="text" id="2B" placeholder="Nome:"></label>
+            <br>
+            <label>1º Andar - Saúde mental feminina: <input type="text" id="USR" placeholder="Nome:"></label>
+            <br>
+            <label>Rouparia: <input type="text" id="ROUPARIA" placeholder="Nome:"></label>
+            <label>Térreo - Prédio internação: <input type="text" id="TINT" placeholder="Nome:"></label>
+            <br>
+            <label>Térreo - Prédio ADM: <input type="text" id="TADM" placeholder="Nome:"></label>
+            <br>
+            <label>1º Andar - Saúde mental masculina: <input type="text" id="USM" placeholder="Nome:"></label>
+            <br>
+            <label>Resíduos 1: <input type="text" id="R1" placeholder="Nome:"></label>
+            <label>Resíduos 2: <input type="text" id="R2" placeholder="Nome:"></label>
+        </section>
+
+        <!-- Botões -->
+        <button id="gerarBtn" class="login-option">Gerar Mensagem</button>
+
+        <!-- Mensagem gerada -->
+        <section id="mensagem">
+            <h2>Mensagem gerada:</h2>
+            <textarea id="resultado" rows="15" readonly></textarea>
+            <button id="copiarBtn" class="login-option">📋 Copiar Mensagem</button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="rp_trocaplantao.js"></script>
+</body>
+</html>

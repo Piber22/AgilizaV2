@@ -1,28 +1,34 @@
-// Seleciona os botões pelo ID
-const btnRouparia = document.getElementById('btn-rouparia');
-const btnGestao = document.getElementById('btn-gestao');
+// Seleciona os botões
+const btnRecebimento = document.getElementById('recebimento');
+const btnEncarregadas = document.getElementById('encarregadas');
+const btnGestao = document.getElementById('gestao');
 const loginError = document.getElementById('login-error');
 
 // Botões "Em breve"
-const btnEncarregadas = document.querySelector('button:nth-of-type(2)');
+
 const btnAlmoxarifado = document.querySelector('button:nth-of-type(3)');
 
-// Redirecionamento para Rouparia
-btnRouparia.addEventListener('click', () => {
+// Redirecionamento ao clicar em "Rouparia"
+btnRecebimento.addEventListener('click', () => {
   loginError.textContent = ""; // limpa mensagem
-  window.location.href = "rouparia/rouparia.html";
+  window.location.href = "rouparia/rouparia.html"; // redireciona
 });
 
-// Botão Gestão com senha simples
+// Redirecionamento ao clicar em "Encarregadas"
+btnEncarregadas.addEventListener('click', () => {
+  loginError.textContent = ""; // limpa mensagem
+  window.location.href = "encarregadas/encarregadas.html"; // redireciona
+});
+
+// Redirecionamento ao clicar em "Gestão" com verificação de senha
 btnGestao.addEventListener('click', () => {
-  const senha = prompt("Digite a senha para acessar a Gestão:");
-  if (senha === "1") { // aqui você define a senha desejada
-    loginError.textContent = "";
+  loginError.textContent = ""; // limpa mensagem
+
+  const senha = prompt("Digite a senha para acessar Gestão:");
+
+  if(senha === "1") { // aqui você define a senha desejada
     window.location.href = "adm/consulta.html";
-  } else if (senha === null) {
-    // usuário cancelou o prompt, não faz nada
-    loginError.textContent = "";
-  } else {
+  } else if (senha !== null) { // se não cancelar
     loginError.textContent = "Senha incorreta! Acesso negado.";
   }
 });
@@ -33,5 +39,4 @@ function mostrarMensagemBreve() {
 }
 
 // Eventos para botões "Em breve"
-btnEncarregadas.addEventListener('click', mostrarMensagemBreve);
 btnAlmoxarifado.addEventListener('click', mostrarMensagemBreve);
