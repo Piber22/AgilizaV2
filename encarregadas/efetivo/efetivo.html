@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efetivo</title>
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- CSS específico -->
+    <link rel="stylesheet" href="efetivo.css">
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../encarregadas.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Efetivo</h1>
+        </header>
+
+        <!-- Informações -->
+        <section id="info">
+            <h2>Informações</h2>
+
+            <!-- Agrupando Data e Responsável lado a lado -->
+            <label>
+                <span>Data:</span>
+                <input type="date" id="dataRecebimento">
+            </label>
+
+            <label>
+                <span>Responsável:</span>
+                <select id="responsavel" name="responsavel">
+                    <option value="" disabled selected>Selecione o nome</option>
+                    <option value="Graciela">Graciela</option>
+                    <option value="Giovana">Giovana</option>
+                    <option value="Jéssica">Jéssica</option>
+                    <option value="Jaqueline">Jaqueline</option>
+                </select>
+            </label>
+        </section>
+
+        <!-- Colaboradores -->
+        <section id="Colaboradores">
+            <!-- Aqui aparecerão os colaboradores da equipe -->
+        </section>
+
+        <!-- Botões -->
+        <button id="gerarBtn" class="login-option">Gerar Mensagem</button>
+
+        <!-- Mensagem gerada -->
+        <section id="mensagem">
+            <h2>Mensagem gerada:</h2>
+            <textarea id="resultado" rows="15" readonly></textarea>
+            <button id="copiarBtn" class="login-option">📋 Copiar Mensagem</button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="efetivo.js"></script>
+</body>
+</html>
