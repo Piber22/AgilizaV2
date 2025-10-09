@@ -141,7 +141,7 @@ selectResponsavel.addEventListener("change", function() {
             label.style.cssText = "flex: 1; font-weight: 500;";
             div.appendChild(label);
 
-            // Container para os checkboxes
+            // Container para os  checkboxes
             const checkboxContainer = document.createElement("div");
             checkboxContainer.style.cssText = "display: flex; gap: 8px;";
 
