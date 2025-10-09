@@ -143,23 +143,27 @@ selectResponsavel.addEventListener("change", function() {
 
             // Container para os checkboxes
             const checkboxContainer = document.createElement("div");
-            checkboxContainer.style.cssText = "display: flex; gap: 16px;";
+            checkboxContainer.style.cssText = "display: flex; gap: 16px; align-items: center;";
 
-            // Cores dos checkboxes
+            // Cores dos checkboxes - ADICIONADO AZUL
             const cores = [
-                { cor: '#4CAF50', valor: 'verde' },
-                { cor: '#FFC107', valor: 'amarelo' },
-                { cor: '#F44336', valor: 'vermelho' }
+                { cor: '#4CAF50', valor: 'verde', label: 'Presente' },
+                { cor: '#FFC107', valor: 'amarelo', label: 'Atraso/Saída' },
+                { cor: '#F44336', valor: 'vermelho', label: 'Falta/Atestado' },
+                { cor: '#2196F3', valor: 'azul', label: 'Férias' }
             ];
 
-            cores.forEach(({ cor, valor }) => {
+            cores.forEach(({ cor, valor, label: corLabel }) => {
                 const radioLabel = document.createElement("label");
                 radioLabel.className = "checkbox-label";
+                radioLabel.title = corLabel; // Tooltip ao passar o mouse
 
                 const radio = document.createElement("input");
                 radio.type = "radio";
                 radio.name = `colaborador_${selecionado}_${index}`; // Nome único por colaborador
                 radio.value = valor;
+                radio.className = "radio-status";
+                radio.setAttribute("data-colaborador", nome);
                 radio.style.cssText = "display: none;"; // Esconde o radio padrão
 
                 const checkboxVisual = document.createElement("span");
@@ -229,19 +233,79 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         return;
     }
 
-    const listaColaboradores = equipes[responsavel] || [];
+    // Coleta todos os status marcados
+    const todosRadios = document.querySelectorAll('.radio-status:checked');
 
-    if (listaColaboradores.length === 0) {
-        alert("⚠️ Nenhum colaborador encontrado para este responsável!");
-        return;
+    // Agrupa colaboradores por status
+    const presentes = [];
+    const atrasos = [];
+    const faltas = [];
+    const ferias = [];
+
+    todosRadios.forEach(radio => {
+        const nomeColaborador = radio.getAttribute('data-colaborador');
+        const status = radio.value;
+
+        switch(status) {
+            case 'verde':
+                presentes.push(nomeColaborador);
+                break;
+            case 'amarelo':
+                atrasos.push(nomeColaborador);
+                break;
+            case 'vermelho':
+                faltas.push(nomeColaborador);
+                break;
+            case 'azul':
+                ferias.push(nomeColaborador);
+                break;
+        }
+    });
+
+    // Ordena cada grupo alfabeticamente
+    presentes.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    atrasos.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    faltas.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    ferias.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+    // Monta a mensagem
+    let msg = `🔍 EFETIVO ${responsavel.toUpperCase()} 🔍\n`;
+    msg += `📆 ${dataStr} 📆\n\n`;
+
+    // Adiciona presentes
+    if (presentes.length > 0) {
+        msg += `🟢 PRESENTES 🟢\n`;
+        presentes.forEach(nome => {
+            msg += `${nome}\n`;
+        });
+        msg += '\n';
     }
 
-    // Garante que está em ordem alfabética
-    const colaboradoresOrdenados = [...listaColaboradores].sort((a, b) => a.localeCompare(b, 'pt-BR'));
-    let colaboradoresStr = colaboradoresOrdenados.join(", ");
+    // Adiciona atrasos/saídas antecipadas
+    if (atrasos.length > 0) {
+        msg += `🟡 ATRASO / SAÍDA ANTECIPADA 🟡\n`;
+        atrasos.forEach(nome => {
+            msg += `${nome}\n`;
+        });
+        msg += '\n';
+    }
 
-    let msg = `📋 EFETIVO ${responsavel.toUpperCase()} 📋\nData: ${dataStr}\n\n`;
-    msg += `👥 Colaboradores: ${colaboradoresStr}`;
+    // Adiciona faltas/atestados
+    if (faltas.length > 0) {
+        msg += `🔴 FALTAS / ATESTADO 🔴\n`;
+        faltas.forEach(nome => {
+            msg += `${nome}\n`;
+        });
+        msg += '\n';
+    }
+
+    // Adiciona férias
+    if (ferias.length > 0) {
+        msg += `🔵 FÉRIAS 🔵\n`;
+        ferias.forEach(nome => {
+            msg += `${nome}\n`;
+        });
+    }
 
     document.getElementById("resultado").value = msg;
     console.log("✅ Mensagem gerada com sucesso!");
