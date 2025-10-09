@@ -192,7 +192,9 @@ selectResponsavel.addEventListener("change", function() {
                     height: 24px;
                     border: 2px solid ${cor};
                     border-radius: 4px;
-                    display: inline-block;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
                     position: relative;
                     transition: all 0.2s;
                 `;
@@ -209,7 +211,7 @@ selectResponsavel.addEventListener("change", function() {
                     // Marca o selecionado
                     if (this.checked) {
                         checkboxVisual.style.backgroundColor = cor;
-                        checkboxVisual.innerHTML = '<span style="color: white; font-size: 16px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">✓</span>';
+                        checkboxVisual.innerHTML = '<span style="color: white; font-size: 16px; font-weight: bold; line-height: 1;">✓</span>';
                     }
                 });
 
