@@ -143,7 +143,7 @@ selectResponsavel.addEventListener("change", function() {
 
             // Container para os checkboxes
             const checkboxContainer = document.createElement("div");
-            checkboxContainer.style.cssText = "display: flex; gap: 8px;";
+            checkboxContainer.style.cssText = "display: flex; gap: 16px;";
 
             // Cores dos checkboxes
             const cores = [
