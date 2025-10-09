@@ -134,62 +134,50 @@ selectResponsavel.addEventListener("change", function() {
         listaOrdenada.forEach((nome, index) => {
             const div = document.createElement("div");
             div.className = "colaborador-item";
-            div.style.cssText = "display: flex; align-items: center; gap: 10px; margin: 10px 0; padding: 8px; background: #201f20; border-radius: 5px; border: 1px solid #2d2d2d;";
 
             const label = document.createElement("span");
+            label.className = "colaborador-nome";
             label.textContent = nome;
-            label.style.cssText = "flex: 1; font-weight: 500;";
             div.appendChild(label);
 
-            // Container para os  checkboxes
+            // Container para os checkboxes
             const checkboxContainer = document.createElement("div");
-            checkboxContainer.style.cssText = "display: flex; gap: 8px;";
+            checkboxContainer.className = "checkbox-container";
 
             // Cores dos checkboxes
             const cores = [
-                { cor: '#4CAF50', valor: 'verde' },
-                { cor: '#FFC107', valor: 'amarelo' },
-                { cor: '#F44336', valor: 'vermelho' }
+                { cor: 'verde', valor: 'verde' },
+                { cor: 'amarelo', valor: 'amarelo' },
+                { cor: 'vermelho', valor: 'vermelho' }
             ];
 
             cores.forEach(({ cor, valor }) => {
                 const radioLabel = document.createElement("label");
-                radioLabel.style.cssText = "cursor: pointer; display: flex; align-items: center;";
+                radioLabel.className = "checkbox-label";
 
                 const radio = document.createElement("input");
                 radio.type = "radio";
-                radio.name = `colaborador_${selecionado}_${index}`; // Nome único por colaborador
+                radio.name = `colaborador_${selecionado}_${index}`;
                 radio.value = valor;
-                radio.style.cssText = "display: none;"; // Esconde o radio padrão
+                radio.className = "checkbox-input";
 
                 const checkboxVisual = document.createElement("span");
-                checkboxVisual.style.cssText = `
-                    width: 24px;
-                    height: 24px;
-                    border: 2px solid ${cor};
-                    border-radius: 4px;
-                    display: inline-block;
-                    position: relative;
-                    transition: all 0.2s;
-                `;
+                checkboxVisual.className = `checkbox-visual checkbox-${cor}`;
 
                 // Atualiza visual quando selecionado
                 radio.addEventListener("change", function() {
                     // Remove a marcação de todos os checkboxes deste colaborador
-                    const todosCheckboxes = radioLabel.parentElement.querySelectorAll("span[data-checkbox]");
+                    const todosCheckboxes = radioLabel.parentElement.querySelectorAll(".checkbox-visual");
                     todosCheckboxes.forEach(cb => {
-                        cb.style.backgroundColor = "transparent";
-                        cb.innerHTML = "";
+                        cb.classList.remove("checked");
                     });
 
                     // Marca o selecionado
                     if (this.checked) {
-                        checkboxVisual.style.backgroundColor = cor;
-                        checkboxVisual.innerHTML = '<span style="color: white; font-size: 16px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">✓</span>';
+                        checkboxVisual.classList.add("checked");
                     }
                 });
 
-                checkboxVisual.setAttribute("data-checkbox", "true");
                 radioLabel.appendChild(radio);
                 radioLabel.appendChild(checkboxVisual);
                 checkboxContainer.appendChild(radioLabel);
