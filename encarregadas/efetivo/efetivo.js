@@ -128,6 +128,26 @@ selectResponsavel.addEventListener("change", function() {
         h2.textContent = "Colaboradores da equipe";
         colaboradoresSection.appendChild(h2);
 
+        // Adiciona legenda
+        const legenda = document.createElement("div");
+        legenda.style.cssText = "display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0; padding: 12px; background: #2a2a2a; border-radius: 8px; font-size: 14px;";
+
+        const legendaItens = [
+            { emoji: '🟩', texto: 'Presente', cor: '#4CAF50' },
+            { emoji: '🟨', texto: 'Atraso / Saída antecipada', cor: '#FFC107' },
+            { emoji: '🟥', texto: 'Falta', cor: '#F44336' },
+            { emoji: '🟦', texto: 'Férias', cor: '#2196F3' }
+        ];
+
+        legendaItens.forEach(({ emoji, texto, cor }) => {
+            const item = document.createElement("div");
+            item.style.cssText = "display: flex; align-items: center; gap: 6px;";
+            item.innerHTML = `<span>${emoji}</span><span style="color: ${cor};">${texto}</span>`;
+            legenda.appendChild(item);
+        });
+
+        colaboradoresSection.appendChild(legenda);
+
         // Ordena a lista antes de exibir
         const listaOrdenada = [...lista].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
