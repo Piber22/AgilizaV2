@@ -314,7 +314,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
 
     // Adiciona atrasos/saídas antecipadas
     if (atrasos.length > 0) {
-        msg += `🟡 ATRASO / SAÍDA ANTECIPADA 🟡\n`;
+        msg += `🟡 ATRASO / SAÍDA ANT. 🟡\n`;
         atrasos.forEach(nome => {
             msg += `${nome}\n`;
         });
