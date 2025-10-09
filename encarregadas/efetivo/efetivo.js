@@ -134,7 +134,7 @@ selectResponsavel.addEventListener("change", function() {
         listaOrdenada.forEach((nome, index) => {
             const div = document.createElement("div");
             div.className = "colaborador-item";
-            div.style.cssText = "display: flex; align-items: center; gap: 10px; margin: 10px 0; padding: 8px; background: #f5f5f5; border-radius: 5px;";
+            div.style.cssText = "display: flex; align-items: center; gap: 10px; margin: 10px 0; padding: 8px; background: #201f20; border-radius: 5px; border: 1px solid #2d2d2d;";
 
             const label = document.createElement("span");
             label.textContent = nome;
