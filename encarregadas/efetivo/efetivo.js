@@ -156,14 +156,14 @@ selectResponsavel.addEventListener("change", function() {
             div.className = "colaborador-item";
             div.style.cssText = "display: flex; align-items: center; gap: 10px; margin: 10px 0; padding: 6px 12px; background: #201f20; border: 2px solid #5B5B5C; border-radius: 8px;";
 
-            const label = document.createElement("span");
-            label.textContent = nome;
-            label.style.cssText = "flex: 1; font-weight: 500;";
-            div.appendChild(label);
+            const nomeSpan = document.createElement("span");
+            nomeSpan.textContent = nome;
+            nomeSpan.style.cssText = "flex: 1; font-weight: 500; line-height: 24px;";
+            div.appendChild(nomeSpan);
 
             // Container para os checkboxes
             const checkboxContainer = document.createElement("div");
-            checkboxContainer.style.cssText = "display: flex; gap: 16px; align-items: center;";
+            checkboxContainer.style.cssText = "display: flex; gap: 16px; align-items: center; height: 24px;";
 
             // Cores dos checkboxes - ADICIONADO AZUL
             const cores = [
@@ -174,9 +174,9 @@ selectResponsavel.addEventListener("change", function() {
             ];
 
             cores.forEach(({ cor, valor, label: corLabel }) => {
-                const radioLabel = document.createElement("label");
-                radioLabel.className = "checkbox-label";
-                radioLabel.title = corLabel; // Tooltip ao passar o mouse
+                const radioWrapper = document.createElement("div");
+                radioWrapper.style.cssText = "display: inline-flex; align-items: center; cursor: pointer;";
+                radioWrapper.title = corLabel; // Tooltip ao passar o mouse
 
                 const radio = document.createElement("input");
                 radio.type = "radio";
@@ -192,17 +192,17 @@ selectResponsavel.addEventListener("change", function() {
                     height: 24px;
                     border: 2px solid ${cor};
                     border-radius: 4px;
-                    display: inline-flex;
+                    display: flex;
                     align-items: center;
                     justify-content: center;
-                    position: relative;
                     transition: all 0.2s;
+                    flex-shrink: 0;
                 `;
 
                 // Atualiza visual quando selecionado
                 radio.addEventListener("change", function() {
                     // Remove a marcação de todos os checkboxes deste colaborador
-                    const todosCheckboxes = radioLabel.parentElement.querySelectorAll("span[data-checkbox]");
+                    const todosCheckboxes = radioWrapper.parentElement.querySelectorAll("span[data-checkbox]");
                     todosCheckboxes.forEach(cb => {
                         cb.style.backgroundColor = "transparent";
                         cb.innerHTML = "";
@@ -211,14 +211,23 @@ selectResponsavel.addEventListener("change", function() {
                     // Marca o selecionado
                     if (this.checked) {
                         checkboxVisual.style.backgroundColor = cor;
-                        checkboxVisual.innerHTML = '<span style="color: white; font-size: 16px; font-weight: bold; line-height: 1;">✓</span>';
+                        checkboxVisual.textContent = '✓';
+                        checkboxVisual.style.color = 'white';
+                        checkboxVisual.style.fontSize = '16px';
+                        checkboxVisual.style.fontWeight = 'bold';
                     }
                 });
 
+                // Permite clicar no visual para marcar
+                checkboxVisual.addEventListener("click", () => {
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event('change'));
+                });
+
                 checkboxVisual.setAttribute("data-checkbox", "true");
-                radioLabel.appendChild(radio);
-                radioLabel.appendChild(checkboxVisual);
-                checkboxContainer.appendChild(radioLabel);
+                radioWrapper.appendChild(radio);
+                radioWrapper.appendChild(checkboxVisual);
+                checkboxContainer.appendChild(radioWrapper);
             });
 
             div.appendChild(checkboxContainer);
@@ -305,7 +314,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
 
     // Adiciona atrasos/saídas antecipadas
     if (atrasos.length > 0) {
-        msg += `🟡 ATRASO / SAÍDA ANT. 🟡\n`;
+        msg += `🟡 ATRASO / SAÍDA ANTECIPADA 🟡\n`;
         atrasos.forEach(nome => {
             msg += `${nome}\n`;
         });
