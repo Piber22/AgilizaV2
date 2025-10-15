@@ -21,45 +21,41 @@ document.addEventListener('DOMContentLoaded', () => {
       const responsavel = document.getElementById("responsavel").value || "";
 
       // Montar mensagem por andar
-      let msg = `📋 DIMENSIONAMENTO ${responsavel.toUpperCase()} 📋\n🗓️ Data: ${dataStr}\n\n`;
+      let msg = `📋 DIMENSIONAMENTO 📋\n📌 Responsável : ${responsavel.toUpperCase()} \n🗓️ Data : ${dataStr}\n\n`;
 
       // 5º Andar
-      msg += "🏢 5º Andar\n";
-      msg += `- Prolongados : ${document.getElementById("5PL").value || ""}\n`;
-      msg += `- Giro rápido : ${document.getElementById("5GR").value || ""}\n`;
-      msg += `- UTI : ${document.getElementById("5UTI").value || ""}\n\n`;
+      msg += `5 Andar - Prolongados : ${document.getElementById("5PL").value || ""}\n`;
+      msg += `5 Andar - Giro rápido : ${document.getElementById("5GR").value || ""}\n`;
+      msg += `5 Andar - UTI : ${document.getElementById("5UTI").value || ""}\n\n`;
 
       // 4º Andar
-      msg += "🏢 4º Andar\n";
-      msg += `- Lado A : ${document.getElementById("4A").value || ""}\n`;
-      msg += `- Lado B : ${document.getElementById("4B").value || ""}\n\n`;
+      msg += `4 Andar - Lado A : ${document.getElementById("4A").value || ""}\n`;
+      msg += `4 Andar - Lado B : ${document.getElementById("4B").value || ""}\n\n`;
 
       // 3º Andar
-      msg += "🏢 3º Andar\n";
-      msg += `- : ${document.getElementById("3A").value || ""}\n\n`;
+
+      msg += `3 Andar : ${document.getElementById("3A").value || ""}\n\n`;
 
       // 2º Andar
-      msg += "🏢 2º Andar\n";
-      msg += `- Lado A : ${document.getElementById("2A").value || ""}\n`;
-      msg += `- Bloco : ${document.getElementById("2B").value || ""}\n\n`;
+
+      msg += `2 Andar : ${document.getElementById("2A").value || ""}\n`;
+      msg += `2 Andar - Bloco : ${document.getElementById("2B").value || ""}\n\n`;
 
       // 1º Andar
-      msg += "🏢 1º Andar\n";
-      msg += `- Saúde mental feminina : ${document.getElementById("USR").value || ""}\n`;
-      msg += `- Saúde mental masculina : ${document.getElementById("USM").value || ""}\n\n`;
+      msg += `Saúde mental - Feminina : ${document.getElementById("USR").value || ""}\n`;
+      msg += `Saúde mental - Masculina : ${document.getElementById("USM").value || ""}\n\n`;
 
       // Térreo
-      msg += "🏢 Térreo\n";
-      msg += `- Prédio internação : ${document.getElementById("TINT").value || ""}\n`;
-      msg += `- Prédio ADM : ${document.getElementById("TADM").value || ""}\n\n`;
+      msg += `Térreo - Prédio internação : ${document.getElementById("TINT").value || ""}\n`;
+      msg += `Térreo - Prédio ADM : ${document.getElementById("TADM").value || ""}\n\n`;
 
       // Outros setores
-      msg += "🛏 Rouparia\n";
-      msg += `- : ${document.getElementById("ROUPARIA").value || ""}\n\n`;
 
-      msg += "🗑 Resíduos\n";
-      msg += `- 1 : ${document.getElementById("R1").value || ""}\n`;
-      msg += `- 2 : ${document.getElementById("R2").value || ""}\n`;
+      msg += `Rouparia : ${document.getElementById("ROUPARIA").value || ""}\n\n`;
+
+
+      msg += `Resíduos 1 : ${document.getElementById("R1").value || ""}\n`;
+      msg += `Resíduos 2 : ${document.getElementById("R2").value || ""}\n`;
 
       // Exibir mensagem
       document.getElementById("resultado").value = msg;
