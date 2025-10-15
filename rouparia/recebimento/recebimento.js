@@ -3,10 +3,10 @@ let dadosRecebimento = {};
 
 // Valores mínimos para validação
 const valoresMinimos = {
-    lencol: 330,
-    camisola: 150,
-    cobertor: 80,
-    fronha: 150,
+    lencol: 350,
+    camisola: 140,
+    cobertor: 100,
+    fronha: 140,
     jalecoP: 10,
     jalecoM: 10,
     jalecoG: 10,
