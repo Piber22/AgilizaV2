@@ -163,6 +163,20 @@ document.getElementById("copiarBtn").addEventListener("click", function() {
     navigator.clipboard.writeText(textarea.value)
         .then(() => {
             alert("Mensagem copiada com sucesso! ✅");
+
+            // Extrai o código do convite do link (SUBSTITUA pelo código do seu grupo)
+            const inviteCode = "KtBcu6Xn4PtIEXwtC9ThgR";
+
+            // Tenta abrir no app do WhatsApp
+            const whatsappAppURL = `whatsapp://chat?code=${inviteCode}`;
+            window.location.href = whatsappAppURL;
+
+            // Fallback: se o app não abrir em 2 segundos, abre no navegador
+            setTimeout(() => {
+                const whatsappWebURL = `https://chat.whatsapp.com/${inviteCode}`;
+                window.open(whatsappWebURL, '_blank');
+            }, 2000);
+
             // Enviar dados para envio.js
             if (typeof enviarParaSheets === "function") {
                 enviarParaSheets(dadosRecebimento);
