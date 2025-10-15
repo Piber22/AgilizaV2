@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById("resultado").value = msg;
   });
 
-  // Botão copiar
+  // Botão copiar e abrir WhatsApp
   document.getElementById("copiarBtn").addEventListener("click", function() {
       const textarea = document.getElementById("resultado");
       if (textarea.value.trim() === "") {
@@ -73,7 +73,25 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
       }
       navigator.clipboard.writeText(textarea.value)
-          .then(() => alert("Mensagem copiada com sucesso! ✅"))
+          .then(() => {
+              alert("Mensagem copiada com sucesso! ✅\nAbrindo WhatsApp...");
+              console.log("📋 Mensagem copiada para área de transferência");
+
+              // Extrai o código do convite do link
+              const inviteCode = "CCzl3lfFduN2HcT2ge1OBQ";
+
+              // Tenta abrir no app do WhatsApp
+              const whatsappAppURL = `whatsapp://chat?code=${inviteCode}`;
+              window.location.href = whatsappAppURL;
+
+              // Fallback: se o app não abrir em 2 segundos, abre no navegador
+              setTimeout(() => {
+                  const whatsappWebURL = "https://chat.whatsapp.com/CCzl3lfFduN2HcT2ge1OBQ";
+                  window.open(whatsappWebURL, '_blank');
+              }, 2000);
+
+              console.log("📱 Abrindo grupo do WhatsApp");
+          })
           .catch(err => {
               console.error("Erro ao copiar: ", err);
               alert("Não foi possível copiar a mensagem.");
