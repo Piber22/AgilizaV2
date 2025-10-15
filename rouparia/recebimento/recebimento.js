@@ -162,8 +162,12 @@ document.getElementById("copiarBtn").addEventListener("click", function() {
     // Copiar mensagem
     navigator.clipboard.writeText(textarea.value)
         .then(() => {
-            alert("Mensagem copiada com sucesso! ✅");
+            //alert("Mensagem copiada com sucesso! ✅");
 
+            // Enviar dados para envio.js
+            if (typeof enviarParaSheets === "function") {
+                enviarParaSheets(dadosRecebimento);
+            }
             // Extrai o código do convite do link (SUBSTITUA pelo código do seu grupo)
             const inviteCode = "KtBcu6Xn4PtIEXwtC9ThgR";
 
@@ -176,11 +180,6 @@ document.getElementById("copiarBtn").addEventListener("click", function() {
                 const whatsappWebURL = `https://chat.whatsapp.com/${inviteCode}`;
                 window.open(whatsappWebURL, '_blank');
             }, 2000);
-
-            // Enviar dados para envio.js
-            if (typeof enviarParaSheets === "function") {
-                enviarParaSheets(dadosRecebimento);
-            }
         })
         .catch(err => {
             console.error("Erro ao copiar: ", err);
