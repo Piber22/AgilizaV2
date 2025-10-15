@@ -21,20 +21,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const responsavel = document.getElementById("responsavel").value || "";
 
       // Montar mensagem por andar
-      let msg = `📋 TROCA DE PLANTÃO 📋\n📌 Responsável : ${responsavel.toUpperCase()} \n🗓️ Data : ${dataStr}\n\n`;
+      let msg = `📋 TROCA DE PLANTÃO 📋\n📌 RESPONSÁVEL : ${responsavel.toUpperCase()} \n🗓️ DATA : ${dataStr}\n\n`;
 
       // Máquinas
-      msg += `*Máquinas:* ${document.getElementById("maquinas").value || ""}\n\n`;
+      msg += `*MÁQUINAS:* ${document.getElementById("maquinas").value || ""}\n\n`;
       // Residuos e roupas
-      msg += `*Resíduos e roupas:* ${document.getElementById("residuos_roupas").value || ""}\n\n`;
+      msg += `*RESIDUOS E ROUPAS:* ${document.getElementById("residuos_roupas").value || ""}\n\n`;
       // Residuos e roupas
-      msg += `*Terminais ou altas pendentes:* ${document.getElementById("terminais_solicitadas").value || ""}\n\n`;
+      msg += `*TERMINAIS OU ALTAS PENDENTES:* ${document.getElementById("terminais_solicitadas").value || ""}\n\n`;
       // Leitos para vestir
-      msg += `*Leitos para vestir pendentes:* ${document.getElementById("leitos_vestir").value || ""}\n\n`;
+      msg += `*LEITOS PARA VESTIR PENDENTES:* ${document.getElementById("leitos_vestir").value || ""}\n\n`;
       // Terminais programadas
-      msg += `*Terminais programadas não executadas:* ${document.getElementById("terminais_programadas").value || ""}\n\n`;
+      msg += `*TERMINAIS PROGRAMADAS NÃO EXECUTADAS:* ${document.getElementById("terminais_programadas").value || ""}\n\n`;
       // Observações
-      msg += `*Observações:* ${document.getElementById("observacoes").value || ""}\n\n`;
+      msg += `*OSERVAÇÕES:* ${document.getElementById("observacoes").value || ""}\n\n`;
 
 
       // Exibir mensagem
