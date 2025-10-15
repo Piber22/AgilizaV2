@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Troca de plantão</title>
-    <!-- Fonte -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- CSS específico -->
     <link rel="stylesheet" href="trocaplantao.css">
 </head>
 <body>
     <main>
-        <!-- Cabeçalho -->
         <header class="header">
             <a href="../encarregadas.html" class="logo-link">
                 <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
@@ -19,33 +16,48 @@
             <h1>Troca de plantão</h1>
         </header>
 
-        <!-- Informações -->
         <section id="info">
             <h2>Identificação</h2>
             <label>Data: <input type="date" id="dataRecebimento"></label>
             <label>Responsável: <input type="text" id="responsavel" placeholder="Nome:"></label>
         </section>
 
-        <!-- Setores -->
         <section id="setor">
             <h2>Informações</h2>
-            <label>Máquinas: <input type="text" id="maquinas" placeholder="Digite:"></label>
-            <br>
-            <label>Resíduos e roupas: <input type="text" id="residuos_roupas" placeholder="Digite:"></label>
-            <br>
-            <label>Terminais ou altas pendentes: <input type="text" id="terminais_solicitadas" placeholder="Digite:"></label>
-            <br>
-            <label>Leitos para vestir pendentes: <input type="text" id="leitos_vestir" placeholder="Digite:"></label>
-            <br>
-            <label>Terminais programadas não executadas: <input type="text" id="terminais_programadas" placeholder="Digite:"></label>
-            <br>
-            <label>Observações: <input type="text" id="observacoes" placeholder="Digite:"></label>
+
+            <div class="campo-largo">
+                <label for="maquinas">Máquinas:</label>
+                <textarea id="maquinas" placeholder="Detalhes sobre máquinas..."></textarea>
+            </div>
+
+            <div class="campo-largo">
+                <label for="residuos_roupas">Resíduos e roupas:</label>
+                <textarea id="residuos_roupas" placeholder="Informe se em algum andar ficaram resíduos ou roupas pendentes..."></textarea>
+            </div>
+
+            <div class="campo-largo">
+                <label for="terminais_solicitadas">Terminais ou altas pendentes:</label>
+                <textarea id="terminais_solicitadas" placeholder="Informe se ficou alguma terminal em tela..."></textarea>
+            </div>
+
+            <div class="campo-largo">
+                <label for="leitos_vestir">Leitos para vestir pendentes:</label>
+                <textarea id="leitos_vestir" placeholder="Informe se algum leito ficou pendente de vestir..."></textarea>
+            </div>
+
+            <div class="campo-largo">
+                <label for="terminais_programadas">Terminais programadas não executadas:</label>
+                <textarea id="terminais_programadas" placeholder="Informe se alguma terminal programada não foi feita..."></textarea>
+            </div>
+
+            <div class="campo-largo">
+                <label for="observacoes">Observações:</label>
+                <textarea id="observacoes" placeholder="Outras observações importantes..."></textarea>
+            </div>
         </section>
 
-        <!-- Botões -->
         <button id="gerarBtn" class="login-option">Gerar Mensagem</button>
 
-        <!-- Mensagem gerada -->
         <section id="mensagem">
             <h2>Mensagem gerada:</h2>
             <textarea id="resultado" rows="15" readonly></textarea>
@@ -57,7 +69,6 @@
         <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
     </footer>
 
-    <!-- JS -->
     <script src="trocaplantao.js"></script>
 </body>
 </html>

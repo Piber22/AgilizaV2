@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const responsavel = document.getElementById("responsavel").value || "";
 
       // Montar mensagem por andar
-      let msg = `📋 TROCA DE PLANTÃO 📋\n📌 RESPONSÁVEL : ${responsavel.toUpperCase()} \n🗓️ DATA : ${dataStr}\n\n`;
+      let msg = `📋 TROCA DE PLANTÃO 📋\n📌 RESPONSÁVEL: ${responsavel.toUpperCase()} \n🗓️ DATA: ${dataStr}\n\n`;
 
       // Máquinas
       msg += `*MÁQUINAS:* ${document.getElementById("maquinas").value || ""}\n\n`;
