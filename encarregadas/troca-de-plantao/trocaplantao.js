@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Terminais programadas
       msg += `*TERMINAIS PROGRAMADAS NÃO EXECUTADAS:* ${document.getElementById("terminais_programadas").value || ""}\n\n`;
       // Observações
-      msg += `*OSERVAÇÕES:* ${document.getElementById("observacoes").value || ""}\n\n`;
+      msg += `*OBSERVAÇÕES:* ${document.getElementById("observacoes").value || ""}\n\n`;
 
 
       // Exibir mensagem
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       navigator.clipboard.writeText(textarea.value)
           .then(() => {
-              alert("Mensagem copiada com sucesso! ✅\nAbrindo WhatsApp...");
+              //alert("Mensagem copiada com sucesso! ✅\nAbrindo WhatsApp...");
               console.log("📋 Mensagem copiada para área de transferência");
 
               // Extrai o código do convite do link

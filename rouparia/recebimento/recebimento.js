@@ -40,6 +40,12 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         dataStr = `${dia}/${mes}/${ano}`;
     }
 
+    // Horário (capturado automaticamente)
+    const agora = new Date();
+    const hora = String(agora.getHours()).padStart(2, '0');
+    const minuto = String(agora.getMinutes()).padStart(2, '0');
+    const horarioStr = `${hora}:${minuto}`;
+
     // Responsável
     const responsavel = document.getElementById("responsavel").value || "";
 
@@ -85,8 +91,8 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         parseFloat(calca.Peso)
     ).toFixed(2);
 
-    // Montar mensagem COM VALIDAÇÃO
-    let msg = `👕 ROUPARIA ${responsavel.toUpperCase()} 👕\n📋 Enxoval recebido ${dataStr}\n`;
+    // Montar mensagem COM VALIDAÇÃO (incluindo horário)
+    let msg = `👕 ROUPARIA ${responsavel.toUpperCase()} 👕\n📋 Enxoval recebido ${dataStr} às ${horarioStr}\n`;
     msg += `📌 Lençol ${lencolQtd} ${validar(lencolQtd, valoresMinimos.lencol)} ( peso ${lencolPeso} )\n`;
     msg += `📌 Camisola ${camisolaQtd} ${validar(camisolaQtd, valoresMinimos.camisola)} ( peso ${camisolaPeso} )\n`;
     msg += `📌 Cobertor ${cobertorQtd} ${validar(cobertorQtd, valoresMinimos.cobertor)} ( peso ${cobertorPeso} )\n`;
@@ -112,6 +118,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     // Armazenar todos os dados em objeto global COM VALIDAÇÕES
     dadosRecebimento = {
         data: dataStr,
+        horario: horarioStr,
         responsavel,
         lencolQtd,
         lencolQtdStatus: validar(lencolQtd, valoresMinimos.lencol),
