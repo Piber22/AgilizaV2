@@ -3,10 +3,8 @@ const btnRecebimento = document.getElementById('recebimento');
 const btnEncarregadas = document.getElementById('encarregadas');
 const btnGestao = document.getElementById('gestao');
 const loginError = document.getElementById('login-error');
+const btnAlmoxarifado = document.getElementById('almoxarifado');
 
-// Botões "Em breve"
-
-const btnAlmoxarifado = document.querySelector('button:nth-of-type(3)');
 
 // Redirecionamento ao clicar em "Rouparia"
 btnRecebimento.addEventListener('click', () => {
@@ -18,6 +16,12 @@ btnRecebimento.addEventListener('click', () => {
 btnEncarregadas.addEventListener('click', () => {
   loginError.textContent = ""; // limpa mensagem
   window.location.href = "encarregadas/encarregadas.html"; // redireciona
+});
+
+// Redirecionamento ao clicar em "Almox"
+btnAlmoxarifado.addEventListener('click', () => {
+  loginError.textContent = ""; // limpa mensagem
+  window.location.href = "almoxarifado/almoxarifado.html"; // redireciona
 });
 
 // Redirecionamento ao clicar em "Gestão" com verificação de senha
@@ -37,6 +41,3 @@ btnGestao.addEventListener('click', () => {
 function mostrarMensagemBreve() {
   loginError.textContent = "O planejador ainda não conseguiu chegar até aqui, em breve estará disponível 😉";
 }
-
-// Eventos para botões "Em breve"
-btnAlmoxarifado.addEventListener('click', mostrarMensagemBreve);
