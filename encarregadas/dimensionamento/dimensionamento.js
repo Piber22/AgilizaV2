@@ -80,12 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
               const whatsappAppURL = `whatsapp://chat?code=${inviteCode}`;
               window.location.href = whatsappAppURL;
 
-              // Fallback: se o app não abrir em 2 segundos, abre no navegador
-              setTimeout(() => {
-                  const whatsappWebURL = "https://chat.whatsapp.com/CCzl3lfFduN2HcT2ge1OBQ";
-                  window.open(whatsappWebURL, '_blank');
-              }, 2000);
-
               console.log("📱 Abrindo grupo do WhatsApp");
           })
           .catch(err => {

@@ -181,12 +181,6 @@ document.getElementById("copiarBtn").addEventListener("click", function() {
             // Tenta abrir no app do WhatsApp
             const whatsappAppURL = `whatsapp://chat?code=${inviteCode}`;
             window.location.href = whatsappAppURL;
-
-            // Fallback: se o app não abrir em 2 segundos, abre no navegador
-            setTimeout(() => {
-                const whatsappWebURL = `https://chat.whatsapp.com/${inviteCode}`;
-                window.open(whatsappWebURL, '_blank');
-            }, 2000);
         })
         .catch(err => {
             console.error("Erro ao copiar: ", err);

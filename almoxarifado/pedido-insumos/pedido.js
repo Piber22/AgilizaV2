@@ -109,24 +109,19 @@ document.getElementById("copiarBtn").addEventListener("click", function() {
         alert("Não há mensagem para copiar!");
         return;
     }
+
     navigator.clipboard.writeText(textarea.value)
         .then(() => {
             console.log("📋 Mensagem copiada para área de transferência");
 
-            // Código do grupo do WhatsApp (substitua se necessário)
-            const inviteCode = "KtBcu6Xn4PtIEXwtC9ThgR";
+            // Número do contato (formato internacional)
+            const phoneNumber = "555180509274";
 
-            // Tenta abrir o app do WhatsApp
-            const whatsappAppURL = `whatsapp://chat?code=${inviteCode}`;
+            // URL para abrir conversa no app do WhatsApp
+            const whatsappAppURL = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(textarea.value)}`;
             window.location.href = whatsappAppURL;
 
-            // Fallback para navegador
-            setTimeout(() => {
-                const whatsappWebURL = `https://chat.whatsapp.com/${inviteCode}`;
-                window.open(whatsappWebURL, '_blank');
-            }, 2000);
-
-            console.log("📱 Abrindo grupo do WhatsApp");
+            console.log("📱 Abrindo conversa com o contato no WhatsApp");
         })
         .catch(err => {
             console.error("Erro ao copiar: ", err);
