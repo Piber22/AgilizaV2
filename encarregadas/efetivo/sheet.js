@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                // Converte texto em estrutura tabular (função do auxiliar.js)
+                //  Converte texto em estrutura tabular (função do auxiliar.js)
                 const dadosFormatados = textoParaTabelaEfetivo(texto);
 
                 if (dadosFormatados.length > 0) {
