@@ -40,7 +40,7 @@ main {
 }
 
 .logo {
-    width: 50px;
+    width: 40px;
     height: auto;
 }
 
@@ -72,16 +72,32 @@ label {
     margin-bottom: 8px;
 }
 
+label span {
+    width: 45%; /* Alinha o texto à esquerda */
+    text-align: left;
+}
+
 input[type="number"],
 input[type="text"],
-input[type="date"] {
-    width: 40%;
+input[type="date"],
+select {
+    width: 50%; /* Alinha o input/select à direita */
     padding: 8px 10px;
     border-radius: 6px;
-    border: 2px solid #5b5b5b;
-    background-color: #201F20;
+    border: 2px solid
+#5b5b5b;
+    background-color:
+#201F20;
     color: #fff;
     font-size: 14px;
+}
+/* Removendo aparência padrão do select e mantendo estilo */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
 }
 
 /* REGRAS NOVAS PARA CAMPOS LONGOS (usando .campo-largo) */

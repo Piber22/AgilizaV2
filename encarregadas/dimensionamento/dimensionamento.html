@@ -23,7 +23,16 @@
         <section id="info">
             <h2>Informações</h2>
             <label>Data: <input type="date" id="dataRecebimento"></label>
-            <label>Responsável: <input type="text" id="responsavel" placeholder="Nome:"></label>
+            <label>
+              <span>Responsável:</span>
+                  <select id="responsavel" name="responsavel">
+                      <option value="" disabled selected>Selecione o nome</option>
+                      <option value="Graciela">Graciela</option>
+                      <option value="Giovana">Giovana</option>
+                      <option value="Jéssica">Jéssica</option>
+                      <option value="Jacqueline">Jacqueline</option>
+                </select>
+            </label>
         </section>
 
         <!-- Setores -->
