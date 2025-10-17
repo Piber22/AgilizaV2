@@ -16,6 +16,10 @@ function textoParaTabelaEfetivo(textoBruto) {
     const matchData = textoBruto.match(/(\d{2}\/\d{2}\/\d{4})/);
     if (matchData) dataAtual = matchData[1];
 
+    // Gerar horário atual
+    const now = new Date();
+    const horarioAtual = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
     // Percorre cada linha e define a categoria atual
     linhas.forEach(linha => {
         if (linha.startsWith("🟢")) categoriaAtual = "PRESENTE";
@@ -26,6 +30,7 @@ function textoParaTabelaEfetivo(textoBruto) {
         else if (categoriaAtual) {
             registros.push({
                 data: dataAtual,
+                horario: horarioAtual,
                 equipe: equipe,
                 categoria: categoriaAtual,
                 colaborador: linha
