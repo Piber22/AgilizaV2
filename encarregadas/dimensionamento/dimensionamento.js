@@ -1,64 +1,81 @@
 console.log("✅ Dimensionamento.js carregado!");
 
+// Variável global para armazenar os dados
+let dadosRecebidos = null;
+
 document.addEventListener('DOMContentLoaded', () => {
   // Função para gerar a mensagem
   document.getElementById("gerarBtn").addEventListener("click", function() {
       // Data
       let dataInput = document.getElementById("dataRecebimento").value;
       let dataStr;
+      let horarioStr = "";
+
       if (dataInput) {
           const parts = dataInput.split("-");
           dataStr = `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+          const agora = new Date();
+          const hora = String(agora.getHours()).padStart(2, '0');
+          const minuto = String(agora.getMinutes()).padStart(2, '0');
+          horarioStr = `${hora}:${minuto}`;
       } else {
           const data = new Date();
           const dia = String(data.getDate()).padStart(2, '0');
           const mes = String(data.getMonth() + 1).padStart(2, '0');
           const ano = data.getFullYear();
+          const hora = String(data.getHours()).padStart(2, '0');
+          const minuto = String(data.getMinutes()).padStart(2, '0');
+          horarioStr = `${hora}:${minuto}`;
           dataStr = `${dia}/${mes}/${ano}`;
       }
 
-      // Responsável
+      // Capturar campos
       const responsavel = document.getElementById("responsavel").value || "";
 
-      // Montar mensagem por andar
-      let msg = `📋 DIMENSIONAMENTO 📋\n📌 Responsável : ${responsavel.toUpperCase()} \n🗓️ Data : ${dataStr}\n\n`;
+      // Armazenar na variável global
+      dadosRecebidos = {
+          data: dataStr,
+          horario: horarioStr,
+          responsavel,
+          v5PL: document.getElementById("v5PL").value || "",
+          v5GR: document.getElementById("v5GR").value || "",
+          v5UTI: document.getElementById("v5UTI").value || "",
+          v4A: document.getElementById("v4A").value || "",
+          v4B: document.getElementById("v4B").value || "",
+          v3A: document.getElementById("v3A").value || "",
+          v2A: document.getElementById("v2A").value || "",
+          v2B: document.getElementById("v2B").value || "",
+          rouparia: document.getElementById("rouparia").value || "",
+          tint: document.getElementById("tint").value || "",
+          tadm: document.getElementById("tadm").value || "",
+          usr: document.getElementById("usr").value || "",
+          usm: document.getElementById("usm").value || "",
+          r1: document.getElementById("r1").value || "",
+          r2: document.getElementById("r2").value || ""
+      };
 
-      // 5º Andar
-      msg += `5 Andar - Prolongados : ${document.getElementById("5PL").value || ""}\n`;
-      msg += `5 Andar - Giro rápido : ${document.getElementById("5GR").value || ""}\n`;
-      msg += `5 Andar - UTI : ${document.getElementById("5UTI").value || ""}\n\n`;
+      // Montar mensagem
+      let msg = `📋 DIMENSIONAMENTO 📋\n📌 Responsável: ${responsavel.toUpperCase()} \n🗓️ Data: ${dataStr} - ${horarioStr}\n\n`;
+      msg += `5º Andar - Prolongados: ${dadosRecebidos.v5PL}\n`;
+      msg += `5º Andar - Giro rápido: ${dadosRecebidos.v5GR}\n`;
+      msg += `5º Andar - UTI: ${dadosRecebidos.v5UTI}\n\n`;
+      msg += `4º Andar - Lado A: ${dadosRecebidos.v4A}\n`;
+      msg += `4º Andar - Lado B: ${dadosRecebidos.v4B}\n\n`;
+      msg += `3º Andar: ${dadosRecebidos.v3A}\n\n`;
+      msg += `2º Andar: ${dadosRecebidos.v2A}\n`;
+      msg += `2º Andar - Bloco: ${dadosRecebidos.v2B}\n\n`;
+      msg += `Saúde Mental - Feminina: ${dadosRecebidos.usr}\n`;
+      msg += `Saúde Mental - Masculina: ${dadosRecebidos.usm}\n\n`;
+      msg += `Térreo - Prédio Internação: ${dadosRecebidos.tint}\n`;
+      msg += `Térreo - Prédio ADM: ${dadosRecebidos.tadm}\n\n`;
+      msg += `Rouparia: ${dadosRecebidos.rouparia}\n\n`;
+      msg += `Resíduos 1: ${dadosRecebidos.r1}\n`;
+      msg += `Resíduos 2: ${dadosRecebidos.r2}\n`;
 
-      // 4º Andar
-      msg += `4 Andar - Lado A : ${document.getElementById("4A").value || ""}\n`;
-      msg += `4 Andar - Lado B : ${document.getElementById("4B").value || ""}\n\n`;
-
-      // 3º Andar
-
-      msg += `3 Andar : ${document.getElementById("3A").value || ""}\n\n`;
-
-      // 2º Andar
-
-      msg += `2 Andar : ${document.getElementById("2A").value || ""}\n`;
-      msg += `2 Andar - Bloco : ${document.getElementById("2B").value || ""}\n\n`;
-
-      // 1º Andar
-      msg += `Saúde mental - Feminina : ${document.getElementById("USR").value || ""}\n`;
-      msg += `Saúde mental - Masculina : ${document.getElementById("USM").value || ""}\n\n`;
-
-      // Térreo
-      msg += `Térreo - Prédio internação : ${document.getElementById("TINT").value || ""}\n`;
-      msg += `Térreo - Prédio ADM : ${document.getElementById("TADM").value || ""}\n\n`;
-
-      // Outros setores
-
-      msg += `Rouparia : ${document.getElementById("ROUPARIA").value || ""}\n\n`;
-
-
-      msg += `Resíduos 1 : ${document.getElementById("R1").value || ""}\n`;
-      msg += `Resíduos 2 : ${document.getElementById("R2").value || ""}\n`;
-
-      // Exibir mensagem
       document.getElementById("resultado").value = msg;
+
+      console.log("✅ Mensagem gerada e dados armazenados:", dadosRecebidos);
   });
 
   // Botão copiar e abrir WhatsApp
@@ -68,19 +85,20 @@ document.addEventListener('DOMContentLoaded', () => {
           alert("Não há mensagem para copiar!");
           return;
       }
+
       navigator.clipboard.writeText(textarea.value)
-          .then(() => {
-              //alert("Mensagem copiada com sucesso! ✅\nAbrindo WhatsApp...");
-              console.log("📋 Mensagem copiada para área de transferência");
+        .then(() => {
+            //alert("Mensagem copiada com sucesso! ✅\nAbrindo WhatsApp...");
+            console.log("📋 Mensagem copiada para área de transferência");
 
-              // Extrai o código do convite do link
-              const inviteCode = "CCzl3lfFduN2HcT2ge1OBQ";
+            // Extrai o código do convite do link
+            const inviteCode = "IAbXun9LRzc61P6bm1coD8";
 
-              // Tenta abrir no app do WhatsApp
-              const whatsappAppURL = `whatsapp://chat?code=${inviteCode}`;
-              window.location.href = whatsappAppURL;
+            // Tenta abrir no app do WhatsApp
+            const whatsappAppURL = `whatsapp://chat?code=${inviteCode}`;
+            window.location.href = whatsappAppURL;
 
-              console.log("📱 Abrindo grupo do WhatsApp");
+            console.log("📱 Abrindo grupo do WhatsApp");
           })
           .catch(err => {
               console.error("Erro ao copiar: ", err);
