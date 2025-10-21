@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("📋 Mensagem copiada para área de transferência");
 
             // Extrai o código do convite do link
-            const inviteCode = "IAbXun9LRzc61P6bm1coD8";
+            const inviteCode = "CCzl3lfFduN2HcT2ge1OBQ";
 
             // Tenta abrir no app do WhatsApp
             const whatsappAppURL = `whatsapp://chat?code=${inviteCode}`;
