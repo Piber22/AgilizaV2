@@ -26,30 +26,24 @@ function validar(valor, minimo) {
 
 // Função para gerar a mensagem
 document.getElementById("gerarBtn").addEventListener("click", function() {
-    // Data
-    let dataInput = document.getElementById("dataRecebimento").value;
-    let dataStr;
-    if(dataInput){
-        const parts = dataInput.split("-");
-        dataStr = `${parts[2]}/${parts[1]}/${parts[0]}`;
-    } else {
-        const data = new Date();
-        const dia = String(data.getDate()).padStart(2, '0');
-        const mes = String(data.getMonth()+1).padStart(2, '0');
-        const ano = data.getFullYear();
-        dataStr = `${dia}/${mes}/${ano}`;
-    }
 
-    // Horário (capturado automaticamente)
+    // 📅 Data automática
+    const dataAtual = new Date();
+    const dia = String(dataAtual.getDate()).padStart(2, '0');
+    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+    const ano = dataAtual.getFullYear();
+    const dataStr = `${dia}/${mes}/${ano}`;
+
+    // 🕒 Horário automático
     const agora = new Date();
     const hora = String(agora.getHours()).padStart(2, '0');
     const minuto = String(agora.getMinutes()).padStart(2, '0');
     const horarioStr = `${hora}:${minuto}`;
 
-    // Responsável
+    // 👤 Responsável
     const responsavel = document.getElementById("responsavel").value || "";
 
-    // Enxoval
+    // 👕 Enxoval
     const lencolQtd = parseInt(document.getElementById("lencolQtd").value || 0);
     const lencolPeso = parseFloat(document.getElementById("lencolPeso").value || 0).toFixed(2);
 
@@ -62,7 +56,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     const fronhaQtd = parseInt(document.getElementById("fronhaQtd").value || 0);
     const fronhaPeso = parseFloat(document.getElementById("fronhaPeso").value || 0).toFixed(2);
 
-    // Scrubs
+    // 🩺 Scrubs
     const jaleco = {
         P: parseInt(document.getElementById("jalecoP").value || 0),
         M: parseInt(document.getElementById("jalecoM").value || 0),
@@ -81,7 +75,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         Peso: parseFloat(document.getElementById("calcaPeso").value || 0).toFixed(2)
     };
 
-    // Calcular peso total
+    // ⚖️ Peso total
     const pesoTotal = (
         parseFloat(lencolPeso) +
         parseFloat(camisolaPeso) +
@@ -91,20 +85,20 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         parseFloat(calca.Peso)
     ).toFixed(2);
 
-    // Montar mensagem COM VALIDAÇÃO (incluindo horário)
+    // 🧾 Montar mensagem
     let msg = `👕 ROUPARIA ${responsavel.toUpperCase()} 👕\n📋 Enxoval recebido ${dataStr} às ${horarioStr}\n`;
-    msg += `📌 Lençol ${lencolQtd} ${validar(lencolQtd, valoresMinimos.lencol)} ( peso ${lencolPeso} )\n`;
-    msg += `📌 Camisola ${camisolaQtd} ${validar(camisolaQtd, valoresMinimos.camisola)} ( peso ${camisolaPeso} )\n`;
-    msg += `📌 Cobertor ${cobertorQtd} ${validar(cobertorQtd, valoresMinimos.cobertor)} ( peso ${cobertorPeso} )\n`;
-    msg += `📌 Fronha ${fronhaQtd} ${validar(fronhaQtd, valoresMinimos.fronha)} ( peso ${fronhaPeso} )\n\n`;
-    msg += `📋 ROUPA AZUL\n🥼JALECO\n`;
+    msg += `📌 Lençol ${lencolQtd} ${validar(lencolQtd, valoresMinimos.lencol)} (peso ${lencolPeso})\n`;
+    msg += `📌 Camisola ${camisolaQtd} ${validar(camisolaQtd, valoresMinimos.camisola)} (peso ${camisolaPeso})\n`;
+    msg += `📌 Cobertor ${cobertorQtd} ${validar(cobertorQtd, valoresMinimos.cobertor)} (peso ${cobertorPeso})\n`;
+    msg += `📌 Fronha ${fronhaQtd} ${validar(fronhaQtd, valoresMinimos.fronha)} (peso ${fronhaPeso})\n\n`;
+    msg += `📋 ROUPA AZUL\n🥼 JALECO\n`;
     msg += `🥼 P ${jaleco.P} ${validar(jaleco.P, valoresMinimos.jalecoP)}\n`;
     msg += `🥼 M ${jaleco.M} ${validar(jaleco.M, valoresMinimos.jalecoM)}\n`;
     msg += `🥼 G ${jaleco.G} ${validar(jaleco.G, valoresMinimos.jalecoG)}\n`;
     msg += `🥼 GG ${jaleco.GG} ${validar(jaleco.GG, valoresMinimos.jalecoGG)}\n`;
     msg += `🥼 EG ${jaleco.EG} ${validar(jaleco.EG, valoresMinimos.jalecoEG)}\n`;
     msg += `🧮 Peso: ${jaleco.Peso}\n\n`;
-    msg += `👖CALÇA\n`;
+    msg += `👖 CALÇA\n`;
     msg += `👖 P ${calca.P} ${validar(calca.P, valoresMinimos.calcaP)}\n`;
     msg += `👖 M ${calca.M} ${validar(calca.M, valoresMinimos.calcaM)}\n`;
     msg += `👖 G ${calca.G} ${validar(calca.G, valoresMinimos.calcaG)}\n`;
@@ -115,7 +109,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
 
     document.getElementById("resultado").value = msg;
 
-    // Armazenar todos os dados em objeto global COM VALIDAÇÕES
+    // 🧠 Armazenar dados
     dadosRecebimento = {
         data: dataStr,
         horario: horarioStr,

@@ -103,7 +103,7 @@ section {
 .login-option:hover {
     background-color: #E94B22; /* mantém efeito visual ao passar o mouse */
 }
-#blocos-laterais {
+.blocos-laterais {
     display: flex;
     width: 90%;  /* mesma largura do bloco acima */
     margin: 10px auto;
@@ -124,9 +124,119 @@ section {
     cursor: default;
     transition: background-color 0.3s ease;
 }
+.bloco-lateral-1 {
+    flex: 1; /* divide igualmente */
+    text-align: center;
+    padding: 12px;
+    background-color: #201F20;
+    border: 2px solid #fcc00d;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    cursor: default;
+    transition: background-color 0.3s ease;
+
+}.bloco-lateral-2 {
+    flex: 1; /* divide igualmente */
+    text-align: center;
+    padding: 12px;
+    background-color: #201F20;
+    border: 2px solid #428ecc;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    cursor: default;
+    transition: background-color 0.3s ease;
+
+
+}.bloco-lateral-3 {
+    flex: 1; /* divide igualmente */
+    text-align: center;
+    padding: 12px;
+    background-color: #201F20;
+    border: 2px solid #4caf50;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    cursor: default;
+    transition: background-color 0.3s ease;
+}
+
+.bloco-lateral-1:hover {
+    background-color: #fcc00d;
+}
+
+.bloco-lateral-2:hover {
+    background-color: #428ecc;
+}
+
+.bloco-lateral-3:hover {
+    background-color: #4caf50;
+}
 
 .bloco-lateral:hover {
     background-color: #E94B22;
+}
+
+/* Ícone ao lado do bloco-lateral-1 */
+.bloco-lateral-1 {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px; /* espaçamento entre ícone e número */
+}
+
+.bloco-lateral-1::before {
+    content: "";
+    display: inline-block;
+    width: 16px;   /* ajuste o tamanho conforme necessário */
+    height: 16px;
+    background: url('../img/i1.png') no-repeat center center;
+    background-size: contain;
+    margin-right: 6px; /* espaço entre o ícone e o número */
+    vertical-align: middle;
+}
+
+.bloco-lateral-2 {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px; /* espaçamento entre ícone e número */
+}
+
+.bloco-lateral-2::before {
+    content: "";
+    display: inline-block;
+    width: 20px;   /* ajuste o tamanho conforme necessário */
+    height: 20px;
+    background: url('../img/i2.png') no-repeat center center;
+    background-size: contain;
+    margin-right: 6px; /* espaço entre o ícone e o número */
+    vertical-align: middle;
+}
+
+.bloco-lateral-3 {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px; /* espaçamento entre ícone e número */
+}
+
+.bloco-lateral-3::before {
+    content: "";
+    display: inline-block;
+    width: 18px;   /* ajuste o tamanho conforme necessário */
+    height: 18px;
+    background: url('../img/i3.png') no-repeat center center;
+    background-size: contain;
+    margin-right: 6px; /* espaço entre o ícone e o número */
+    vertical-align: middle;
 }
 
 /* RESPONSIVO */
