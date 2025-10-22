@@ -1,74 +1,78 @@
 // collect_rp.js
 
-const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRNW7MsqTP_FUxCN9AwLPH229I6M4ZeQqqb3STic9AMF_c2budXj0gKMFDRR-a4tW0JiMunFfcH9brR/pubhtml?gid=0";
+// Extrair o ID da planilha da URL original
+// URL original: https://docs.google.com/spreadsheets/d/e/2PACX-1vRNW7MsqTP_FUxCN9AwLPH229I6M4ZeQqqb3STic9AMF_c2budXj0gKMFDRR-a4tW0JiMunFfcH9brR/pubhtml?gid=0
+const SHEET_ID = "2PACX-1vRNW7MsqTP_FUxCN9AwLPH229I6M4ZeQqqb3STic9AMF_c2budXj0gKMFDRR-a4tW0JiMunFfcH9brR";
+const GID = "0"; // ID da aba (gid=0)
+
+// URL para buscar como CSV (mais fácil de parsear)
+const sheetURL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=${GID}&single=true&output=csv`;
 
 async function atualizarBlocos() {
     try {
+        console.log("Buscando dados da planilha...");
+
         const response = await fetch(sheetURL);
-        const htmlText = await response.text();
 
-        // Criar DOM temporário
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlText, "text/html");
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
 
-        // Seleciona a tabela (Google Sheets usa a classe "waffle")
-        const table = doc.querySelector("table.waffle") || doc.querySelector("table");
+        const csvText = await response.text();
+        console.log("CSV recebido:", csvText.substring(0, 200)); // Mostra início do CSV
 
-        if (!table) {
-            console.error("Tabela não encontrada no HTML retornado");
-            console.log("HTML retornado:", htmlText.substring(0, 500)); // mostra primeiros 500 caracteres para debug
+        // Parsear CSV manualmente (simples para este caso)
+        const lines = csvText.split('\n');
+
+        if (lines.length < 2) {
+            console.error("A planilha não tem dados suficientes");
             return;
         }
 
-        // Pega todas as linhas da tabela
-        const rows = table.querySelectorAll("tr");
+        // Pegar a segunda linha (índice 1, pois linha 1 é índice 0)
+        // A linha 2 do Google Sheets corresponde a lines[1] no array
+        const row2 = lines[1].split(',');
 
-        if (rows.length < 2) {
-            console.error("Número insuficiente de linhas na tabela");
-            return;
-        }
+        // Extrair valores das colunas A, B, C (índices 0, 1, 2)
+        const valorA2 = row2[0]?.trim().replace(/"/g, '') || "?";
+        const valorB2 = row2[1]?.trim().replace(/"/g, '') || "?";
+        const valorC2 = row2[2]?.trim().replace(/"/g, '') || "?";
 
-        // Linha 2 (índice 1, pois a linha 1 é geralmente o cabeçalho - índice 0)
-        const row2 = rows[1];
-        const cells = row2.querySelectorAll("td");
+        console.log("Valores encontrados:", {
+            A2: valorA2,
+            B2: valorB2,
+            C2: valorC2
+        });
 
-        // Pega os valores das células A2, B2, C2
-        const valorA2 = cells[0]?.innerText.trim() || "?";
-        const valorB2 = cells[1]?.innerText.trim() || "?";
-        const valorC2 = cells[2]?.innerText.trim() || "?";
+        // Atualizar blocos de ROUPARIA
+        atualizarSecao("#rouparia", valorA2, valorB2, valorC2);
 
-        console.log("Valores encontrados:", valorA2, valorB2, valorC2);
+        // Atualizar blocos de ALMOXARIFADO
+        atualizarSecao("#almoxarifado", valorA2, valorB2, valorC2);
 
-        // Atualiza os blocos de ROUPARIA
-        const roupariaBloco1 = document.querySelector("#rouparia .bloco-lateral-1");
-        const roupariaBloco2 = document.querySelector("#rouparia .bloco-lateral-2");
-        const roupariaBloco3 = document.querySelector("#rouparia .bloco-lateral-3");
+        // Atualizar blocos de ENCARREGADAS
+        atualizarSecao("#encarregadas", valorA2, valorB2, valorC2);
 
-        if (roupariaBloco1) roupariaBloco1.innerText = valorA2;
-        if (roupariaBloco2) roupariaBloco2.innerText = valorB2;
-        if (roupariaBloco3) roupariaBloco3.innerText = valorC2;
-
-        // Atualiza os blocos de ALMOXARIFADO (assumindo que você quer os mesmos valores)
-        const almoxBloco1 = document.querySelector("#almoxarifado .bloco-lateral-1");
-        const almoxBloco2 = document.querySelector("#almoxarifado .bloco-lateral-2");
-        const almoxBloco3 = document.querySelector("#almoxarifado .bloco-lateral-3");
-
-        if (almoxBloco1) almoxBloco1.innerText = valorA2;
-        if (almoxBloco2) almoxBloco2.innerText = valorB2;
-        if (almoxBloco3) almoxBloco3.innerText = valorC2;
-
-        // Atualiza os blocos de ENCARREGADAS
-        const encarregBloco1 = document.querySelector("#encarregadas .bloco-lateral-1");
-        const encarregBloco2 = document.querySelector("#encarregadas .bloco-lateral-2");
-        const encarregBloco3 = document.querySelector("#encarregadas .bloco-lateral-3");
-
-        if (encarregBloco1) encarregBloco1.innerText = valorA2;
-        if (encarregBloco2) encarregBloco2.innerText = valorB2;
-        if (encarregBloco3) encarregBloco3.innerText = valorC2;
+        console.log("Blocos atualizados com sucesso!");
 
     } catch (error) {
         console.error("Erro ao atualizar os blocos:", error);
+        console.error("Detalhes:", error.message);
     }
 }
 
+function atualizarSecao(secaoId, valor1, valor2, valor3) {
+    const bloco1 = document.querySelector(`${secaoId} .bloco-lateral-1`);
+    const bloco2 = document.querySelector(`${secaoId} .bloco-lateral-2`);
+    const bloco3 = document.querySelector(`${secaoId} .bloco-lateral-3`);
+
+    if (bloco1) bloco1.innerText = valor1;
+    if (bloco2) bloco2.innerText = valor2;
+    if (bloco3) bloco3.innerText = valor3;
+}
+
+// Executar quando a página carregar
 window.addEventListener("DOMContentLoaded", atualizarBlocos);
+
+// Opcional: Atualizar automaticamente a cada 5 minutos (300000 ms)
+setInterval(atualizarBlocos, 300000);
