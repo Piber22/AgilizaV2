@@ -2,8 +2,8 @@
 
 // Extrair o ID da planilha da URL original
 // URL original: https://docs.google.com/spreadsheets/d/e/2PACX-1vRNW7MsqTP_FUxCN9AwLPH229I6M4ZeQqqb3STic9AMF_c2budXj0gKMFDRR-a4tW0JiMunFfcH9brR/pubhtml?gid=0
-const SHEET_ID = "2PACX-1vRNW7MsqTP_FUxCN9AwLPH229I6M4ZeQqqb3STic9AMF_c2budXj0gKMFDRR-a4tW0JiMunFfcH9brR";
-const GID = "1649158663"; // ID da aba "dados" (você precisa descobrir o GID correto)
+const SHEET_ID = "2PACX-1vSWRB_IYcrU6zgFqeB_FbOjhKeBTjDzoLnJlHYMAE4DvppA7U3_Uy5DzZIzk9Ce1NUonrTB4rw7AYwW";
+const GID = "0"; // ID da aba "dados" (você precisa descobrir o GID correto)
 
 // URL para buscar como CSV (mais fácil de parsear)
 const sheetURL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=${GID}&single=true&output=csv`;
