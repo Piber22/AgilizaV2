@@ -73,10 +73,10 @@ async function atualizarBlocos() {
         atualizarSecao("#rouparia", valorA2, valorB2, valorC2);
 
         // Atualizar blocos de ALMOXARIFADO
-        atualizarSecao("#almoxarifado", valorA2, valorB2, valorC2);
+        //atualizarSecao("#almoxarifado", valorA2, valorB2, valorC2);
 
         // Atualizar blocos de ENCARREGADAS
-        atualizarSecao("#encarregadas", valorA2, valorB2, valorC2);
+        //atualizarSecao("#encarregadas", valorA2, valorB2, valorC2);
 
         console.log("Blocos atualizados com sucesso!");
 
