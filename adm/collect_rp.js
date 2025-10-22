@@ -99,5 +99,5 @@ function atualizarSecao(secaoId, valor1, valor2, valor3) {
 // Executar quando a página carregar
 window.addEventListener("DOMContentLoaded", atualizarBlocos);
 
-// Opcional: Atualizar automaticamente a cada 5 minutos (300000 ms)
+// Opciona l: Atualizar automaticamente a cada 5 minutos (300000 ms)
 setInterval(atualizarBlocos, 300000);
