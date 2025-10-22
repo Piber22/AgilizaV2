@@ -59,9 +59,9 @@ async function atualizarBlocos() {
         const row2 = parseCSVLine(lines[1]);
 
         // Extrair valores das colunas A, B, C (índices 0, 1, 2)
-        const valorA2 = row2[0]?.trim() || "?";
-        const valorB2 = row2[1]?.trim() || "?";
-        const valorC2 = row2[2]?.trim() || "?";
+        const valorA2 = row2[1]?.trim() || "?";
+        const valorB2 = row2[2]?.trim() || "?";
+        const valorC2 = row2[3]?.trim() || "?";
 
         console.log("Valores encontrados:", {
             A2: valorA2,
