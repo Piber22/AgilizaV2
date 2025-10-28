@@ -4,6 +4,7 @@ console.log("Carregando planilha com filtros...");
 const secaoDados = document.getElementById("dados");
 const dataInput = document.getElementById("dataRecebimento");
 const selectResp = document.getElementById("responsavel");
+const secaoEstatisticas = document.getElementById("estatisticas");
 
 // LINK DO CSV
 const urlCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGpu-l508FWdrdlZcGRG83UAuAeD54deCg6074rW1AGSUDTFON2R2dgsc8-ZNcSGOC/pub?gid=2015636690&output=csv";
@@ -40,6 +41,48 @@ function converterData(dataStr) {
     return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
 }
 
+// Calcula e exibe estatísticas
+function exibirEstatisticas(dados) {
+    if (!secaoEstatisticas || dados.length === 0) {
+        if (secaoEstatisticas) secaoEstatisticas.style.display = 'none';
+        return;
+    }
+
+    const total = dados.length;
+    const feitas = dados.filter(row => {
+        const situacao = (row["SituaÃ§Ã£o"] || row["Situação"] || "").trim().toLowerCase();
+        return situacao === "feito";
+    }).length;
+    const pendentes = total - feitas;
+    const porcentagem = total > 0 ? ((feitas / total) * 100).toFixed(1) : 0;
+
+    secaoEstatisticas.style.display = 'block';
+    secaoEstatisticas.innerHTML = `
+        <h3>📊 Estatísticas</h3>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-label">Total de Atividades</div>
+                <div class="stat-value">${total}</div>
+            </div>
+            <div class="stat-box destaque">
+                <div class="stat-label">Conclusão</div>
+                <div class="stat-value">${porcentagem}%</div>
+                <div class="barra-progresso">
+                    <div class="barra-progresso-fill" style="width: ${porcentagem}%"></div>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Realizadas</div>
+                <div class="stat-value sucesso">${feitas}</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Pendentes</div>
+                <div class="stat-value pendente">${pendentes}</div>
+            </div>
+        </div>
+    `;
+}
+
 // Filtra e exibe
 function filtrarEExibir() {
     const dataSelecionada = dataInput.value; // Formato: yyyy-mm-dd
@@ -74,9 +117,13 @@ function filtrarEExibir() {
 
     console.log(`Resultado: ${filtrados.length} de ${todosOsDados.length} itens`);
 
+    // Exibe estatísticas
+    exibirEstatisticas(filtrados);
+
     // Exibe resultado
     if (filtrados.length === 0) {
         secaoDados.innerHTML = `<h2>Consulta</h2><p>Nenhum item encontrado para os filtros selecionados.</p>`;
+        if (secaoEstatisticas) secaoEstatisticas.style.display = 'none';
         return;
     }
 
