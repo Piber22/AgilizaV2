@@ -116,7 +116,7 @@ function filtrarEExibir() {
     const todasColunas = Object.keys(filtrados[0]);
     const colunasExibir = colunasVisiveis.map(idx => todasColunas[idx]).filter(Boolean);
 
-    let html = `<h2>Consulta</h2><table><thead><tr>`;
+    let html = `<table><thead><tr>`;
     colunasExibir.forEach(h => html += `<th>${h}</th>`);
     html += `</tr></thead><tbody>`;
 
