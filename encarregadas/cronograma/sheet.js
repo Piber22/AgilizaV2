@@ -58,10 +58,10 @@ function exibirEstatisticas(dados) {
 
     secaoEstatisticas.style.display = 'block';
     secaoEstatisticas.innerHTML = `
-        <h3>📊 Estatísticas</h3>
+        <h3>Consulta</h3>
         <div class="stats-grid">
             <div class="stat-box">
-                <div class="stat-label">Total de Atividades</div>
+                <div class="stat-label">Programadas</div>
                 <div class="stat-value">${total}</div>
             </div>
             <div class="stat-box destaque">
