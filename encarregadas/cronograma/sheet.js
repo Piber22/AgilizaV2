@@ -58,7 +58,7 @@ function exibirEstatisticas(dados) {
 
     secaoEstatisticas.style.display = 'block';
     secaoEstatisticas.innerHTML = `
-        <h3>Status</h3>
+        //<h3>Status</h3>
         <div class="stats-grid">
             <div class="stat-box">
                 <div class="stat-label">Programadas:</div>

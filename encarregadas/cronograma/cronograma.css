@@ -168,7 +168,8 @@ textarea {
     background-color: #201F20;
     border-radius: 8px;
     overflow: hidden;
-    border: 2px solid #ffffff;
+    outline: 2px solid #ffffff;
+    outline-offset: -2px;
 }
 
 /* Cabeçalho da tabela */
