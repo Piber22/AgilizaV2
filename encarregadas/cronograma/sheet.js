@@ -1,185 +1,66 @@
-console.log("Efetivo.js carregado! (adaptado para Recebimento)");
+console.log("Carregando planilha...");
 
-// Elementos do DOM
-const selectResponsavel = document.getElementById("responsavel");
-const dataRecebimento = document.getElementById("dataRecebimento");
 const secaoDados = document.getElementById("dados");
-const gerarBtn = document.getElementById("gerarBtn");
-const copiarBtn = document.getElementById("copiarBtn");
-const resultado = document.getElementById("resultado");
 
-// URL da planilha CSV publicada (SUBSTITUA COM O PUBLINK)
-const urlCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGpu-l508FWdrdlZcGRG83UAuAeD54deCg6074rW1AGSUDTFON2R2dgsc8-ZNcSGOC/pub?gid=2015636690&single=true&output=csv";
+const urlCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGpu-l508FWdrdlZcGRG83UAuAeD54deCg6074rW1AGSUDTFON2R2dgsc8-ZNcSGOC/pub?gid=2015636690&output=csv";
 
-// Armazena os dados da planilha
-let dadosPlanilha = [];
-
-// Função para parsear CSV (robusta, lida com aspas e vírgulas)
 function parseCSV(text) {
-    const lines = [];
-    const rows = text.split(/\r?\n/);
-    for (let row of rows) {
-        if (!row.trim()) continue;
-        const cols = [];
-        let current = '';
-        let inQuotes = false;
-        for (let i = 0; i < row.length; i++) {
-            const char = row[i];
-            if (char === '"') inQuotes = !inQuotes;
-            else if (char === ',' && !inQuotes) {
-                cols.push(current.trim());
-                current = '';
-            } else {
-                current += char;
-            }
-        }
-        cols.push(current.trim());
-        lines.push(cols);
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l);
+    if (lines.length === 0) return [];
+
+    const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
+    const data = [];
+
+    for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, '').trim());
+        if (values.length < headers.length) continue;
+        const row = {};
+        headers.forEach((h, idx) => row[h] = values[idx]);
+        data.push(row);
     }
-    return lines;
+    return data;
 }
 
-// Carrega dados da planilha
-async function carregarDados() {
+async function carregar() {
     try {
-        console.log("Carregando dados da planilha...");
         secaoDados.innerHTML = "<h2>Consulta</h2><p>Carregando dados...</p>";
 
-        const response = await fetch(urlCSV);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const res = await fetch(urlCSV);
+        if (!res.ok) throw new Error("Erro HTTP: " + res.status);
 
-        const data = await response.text();
-        const linhas = parseCSV(data);
+        const text = await res.text();
+        const dados = parseCSV(text);
 
-        // Extrai cabeçalhos
-        const headers = linhas[0];
-        dadosPlanilha = [];
-
-        for (let i = 1; i < linhas.length; i++) {
-            const row = {};
-            headers.forEach((h, idx) => {
-                row[h.trim()] = linhas[i][idx]?.trim() || '';
-            });
-            if (Object.values(row).some(v => v)) {
-                dadosPlanilha.push(row);
-            }
+        if (dados.length === 0) {
+            secaoDados.innerHTML = "<h2>Consulta</h2><p>Nenhum dado encontrado.</p>";
+            return;
         }
 
-        console.log("Dados carregados:", dadosPlanilha);
-        preencherResponsaveis();
-        filtrarEExibir();
+        let html = `<h2>Consulta</h2><table><thead><tr>`;
+        Object.keys(dados[0]).forEach(h => html += `<th>${h}</th>`);
+        html += `</tr></thead><tbody>`;
+
+        dados.forEach(row => {
+            html += `<tr>`;
+            Object.values(row).forEach(v => html += `<td>${v}</td>`);
+            html += `</tr>`;
+        });
+
+        html += `</tbody></table>`;
+        html += `<style>
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+            th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+            th { background: #f0f0f0; font-weight: 600; }
+            tr:nth-child(even) { background: #f9f9f9; }
+        </style>`;
+
+        secaoDados.innerHTML = html;
+        console.log("Dados exibidos:", dados);
 
     } catch (err) {
         console.error("Erro:", err);
-        secaoDados.innerHTML = "<h2>Consulta</h2><p style='color:red'>Erro ao carregar planilha.</p>";
+        secaoDados.innerHTML = `<h2>Consulta</h2><p style="color:red">Erro: ${err.message}</p>`;
     }
 }
 
-// Preenche o select com responsáveis únicos
-function preencherResponsaveis() {
-    const responsaveis = [...new Set(dadosPlanilha.map(r => r.Responsável || r.Responsavel).filter(Boolean))];
-    responsaveis.forEach(nome => {
-        if (![...selectResponsavel.options].some(opt => opt.value === nome)) {
-            const opt = document.createElement("option");
-            opt.value = nome;
-            opt.textContent = nome;
-            selectResponsavel.appendChild(opt);
-        }
-    });
-}
-
-// Filtra e exibe tabela
-function filtrarEExibir() {
-    const data = dataRecebimento.value;
-    const resp = selectResponsavel.value;
-
-    const filtrados = dadosPlanilha.filter(row => {
-        const dataRow = row.Data || row['Data Recebimento'];
-        const respRow = row.Responsável || row.Responsavel;
-        return (!data || dataRow === data) && (!resp || respRow === resp);
-    });
-
-    if (filtrados.length === 0) {
-        secaoDados.innerHTML = "<h2>Consulta</h2><p>Nenhum item encontrado.</p>";
-        return;
-    }
-
-    let tabela = `<h2>Consulta</h2><table><thead><tr>`;
-    const cols = Object.keys(filtrados[0]);
-    cols.forEach(c => tabela += `<th>${c}</th>`);
-    tabela += `</tr></thead><tbody>`;
-
-    filtrados.forEach(row => {
-        tabela += `<tr>`;
-        cols.forEach(c => tabela += `<td>${row[c] || ''}</td>`);
-        tabela += `</tr>`;
-    });
-    tabela += `</tbody></table>`;
-
-    // Estilo básico
-    tabela += `<style>
-        #dados table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        #dados th, #dados td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        #dados th { background: #f0f0f0; }
-    </style>`;
-
-    secaoDados.innerHTML = tabela;
-}
-
-// Gera mensagem
-gerarBtn.addEventListener("click", () => {
-    const data = dataRecebimento.value;
-    const resp = selectResponsavel.value;
-
-    if (!data || !resp) {
-        alert("Selecione data e responsável!");
-        return;
-    }
-
-    const filtrados = dadosPlanilha.filter(row => {
-        const dataRow = row.Data || row['Data Recebimento'];
-        const respRow = row.Responsável || row.Responsavel;
-        return dataRow === data && respRow === resp;
-    });
-
-    if (filtrados.length === 0) {
-        resultado.value = "Nenhum item programado para esta data.";
-        return;
-    }
-
-    let msg = `RECEBIMENTO DE ENXOVAL\n`;
-    msg += `Data: ${data.split("-").reverse().join("/")}\n`;
-    msg += `Responsável: ${resp}\n\n`;
-    msg += `ITENS:\n`;
-
-    let total = 0;
-    filtrados.forEach(row => {
-        const item = row.Item || row.Descrição || 'Item';
-        const qtd = parseInt(row.Quantidade || row.Qtd || 0);
-        total += qtd;
-        msg += `• ${item}: ${qtd} un.\n`;
-    });
-
-    msg += `\nTOTAL: ${total} itens\n`;
-    msg += `Aguardando confirmação.`;
-
-    resultado.value = msg;
-});
-
-// Copiar
-copiarBtn.addEventListener("click", () => {
-    if (!resultado.value) {
-        alert("Nada para copiar!");
-        return;
-    }
-    navigator.clipboard.writeText(resultado.value).then(() => {
-        alert("Mensagem copiada!");
-    });
-});
-
-// Eventos de filtro
-dataRecebimento.addEventListener("change", filtrarEExibir);
-selectResponsavel.addEventListener("change", filtrarEExibir);
-
-// Inicia
-document.addEventListener("DOMContentLoaded", carregarDados);
+document.addEventListener("DOMContentLoaded", carregar);
