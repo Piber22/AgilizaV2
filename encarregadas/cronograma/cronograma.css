@@ -179,13 +179,14 @@ textarea {
     text-align: center;
     border-bottom: 2px solid #c83c1a;
     text-transform: uppercase;
-    font-size: 12px;
+    font-size: 14px;
     letter-spacing: 0.5px;
     border: 1px solid #ffffff;
 }
 
 /* Células da tabela */
 #dados td {
+    font-size: 12px;
     border: 1px solid #ffffff;
     padding: 10px;
     color: #fff;
