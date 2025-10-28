@@ -5,10 +5,10 @@ const secaoDados = document.getElementById("dados");
 const dataInput = document.getElementById("dataRecebimento");
 const selectResp = document.getElementById("responsavel");
 
-// LINK DO CSV (mantenha o mesmo que funcionou)
+// LINK DO CSV (mantenha o mesmo)
 const urlCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGpu-l508FWdrdlZcGRG83UAuAeD54deCg6074rW1AGSUDTFON2R2dgsc8-ZNcSGOC/pub?gid=2015636690&output=csv";
 
-let todosOsDados = []; // Armazena todos os dados da planilha
+let todosOsDados = [];
 
 // Parse CSV
 function parseCSV(text) {
@@ -28,7 +28,7 @@ function parseCSV(text) {
     return data;
 }
 
-// Filtra e exibe
+// Filtra e exibe (SEM ESTILOS - tudo vai pro CSS)
 function filtrarEExibir() {
     const dataSelecionada = dataInput.value;
     const responsavelSelecionado = selectResp.value;
@@ -46,7 +46,7 @@ function filtrarEExibir() {
 
     // Exibe resultado
     if (filtrados.length === 0) {
-        secaoDados.innerHTML = `<h2>Consulta</h2><p>Nenhum item encontrado para os filtros.</p>`;
+        secaoDados.innerHTML = `<h2>Consulta</h2><p>Nenhum item encontrado para os filtros selecionados.</p>`;
         return;
     }
 
@@ -56,20 +56,15 @@ function filtrarEExibir() {
 
     filtrados.forEach(row => {
         html += `<tr>`;
-        Object.values(row).forEach(v => html += `<td>${v}</td>`);
+        Object.values(row).forEach(v => html += `<td>${v || ''}</td>`);
         html += `</tr>`;
     });
 
     html += `</tbody></table>`;
-    html += `<style>
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background: #e0e0e0; font-weight: 600; }
-        tr:nth-child(even) { background: #e0e0e0; }
-        tr:hover { background: #f1f1f1; }
-    </style>`;
+    // ❌ REMOVIDO: todo o <style> daqui
 
     secaoDados.innerHTML = html;
+    console.log(`Tabela atualizada: ${filtrados.length} itens exibidos`);
 }
 
 // Carrega dados da planilha
@@ -88,7 +83,7 @@ async function carregar() {
             return;
         }
 
-        console.log("Todos os dados carregados:", todosOsDados);
+        console.log("Todos os dados carregados:", todosOsDados.length, "itens");
 
         // Preenche o select com responsáveis únicos
         const responsaveis = [...new Set(todosOsDados.map(r => r["Responsável"] || r["Responsavel"]).filter(Boolean))];
@@ -99,16 +94,18 @@ async function carregar() {
             }
         });
 
+        console.log("Responsáveis carregados:", responsaveis);
+
         // Exibe todos os dados inicialmente
         filtrarEExibir();
 
     } catch (err) {
         console.error("Erro:", err);
-        secaoDados.innerHTML = `<h2>Consulta</h2><p style="color:red">Erro: ${err.message}</p>`;
+        secaoDados.innerHTML = `<h2>Consulta</h2><p style="color:red">Erro ao carregar: ${err.message}</p>`;
     }
 }
 
-// Eventos de filtro (atualiza ao mudar data ou responsável)
+// Eventos de filtro
 dataInput.addEventListener("change", filtrarEExibir);
 selectResp.addEventListener("change", filtrarEExibir);
 
