@@ -58,7 +58,6 @@ function exibirEstatisticas(dados) {
 
     secaoEstatisticas.style.display = 'block';
     secaoEstatisticas.innerHTML = `
-        //<h3>Status</h3>
         <div class="stats-grid">
             <div class="stat-box">
                 <div class="stat-label">Programadas:</div>
@@ -79,56 +78,41 @@ function exibirEstatisticas(dados) {
                     <div class="barra-progresso-fill" style="width: ${porcentagem}%"></div>
                 </div>
             </div>
-
         </div>
     `;
 }
 
 // Filtra e exibe
 function filtrarEExibir() {
-    const dataSelecionada = dataInput.value; // Formato: yyyy-mm-dd
+    const dataSelecionada = dataInput.value; // yyyy-mm-dd
     const responsavelSelecionado = selectResp.value;
 
-    console.log("=== FILTROS APLICADOS ===");
-    console.log("Data selecionada:", dataSelecionada);
-    console.log("Responsável selecionado:", responsavelSelecionado);
+    const dataFiltro = dataSelecionada ? new Date(dataSelecionada) : null;
 
-    // Filtra os dados
-    const filtrados = todosOsDados.filter((row, index) => {
+    const filtrados = todosOsDados.filter((row) => {
         const dataPlanilha = row["DATA"] || "";
-        const dataConvertida = converterData(dataPlanilha);
         const respPlanilha = row["Encarregada"] || "";
 
-        const matchData = !dataSelecionada || dataConvertida === dataSelecionada;
-        const matchResp = !responsavelSelecionado || respPlanilha === responsavelSelecionado;
+        const dataConvertida = converterData(dataPlanilha);
+        const dataObj = dataConvertida ? new Date(dataConvertida) : null;
 
-        // Log apenas das primeiras 3 linhas para debug
-        if (index < 3) {
-            console.log(`Linha ${index}:`, {
-                dataOriginal: dataPlanilha,
-                dataConvertida: dataConvertida,
-                encarregada: respPlanilha,
-                matchData: matchData,
-                matchResp: matchResp
-            });
-        }
+        // Apenas datas ANTERIORES à selecionada
+        const matchData = !dataFiltro || (dataObj && dataObj < dataFiltro);
+        const matchResp = !responsavelSelecionado || respPlanilha === responsavelSelecionado;
 
         return matchData && matchResp;
     });
 
-    console.log(`Resultado: ${filtrados.length} de ${todosOsDados.length} itens`);
-
-    // Exibe estatísticas
+    // Exibe estatísticas apenas com os filtrados
     exibirEstatisticas(filtrados);
 
-    // Exibe resultado
+    // Exibe tabela
     if (filtrados.length === 0) {
         secaoDados.innerHTML = `<h2>Consulta</h2><p>Nenhum item encontrado para os filtros selecionados.</p>`;
         if (secaoEstatisticas) secaoEstatisticas.style.display = 'none';
         return;
     }
 
-    // Pega todas as colunas e filtra apenas as visíveis
     const todasColunas = Object.keys(filtrados[0]);
     const colunasExibir = colunasVisiveis.map(idx => todasColunas[idx]).filter(Boolean);
 
@@ -145,9 +129,7 @@ function filtrarEExibir() {
     });
 
     html += `</tbody></table>`;
-
     secaoDados.innerHTML = html;
-    console.log(`Tabela atualizada: ${filtrados.length} itens exibidos`);
 }
 
 // Carrega dados da planilha
@@ -166,24 +148,10 @@ async function carregar() {
             return;
         }
 
-        console.log("Todos os dados carregados:", todosOsDados.length, "itens");
-        console.log("Exemplo de linha:", todosOsDados[0]);
-
         // Preenche o select com encarregadas únicas
         const responsaveis = [...new Set(todosOsDados.map(r => r["Encarregada"]).filter(Boolean))];
-
-        // Limpa options antigas (exceto a primeira)
-        while (selectResp.options.length > 1) {
-            selectResp.remove(1);
-        }
-
-        // Adiciona as encarregadas do CSV
-        responsaveis.forEach(nome => {
-            const opt = new Option(nome, nome);
-            selectResp.add(opt);
-        });
-
-        console.log("Encarregadas carregadas:", responsaveis);
+        while (selectResp.options.length > 1) selectResp.remove(1);
+        responsaveis.forEach(nome => selectResp.add(new Option(nome, nome)));
 
         // Exibe todos os dados inicialmente
         filtrarEExibir();
