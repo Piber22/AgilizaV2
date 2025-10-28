@@ -167,17 +167,16 @@ textarea {
     background-color: #201F20;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 0 10px rgba(0,0,0,0.6);
     border: 2px solid #ffffff;
 }
 
 /* Cabeçalho da tabela */
 #dados th {
-    background-color: #E94B22;
+
     color: white;
     font-weight: 600;
     padding: 12px 10px;
-    text-align: left;
+    text-align: center;
     border-bottom: 2px solid #c83c1a;
     text-transform: uppercase;
     font-size: 12px;
@@ -193,10 +192,6 @@ textarea {
     vertical-align: top;
 }
 
-/* Linhas zebradas */
-#dados tr:nth-child(even) {
-    background-color: #2a2a2a;
-}
 
 #dados tr:nth-child(odd) {
     background-color: #201F20;
@@ -211,11 +206,11 @@ textarea {
 /* Alinhamento específico por tipo de conteúdo */
 #dados td:first-child { /* Primeira coluna */
     font-weight: 500;
-    color: #E94B22;
+    color: #fff;
 }
 
 #dados td:nth-child(2) { /* Segunda coluna */
-    font-weight: 600;
+    font-weight: 500;
     color: #fff;
 }
 
