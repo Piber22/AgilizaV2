@@ -58,25 +58,25 @@ function exibirEstatisticas(dados) {
 
     secaoEstatisticas.style.display = 'block';
     secaoEstatisticas.innerHTML = `
-        <h3>Consulta</h3>
+        <h3>Status</h3>
         <div class="stats-grid">
             <div class="stat-box">
-                <div class="stat-label">Programadas</div>
+                <div class="stat-label">Programadas:</div>
                 <div class="stat-value">${total}</div>
             </div>
             <div class="stat-box destaque">
-                <div class="stat-label">Conclusão</div>
+                <div class="stat-label">Conclusão:</div>
                 <div class="stat-value">${porcentagem}%</div>
                 <div class="barra-progresso">
                     <div class="barra-progresso-fill" style="width: ${porcentagem}%"></div>
                 </div>
             </div>
             <div class="stat-box">
-                <div class="stat-label">Realizadas</div>
+                <div class="stat-label">Realizadas:</div>
                 <div class="stat-value sucesso">${feitas}</div>
             </div>
             <div class="stat-box">
-                <div class="stat-label">Pendentes</div>
+                <div class="stat-label">Pendentes:</div>
                 <div class="stat-value pendente">${pendentes}</div>
             </div>
         </div>

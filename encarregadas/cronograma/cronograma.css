@@ -54,6 +54,7 @@ main {
 h2, h3 {
     text-align: center;
     margin-bottom: 15px;
+    font-size: 22px;
 }
 
 section {
@@ -222,6 +223,34 @@ textarea {
     color: #ccc;
     font-style: italic;
     padding: 20px;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: space-around; /* distribui igualmente */
+  align-items: center;
+  flex-wrap: wrap; /* quebra linha se não couber na tela */
+  gap: 15px;
+}
+
+.stat-box {
+  background: #2b2b2b;
+  border-radius: 8px;
+  padding: 10px 16px;
+  text-align: center;
+  min-width: 120px;
+  color: #fff;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 4px;
 }
 
 /* RESPONSIVO */
