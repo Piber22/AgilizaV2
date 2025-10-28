@@ -1,143 +1,185 @@
-// sheet.js - Integração com Google Sheets via CSV
-let dadosPlanilha = []; // Armazena os dados parseados
+console.log("Efetivo.js carregado! (adaptado para Recebimento)");
 
-// URL da planilha em CSV (ajuste gid se necessário)
-const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGpu-l508FWdrdlZcGRG83UAuAeD54deCg6074rW1AGSUDTFON2R2dgsc8-ZNcSGOC/pub?output=csv&gid=0';
+// Elementos do DOM
+const selectResponsavel = document.getElementById("responsavel");
+const dataRecebimento = document.getElementById("dataRecebimento");
+const secaoDados = document.getElementById("dados");
+const gerarBtn = document.getElementById("gerarBtn");
+const copiarBtn = document.getElementById("copiarBtn");
+const resultado = document.getElementById("resultado");
 
-// Função para carregar dados da planilha
+// URL da planilha CSV publicada (SUBSTITUA COM O PUBLINK)
+const urlCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGpu-l508FWdrdlZcGRG83UAuAeD54deCg6074rW1AGSUDTFON2R2dgsc8-ZNcSGOC/pub?gid=2015636690&single=true&output=csv";
+
+// Armazena os dados da planilha
+let dadosPlanilha = [];
+
+// Função para parsear CSV (robusta, lida com aspas e vírgulas)
+function parseCSV(text) {
+    const lines = [];
+    const rows = text.split(/\r?\n/);
+    for (let row of rows) {
+        if (!row.trim()) continue;
+        const cols = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < row.length; i++) {
+            const char = row[i];
+            if (char === '"') inQuotes = !inQuotes;
+            else if (char === ',' && !inQuotes) {
+                cols.push(current.trim());
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        cols.push(current.trim());
+        lines.push(cols);
+    }
+    return lines;
+}
+
+// Carrega dados da planilha
 async function carregarDados() {
     try {
+        console.log("Carregando dados da planilha...");
+        secaoDados.innerHTML = "<h2>Consulta</h2><p>Carregando dados...</p>";
+
         const response = await fetch(urlCSV);
-        if (!response.ok) throw new Error('Erro ao carregar planilha');
-        const csvText = await response.text();
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-        // Parse CSV com PapaParse
-        const resultado = Papa.parse(csvText, {
-            header: true, // Primeira linha como headers
-            skipEmptyLines: true,
-            dynamicTyping: { date: true } // Converte datas automaticamente
-        });
+        const data = await response.text();
+        const linhas = parseCSV(data);
 
-        dadosPlanilha = resultado.data;
-        console.log('Dados carregados:', dadosPlanilha); // Para debug
+        // Extrai cabeçalhos
+        const headers = linhas[0];
+        dadosPlanilha = [];
 
-        // Preencher select de responsáveis (únicos da planilha)
+        for (let i = 1; i < linhas.length; i++) {
+            const row = {};
+            headers.forEach((h, idx) => {
+                row[h.trim()] = linhas[i][idx]?.trim() || '';
+            });
+            if (Object.values(row).some(v => v)) {
+                dadosPlanilha.push(row);
+            }
+        }
+
+        console.log("Dados carregados:", dadosPlanilha);
         preencherResponsaveis();
+        filtrarEExibir();
 
-        // Carregar dados iniciais na seção #dados
-        filtrarEExibirDados();
-
-    } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-        document.getElementById('dados').innerHTML += '<p style="color: red;">Erro ao carregar planilha. Verifique o link.</p>';
+    } catch (err) {
+        console.error("Erro:", err);
+        secaoDados.innerHTML = "<h2>Consulta</h2><p style='color:red'>Erro ao carregar planilha.</p>";
     }
 }
 
-// Preencher select #responsavel com opções únicas da planilha (além das fixas)
+// Preenche o select com responsáveis únicos
 function preencherResponsaveis() {
-    const select = document.getElementById('responsavel');
-    const responsaveisUnicos = [...new Set(dadosPlanilha.map(row => row.Responsavel).filter(Boolean))];
-
-    responsaveisUnicos.forEach(nome => {
-        const option = document.createElement('option');
-        option.value = nome;
-        option.textContent = nome;
-        select.appendChild(option);
+    const responsaveis = [...new Set(dadosPlanilha.map(r => r.Responsável || r.Responsavel).filter(Boolean))];
+    responsaveis.forEach(nome => {
+        if (![...selectResponsavel.options].some(opt => opt.value === nome)) {
+            const opt = document.createElement("option");
+            opt.value = nome;
+            opt.textContent = nome;
+            selectResponsavel.appendChild(opt);
+        }
     });
 }
 
-// Filtrar e exibir dados na seção #dados (tabela dinâmica)
-function filtrarEExibirDados() {
-    const dataSelecionada = document.getElementById('dataRecebimento').value;
-    const responsavelSelecionado = document.getElementById('responsavel').value;
+// Filtra e exibe tabela
+function filtrarEExibir() {
+    const data = dataRecebimento.value;
+    const resp = selectResponsavel.value;
 
-    const dadosFiltrados = dadosPlanilha.filter(row => {
-        const dataRow = row.Data ? new Date(row.Data).toISOString().split('T')[0] : '';
-        return (!dataSelecionada || dataRow === dataSelecionada) &&
-               (!responsavelSelecionado || row.Responsavel === responsavelSelecionado);
+    const filtrados = dadosPlanilha.filter(row => {
+        const dataRow = row.Data || row['Data Recebimento'];
+        const respRow = row.Responsável || row.Responsavel;
+        return (!data || dataRow === data) && (!resp || respRow === resp);
     });
 
-    const secaoDados = document.getElementById('dados');
-    if (dadosFiltrados.length === 0) {
-        secaoDados.innerHTML = '<h2>Consulta</h2><p>Nenhum dado encontrado para os filtros selecionados.</p>';
+    if (filtrados.length === 0) {
+        secaoDados.innerHTML = "<h2>Consulta</h2><p>Nenhum item encontrado.</p>";
         return;
     }
 
-    // Criar tabela dinâmica
-    let tabelaHTML = '<h2>Consulta</h2><table><thead><tr>';
-    // Headers dinâmicos (ajuste se necessário)
-    const headers = Object.keys(dadosFiltrados[0]);
-    headers.forEach(header => {
-        tabelaHTML += `<th>${header}</th>`;
+    let tabela = `<h2>Consulta</h2><table><thead><tr>`;
+    const cols = Object.keys(filtrados[0]);
+    cols.forEach(c => tabela += `<th>${c}</th>`);
+    tabela += `</tr></thead><tbody>`;
+
+    filtrados.forEach(row => {
+        tabela += `<tr>`;
+        cols.forEach(c => tabela += `<td>${row[c] || ''}</td>`);
+        tabela += `</tr>`;
     });
-    tabelaHTML += '</tr></thead><tbody>';
+    tabela += `</tbody></table>`;
 
-    dadosFiltrados.forEach(row => {
-        tabelaHTML += '<tr>';
-        headers.forEach(header => {
-            tabelaHTML += `<td>${row[header] || ''}</td>`;
-        });
-        tabelaHTML += '</tr>';
-    });
+    // Estilo básico
+    tabela += `<style>
+        #dados table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        #dados th, #dados td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        #dados th { background: #f0f0f0; }
+    </style>`;
 
-    tabelaHTML += '</tbody></table>';
-    secaoDados.innerHTML = tabelaHTML;
-
-    // Estilo básico (adicione no CSS se quiser)
-    const style = document.createElement('style');
-    style.textContent = `
-        table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-    `;
-    document.head.appendChild(style);
+    secaoDados.innerHTML = tabela;
 }
 
-// Event listeners para refiltrar ao mudar inputs
-document.getElementById('dataRecebimento').addEventListener('change', filtrarEExibirDados);
-document.getElementById('responsavel').addEventListener('change', filtrarEExibirDados);
+// Gera mensagem
+gerarBtn.addEventListener("click", () => {
+    const data = dataRecebimento.value;
+    const resp = selectResponsavel.value;
 
-// Gerar mensagem no botão #gerarBtn (integre com recebimento.js se necessário)
-document.getElementById('gerarBtn').addEventListener('click', () => {
-    const dataSelecionada = document.getElementById('dataRecebimento').value;
-    const responsavelSelecionado = document.getElementById('responsavel').value;
-
-    if (!dataSelecionada || !responsavelSelecionado) {
-        alert('Selecione data e responsável!');
+    if (!data || !resp) {
+        alert("Selecione data e responsável!");
         return;
     }
 
-    const dadosFiltrados = dadosPlanilha.filter(row => {
-        const dataRow = row.Data ? new Date(row.Data).toISOString().split('T')[0] : '';
-        return dataRow === dataSelecionada && row.Responsavel === responsavelSelecionado;
+    const filtrados = dadosPlanilha.filter(row => {
+        const dataRow = row.Data || row['Data Recebimento'];
+        const respRow = row.Responsável || row.Responsavel;
+        return dataRow === data && respRow === resp;
     });
 
-    if (dadosFiltrados.length === 0) {
-        document.getElementById('resultado').value = 'Nenhum item encontrado.';
+    if (filtrados.length === 0) {
+        resultado.value = "Nenhum item programado para esta data.";
         return;
     }
 
-    // Gerar mensagem formatada (exemplo: resumo de itens)
-    let mensagem = `Mensagem de Recebimento - ${dataSelecionada}\nResponsável: ${responsavelSelecionado}\n\nItens Recebidos:\n`;
-    let totalItens = 0;
+    let msg = `RECEBIMENTO DE ENXOVAL\n`;
+    msg += `Data: ${data.split("-").reverse().join("/")}\n`;
+    msg += `Responsável: ${resp}\n\n`;
+    msg += `ITENS:\n`;
 
-    dadosFiltrados.forEach(row => {
-        mensagem += `- ${row.Item || 'Item'}: ${row.Quantidade || 0} un. (${row.Observacoes || 'OK'})\n`;
-        totalItens += parseInt(row.Quantidade || 0);
+    let total = 0;
+    filtrados.forEach(row => {
+        const item = row.Item || row.Descrição || 'Item';
+        const qtd = parseInt(row.Quantidade || row.Qtd || 0);
+        total += qtd;
+        msg += `• ${item}: ${qtd} un.\n`;
     });
 
-    mensagem += `\nTotal: ${totalItens} itens. Confirmação pendente.`;
+    msg += `\nTOTAL: ${total} itens\n`;
+    msg += `Aguardando confirmação.`;
 
-    document.getElementById('resultado').value = mensagem;
+    resultado.value = msg;
 });
 
-// Copiar mensagem (adicione se não tiver no recebimento.js)
-document.getElementById('copiarBtn').addEventListener('click', () => {
-    const textarea = document.getElementById('resultado');
-    textarea.select();
-    document.execCommand('copy');
-    alert('Mensagem copiada!');
+// Copiar
+copiarBtn.addEventListener("click", () => {
+    if (!resultado.value) {
+        alert("Nada para copiar!");
+        return;
+    }
+    navigator.clipboard.writeText(resultado.value).then(() => {
+        alert("Mensagem copiada!");
+    });
 });
 
-// Inicializar ao carregar a página
-document.addEventListener('DOMContentLoaded', carregarDados);
+// Eventos de filtro
+dataRecebimento.addEventListener("change", filtrarEExibir);
+selectResponsavel.addEventListener("change", filtrarEExibir);
+
+// Inicia
+document.addEventListener("DOMContentLoaded", carregarDados);
