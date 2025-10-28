@@ -5,12 +5,12 @@ const secaoDados = document.getElementById("dados");
 const dataInput = document.getElementById("dataRecebimento");
 const selectResp = document.getElementById("responsavel");
 
-// LINK DO CSV (mantenha o mesmo)
+// LINK DO CSV
 const urlCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGpu-l508FWdrdlZcGRG83UAuAeD54deCg6074rW1AGSUDTFON2R2dgsc8-ZNcSGOC/pub?gid=2015636690&output=csv";
 
 let todosOsDados = [];
 
-// Colunas visíveis (índices 1, 2, 3, 4 = posições 2, 3, 4, 5)
+// Colunas visíveis (índices 1, 2, 3, 4 = posições 2, 3, 4, 5 do CSV)
 const colunasVisiveis = [1, 2, 3, 4];
 
 // Parse CSV
@@ -31,21 +31,35 @@ function parseCSV(text) {
     return data;
 }
 
-// Filtra e exibe (SEM ESTILOS - tudo vai pro CSS)
+// Converte data de dd/mm/yyyy para yyyy-mm-dd (formato do input date)
+function converterData(dataStr) {
+    if (!dataStr || dataStr.length < 10) return "";
+    const partes = dataStr.split('/');
+    if (partes.length !== 3) return "";
+    const [dia, mes, ano] = partes;
+    return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
+}
+
+// Filtra e exibe
 function filtrarEExibir() {
-    const dataSelecionada = dataInput.value;
+    const dataSelecionada = dataInput.value; // Formato: yyyy-mm-dd
     const responsavelSelecionado = selectResp.value;
+
+    console.log("Filtros aplicados:", { data: dataSelecionada, responsavel: responsavelSelecionado });
 
     // Filtra os dados
     const filtrados = todosOsDados.filter(row => {
-        const dataPlanilha = row["Data"] || row["Data Recebimento"] || "";
-        const respPlanilha = row["Responsável"] || row["Responsavel"] || "";
+        const dataPlanilha = row["DATA"] || "";
+        const dataConvertida = converterData(dataPlanilha);
+        const respPlanilha = row["Encarregada"] || "";
 
-        const matchData = !dataSelecionada || dataPlanilha === dataSelecionada;
+        const matchData = !dataSelecionada || dataConvertida === dataSelecionada;
         const matchResp = !responsavelSelecionado || respPlanilha === responsavelSelecionado;
 
         return matchData && matchResp;
     });
+
+    console.log(`Filtrados: ${filtrados.length} de ${todosOsDados.length} itens`);
 
     // Exibe resultado
     if (filtrados.length === 0) {
@@ -92,17 +106,23 @@ async function carregar() {
         }
 
         console.log("Todos os dados carregados:", todosOsDados.length, "itens");
+        console.log("Exemplo de linha:", todosOsDados[0]);
 
-        // Preenche o select com responsáveis únicos
-        const responsaveis = [...new Set(todosOsDados.map(r => r["Responsável"] || r["Responsavel"]).filter(Boolean))];
+        // Preenche o select com encarregadas únicas
+        const responsaveis = [...new Set(todosOsDados.map(r => r["Encarregada"]).filter(Boolean))];
+
+        // Limpa options antigas (exceto a primeira)
+        while (selectResp.options.length > 1) {
+            selectResp.remove(1);
+        }
+
+        // Adiciona as encarregadas do CSV
         responsaveis.forEach(nome => {
-            if (!selectResp.querySelector(`option[value="${nome}"]`)) {
-                const opt = new Option(nome, nome);
-                selectResp.add(opt);
-            }
+            const opt = new Option(nome, nome);
+            selectResp.add(opt);
         });
 
-        console.log("Responsáveis carregados:", responsaveis);
+        console.log("Encarregadas carregadas:", responsaveis);
 
         // Exibe todos os dados inicialmente
         filtrarEExibir();
