@@ -98,45 +98,8 @@ function filtrarEExibir() {
 
     html += `</tbody></table>`;
 
-    // Calcula estatísticas
-    const todasColunas = Object.keys(filtrados[0]);
-    const colunaSituacao = todasColunas[4]; // Coluna 5 (índice 4) = Situação
-
-    const totalAtividades = filtrados.length;
-    const feitas = filtrados.filter(row => {
-        const situacao = (row[colunaSituacao] || "").trim().toLowerCase();
-        return situacao === "feito";
-    }).length;
-    const pendentes = totalAtividades - feitas;
-    const porcentagem = totalAtividades > 0 ? ((feitas / totalAtividades) * 100).toFixed(1) : 0;
-
-    // Adiciona card de estatísticas
-    html += `
-        <div class="estatisticas">
-            <h3>Estatísticas</h3>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <span class="stat-label">Total</span>
-                    <span class="stat-value">${totalAtividades}</span>
-                </div>
-                <div class="stat-card feitas">
-                    <span class="stat-label">Feitas</span>
-                    <span class="stat-value">${feitas}</span>
-                </div>
-                <div class="stat-card pendentes">
-                    <span class="stat-label">Pendentes</span>
-                    <span class="stat-value">${pendentes}</span>
-                </div>
-                <div class="stat-card porcentagem">
-                    <span class="stat-label">Conclusão</span>
-                    <span class="stat-value">${porcentagem}%</span>
-                </div>
-            </div>
-        </div>
-    `;
-
     secaoDados.innerHTML = html;
-    console.log(`Tabela atualizada: ${filtrados.length} itens | Feitas: ${feitas} | Pendentes: ${pendentes}`);
+    console.log(`Tabela atualizada: ${filtrados.length} itens exibidos`);
 }
 
 // Carrega dados da planilha
