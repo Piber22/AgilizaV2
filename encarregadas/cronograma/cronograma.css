@@ -84,10 +84,8 @@ select {
     width: 50%; /* Alinha o input/select à direita */
     padding: 8px 10px;
     border-radius: 6px;
-    border: 2px solid
-#5b5b5b;
-    background-color:
-#201F20;
+    border: 2px solid #5b5b5b;
+    background-color: #201F20;
     color: #fff;
     font-size: 14px;
 }
@@ -151,6 +149,83 @@ textarea {
     color: #777;
 }
 
+/* ===========================================
+   ESTILOS DA TABELA DE CONSULTA
+============================================= */
+
+/* Container da tabela */
+#dados {
+    overflow-x: auto; /* Scroll horizontal em telas pequenas */
+}
+
+/* Tabela principal */
+#dados table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+    background-color: #201F20;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
+    border: 2px solid #ffffff;
+}
+
+/* Cabeçalho da tabela */
+#dados th {
+    background-color: #E94B22;
+    color: white;
+    font-weight: 600;
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 2px solid #c83c1a;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    border: 1px solid #ffffff;
+}
+
+/* Células da tabela */
+#dados td {
+    border: 1px solid #ffffff;
+    padding: 10px;
+    color: #fff;
+    vertical-align: top;
+}
+
+/* Linhas zebradas */
+#dados tr:nth-child(even) {
+    background-color: #2a2a2a;
+}
+
+#dados tr:nth-child(odd) {
+    background-color: #201F20;
+}
+
+/* Hover nas linhas */
+#dados tr:hover {
+    background-color: #3a3a3a !important;
+    transition: background-color 0.2s ease;
+}
+
+/* Alinhamento específico por tipo de conteúdo */
+#dados td:first-child { /* Primeira coluna */
+    font-weight: 500;
+    color: #E94B22;
+}
+
+#dados td:nth-child(2) { /* Segunda coluna */
+    font-weight: 600;
+    color: #fff;
+}
+
+/* Mensagem de "nenhum item" */
+#dados p {
+    text-align: center;
+    color: #ccc;
+    font-style: italic;
+    padding: 20px;
+}
 
 /* RESPONSIVO */
 @media (max-width: 768px) {
@@ -172,5 +247,18 @@ textarea {
 
     .logo-link {
         left: 30px;
+    }
+
+    /* Tabela responsiva */
+    #dados table {
+        font-size: 12px;
+    }
+
+    #dados th, #dados td {
+        padding: 8px 6px;
+    }
+
+    #dados th {
+        font-size: 11px;
     }
 }

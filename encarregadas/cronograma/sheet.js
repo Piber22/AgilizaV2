@@ -10,6 +10,9 @@ const urlCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGp
 
 let todosOsDados = [];
 
+// Colunas visíveis (índices 1, 2, 3, 4 = posições 2, 3, 4, 5)
+const colunasVisiveis = [1, 2, 3, 4];
+
 // Parse CSV
 function parseCSV(text) {
     const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l);
@@ -50,18 +53,23 @@ function filtrarEExibir() {
         return;
     }
 
+    // Pega todas as colunas e filtra apenas as visíveis
+    const todasColunas = Object.keys(filtrados[0]);
+    const colunasExibir = colunasVisiveis.map(idx => todasColunas[idx]).filter(Boolean);
+
     let html = `<h2>Consulta</h2><table><thead><tr>`;
-    Object.keys(filtrados[0]).forEach(h => html += `<th>${h}</th>`);
+    colunasExibir.forEach(h => html += `<th>${h}</th>`);
     html += `</tr></thead><tbody>`;
 
     filtrados.forEach(row => {
         html += `<tr>`;
-        Object.values(row).forEach(v => html += `<td>${v || ''}</td>`);
+        colunasExibir.forEach(coluna => {
+            html += `<td>${row[coluna] || ''}</td>`;
+        });
         html += `</tr>`;
     });
 
     html += `</tbody></table>`;
-    // ❌ REMOVIDO: todo o <style> daqui
 
     secaoDados.innerHTML = html;
     console.log(`Tabela atualizada: ${filtrados.length} itens exibidos`);
