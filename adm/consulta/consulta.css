@@ -133,7 +133,7 @@ section {
     display: inline-block;
     width: 16px;
     height: 16px;
-    background: url('../img/i1.png') no-repeat center center;
+    background: url('../../img/i1.png') no-repeat center center;
     background-size: contain;
     margin-right: 6px;
     vertical-align: middle;
@@ -153,7 +153,7 @@ section {
     display: inline-block;
     width: 20px;
     height: 20px;
-    background: url('../img/i2.png') no-repeat center center;
+    background: url('../../img/i2.png') no-repeat center center;
     background-size: contain;
     margin-right: 6px;
     vertical-align: middle;
@@ -173,7 +173,7 @@ section {
     display: inline-block;
     width: 18px;
     height: 18px;
-    background: url('../img/i3.png') no-repeat center center;
+    background: url('../../img/i3.png') no-repeat center center;
     background-size: contain;
     margin-right: 6px;
     vertical-align: middle;
