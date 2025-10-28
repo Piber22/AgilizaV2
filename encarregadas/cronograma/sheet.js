@@ -64,13 +64,6 @@ function exibirEstatisticas(dados) {
                 <div class="stat-label">Programadas:</div>
                 <div class="stat-value">${total}</div>
             </div>
-            <div class="stat-box destaque">
-                <div class="stat-label">Conclusão:</div>
-                <div class="stat-value">${porcentagem}%</div>
-                <div class="barra-progresso">
-                    <div class="barra-progresso-fill" style="width: ${porcentagem}%"></div>
-                </div>
-            </div>
             <div class="stat-box">
                 <div class="stat-label">Realizadas:</div>
                 <div class="stat-value sucesso">${feitas}</div>
@@ -79,6 +72,14 @@ function exibirEstatisticas(dados) {
                 <div class="stat-label">Pendentes:</div>
                 <div class="stat-value pendente">${pendentes}</div>
             </div>
+            <div class="stat-box destaque">
+                <div class="stat-label">Conclusão:</div>
+                <div class="stat-value">${porcentagem}%</div>
+                <div class="barra-progresso">
+                    <div class="barra-progresso-fill" style="width: ${porcentagem}%"></div>
+                </div>
+            </div>
+
         </div>
     `;
 }
