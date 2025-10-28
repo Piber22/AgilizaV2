@@ -45,10 +45,12 @@ function filtrarEExibir() {
     const dataSelecionada = dataInput.value; // Formato: yyyy-mm-dd
     const responsavelSelecionado = selectResp.value;
 
-    console.log("Filtros aplicados:", { data: dataSelecionada, responsavel: responsavelSelecionado });
+    console.log("=== FILTROS APLICADOS ===");
+    console.log("Data selecionada:", dataSelecionada);
+    console.log("Responsável selecionado:", responsavelSelecionado);
 
     // Filtra os dados
-    const filtrados = todosOsDados.filter(row => {
+    const filtrados = todosOsDados.filter((row, index) => {
         const dataPlanilha = row["DATA"] || "";
         const dataConvertida = converterData(dataPlanilha);
         const respPlanilha = row["Encarregada"] || "";
@@ -56,10 +58,21 @@ function filtrarEExibir() {
         const matchData = !dataSelecionada || dataConvertida === dataSelecionada;
         const matchResp = !responsavelSelecionado || respPlanilha === responsavelSelecionado;
 
+        // Log apenas das primeiras 3 linhas para debug
+        if (index < 3) {
+            console.log(`Linha ${index}:`, {
+                dataOriginal: dataPlanilha,
+                dataConvertida: dataConvertida,
+                encarregada: respPlanilha,
+                matchData: matchData,
+                matchResp: matchResp
+            });
+        }
+
         return matchData && matchResp;
     });
 
-    console.log(`Filtrados: ${filtrados.length} de ${todosOsDados.length} itens`);
+    console.log(`Resultado: ${filtrados.length} de ${todosOsDados.length} itens`);
 
     // Exibe resultado
     if (filtrados.length === 0) {
