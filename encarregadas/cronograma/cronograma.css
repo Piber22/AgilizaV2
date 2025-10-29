@@ -253,9 +253,8 @@ textarea {
 }
 
 tr.pendente {
-    color: orange;
+    color: #ff460a;
 }
-
 /* RESPONSIVO */
 @media (max-width: 768px) {
     section {

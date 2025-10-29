@@ -146,14 +146,8 @@ function filtrarEExibir() {
     html += `</tr></thead><tbody>`;
 
     filtradosParaTabela.forEach(row => {
-        // Busca a coluna de situação (pode ter encoding diferente)
-        const todasChaves = Object.keys(row);
-        const chaveSituacao = todasChaves.find(k =>
-            k.toLowerCase().includes('situa') ||
-            k.toLowerCase().includes('status')
-        );
-
-        const situacaoPlanilha = chaveSituacao ? row[chaveSituacao].trim().toLowerCase() : "";
+        // Busca a coluna de situação pelo nome exato que vem do CSV
+        const situacaoPlanilha = (row["SituaÃ§Ã£o"] || "").trim().toLowerCase();
         const classePendente = situacaoPlanilha !== "feito" ? ' class="pendente"' : '';
 
         html += `<tr${classePendente}>`;
