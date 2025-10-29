@@ -191,7 +191,7 @@ async function carregar() {
     }
 }
 
-// Eventos de filtro
+// Eventos de  filtro
 dataInput.addEventListener("change", filtrarEExibir);
 selectResp.addEventListener("change", filtrarEExibir);
 selectSituacao.addEventListener("change", filtrarEExibir);
