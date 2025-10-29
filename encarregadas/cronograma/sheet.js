@@ -99,15 +99,17 @@ function filtrarEExibir() {
         const dataConvertida = converterData(dataPlanilha);
         const dataObj = dataConvertida ? new Date(dataConvertida) : null;
 
+        // Apenas datas ANTERIORES à selecionada
         const matchData = !dataFiltro || (dataObj && dataObj < dataFiltro);
         const matchResp = !responsavelSelecionado || respPlanilha === responsavelSelecionado;
 
         return matchData && matchResp;
     });
 
+    // Exibe estatísticas com os dados do filtro de cálculo
     exibirEstatisticas(filtradosParaCalculo);
 
-    // FILTRO 2: Para exibição da tabela
+    // FILTRO 2: Para exibição da tabela (data EXATA selecionada + situação)
     const filtradosParaTabela = todosOsDados.filter((row) => {
         const dataPlanilha = row["DATA"] || "";
         const respPlanilha = row["Encarregada"] || "";
@@ -115,9 +117,11 @@ function filtrarEExibir() {
 
         const dataConvertida = converterData(dataPlanilha);
 
+        // Se não há data selecionada, mostra todos (ou apenas filtro de responsável)
         const matchData = !dataSelecionada || dataConvertida === dataSelecionada;
         const matchResp = !responsavelSelecionado || respPlanilha === responsavelSelecionado;
 
+        // Filtro de situação (apenas para tabela)
         let matchSituacao = true;
         if (situacaoSelecionada === "executadas") {
             matchSituacao = situacaoPlanilha === "feito";
@@ -128,6 +132,7 @@ function filtrarEExibir() {
         return matchData && matchResp && matchSituacao;
     });
 
+    // Exibe tabela com os dados do filtro de exibição
     if (filtradosParaTabela.length === 0) {
         secaoDados.innerHTML = `<h2>Consulta</h2><p>Nenhum item encontrado para os filtros selecionados.</p>`;
         return;
@@ -136,12 +141,12 @@ function filtrarEExibir() {
     const todasColunas = Object.keys(filtradosParaTabela[0]);
     const colunasExibir = colunasVisiveis.map(idx => todasColunas[idx]).filter(Boolean);
 
-    // ENVOLVE A TABELA COM DIV (não afeta desktop)
-    let html = `<div class="table-wrapper"><table><thead><tr>`;
+    let html = `<table><thead><tr>`;
     colunasExibir.forEach(h => html += `<th>${h}</th>`);
     html += `</tr></thead><tbody>`;
 
     filtradosParaTabela.forEach(row => {
+        // Busca a coluna de situação (nome correto que vem no objeto)
         const situacaoPlanilha = (row["Situação"] || "").trim().toLowerCase();
         const classePendente = situacaoPlanilha !== "feito" ? ' class="pendente"' : '';
 
@@ -152,9 +157,10 @@ function filtrarEExibir() {
         html += `</tr>`;
     });
 
-    html += `</tbody></table></div>`;
+    html += `</tbody></table>`;
     secaoDados.innerHTML = html;
 }
+
 // Carrega dados da planilha
 async function carregar() {
     try {
