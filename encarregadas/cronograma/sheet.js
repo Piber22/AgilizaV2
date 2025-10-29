@@ -89,7 +89,8 @@ function filtrarEExibir() {
 
     const dataFiltro = dataSelecionada ? new Date(dataSelecionada) : null;
 
-    const filtrados = todosOsDados.filter((row) => {
+    // FILTRO 1: Para cálculos (data <= selecionada) - MANTIDO ORIGINAL
+    const filtradosParaCalculo = todosOsDados.filter((row) => {
         const dataPlanilha = row["DATA"] || "";
         const respPlanilha = row["Encarregada"] || "";
 
@@ -103,24 +104,37 @@ function filtrarEExibir() {
         return matchData && matchResp;
     });
 
-    // Exibe estatísticas apenas com os filtrados
-    exibirEstatisticas(filtrados);
+    // Exibe estatísticas com os dados do filtro de cálculo
+    exibirEstatisticas(filtradosParaCalculo);
 
-    // Exibe tabela
-    if (filtrados.length === 0) {
+    // FILTRO 2: Para exibição da tabela (data EXATA selecionada)
+    const filtradosParaTabela = todosOsDados.filter((row) => {
+        const dataPlanilha = row["DATA"] || "";
+        const respPlanilha = row["Encarregada"] || "";
+
+        const dataConvertida = converterData(dataPlanilha);
+
+        // Se não há data selecionada, mostra todos (ou apenas filtro de responsável)
+        const matchData = !dataSelecionada || dataConvertida === dataSelecionada;
+        const matchResp = !responsavelSelecionado || respPlanilha === responsavelSelecionado;
+
+        return matchData && matchResp;
+    });
+
+    // Exibe tabela com os dados do filtro de exibição
+    if (filtradosParaTabela.length === 0) {
         secaoDados.innerHTML = `<h2>Consulta</h2><p>Nenhum item encontrado para os filtros selecionados.</p>`;
-        if (secaoEstatisticas) secaoEstatisticas.style.display = 'none';
         return;
     }
 
-    const todasColunas = Object.keys(filtrados[0]);
+    const todasColunas = Object.keys(filtradosParaTabela[0]);
     const colunasExibir = colunasVisiveis.map(idx => todasColunas[idx]).filter(Boolean);
 
     let html = `<table><thead><tr>`;
     colunasExibir.forEach(h => html += `<th>${h}</th>`);
     html += `</tr></thead><tbody>`;
 
-    filtrados.forEach(row => {
+    filtradosParaTabela.forEach(row => {
         html += `<tr>`;
         colunasExibir.forEach(coluna => {
             html += `<td>${row[coluna] || ''}</td>`;
