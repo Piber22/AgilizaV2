@@ -253,7 +253,7 @@ textarea {
 }
 
 tbody tr.pendente td {
-    color: orange !important;
+    color: #ff460a !important;
 }
 
 /* RESPONSIVO  */
