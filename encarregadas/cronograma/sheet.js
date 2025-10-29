@@ -148,6 +148,7 @@ function filtrarEExibir() {
     filtradosParaTabela.forEach(row => {
         // Busca a coluna de situação pelo nome exato que vem do CSV
         const situacaoPlanilha = (row["SituaÃ§Ã£o"] || "").trim().toLowerCase();
+        console.log("Situação:", situacaoPlanilha, "| É feito?", situacaoPlanilha === "feito");
         const classePendente = situacaoPlanilha !== "feito" ? ' class="pendente"' : '';
 
         html += `<tr${classePendente}>`;
