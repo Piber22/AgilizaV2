@@ -146,7 +146,14 @@ function filtrarEExibir() {
     html += `</tr></thead><tbody>`;
 
     filtradosParaTabela.forEach(row => {
-        const situacaoPlanilha = (row["SituaÃ§Ã£o"] || row["Situação"] || "").trim().toLowerCase();
+        // Busca a coluna de situação (pode ter encoding diferente)
+        const todasChaves = Object.keys(row);
+        const chaveSituacao = todasChaves.find(k =>
+            k.toLowerCase().includes('situa') ||
+            k.toLowerCase().includes('status')
+        );
+
+        const situacaoPlanilha = chaveSituacao ? row[chaveSituacao].trim().toLowerCase() : "";
         const classePendente = situacaoPlanilha !== "feito" ? ' class="pendente"' : '';
 
         html += `<tr${classePendente}>`;
