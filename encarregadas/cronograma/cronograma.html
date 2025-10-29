@@ -26,19 +26,27 @@
 
         <!-- Informações -->
         <section id="info">
-            <h2>Filtros</h2>
-            <label>Data: <input type="date" id="dataRecebimento"></label>
-            <label>
-                <span>Responsável:</span>
-                <select id="responsavel" name="responsavel">
-                    <option value="" disabled selected>Selecione o nome</option>
-                    <option value="Graciela">Graciela</option>
-                    <option value="Giovana">Giovana</option>
-                    <option value="Jéssica">Jéssica</option>
-                    <option value="Jacqueline">Jacqueline</option>
-                </select>
-            </label>
-        </section>
+    <h2>Filtros</h2>
+    <label>Data: <input type="date" id="dataRecebimento"></label>
+    <label>
+        <span>Responsável:</span>
+        <select id="responsavel" name="responsavel">
+            <option value="" disabled selected>Selecione o nome</option>
+            <option value="Graciela">Graciela</option>
+            <option value="Giovana">Giovana</option>
+            <option value="Jéssica">Jéssica</option>
+            <option value="Jacqueline">Jacqueline</option>
+        </select>
+    </label>
+    <label>
+        <span>Situação:</span>
+        <select id="situacao" name="situacao">
+            <option value="">Todas as situações</option>
+            <option value="executadas">Executadas</option>
+            <option value="nao-executadas">Não executadas</option>
+        </select>
+    </label>
+</section>
 
         <section id="estatisticas" style="display: none;">
             <h3>Acompanhamento</h3>

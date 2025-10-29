@@ -4,6 +4,7 @@ console.log("Carregando planilha com filtros...");
 const secaoDados = document.getElementById("dados");
 const dataInput = document.getElementById("dataRecebimento");
 const selectResp = document.getElementById("responsavel");
+const selectSituacao = document.getElementById("situacao");
 const secaoEstatisticas = document.getElementById("estatisticas");
 
 // LINK DO CSV
@@ -86,6 +87,7 @@ function exibirEstatisticas(dados) {
 function filtrarEExibir() {
     const dataSelecionada = dataInput.value; // yyyy-mm-dd
     const responsavelSelecionado = selectResp.value;
+    const situacaoSelecionada = selectSituacao.value;
 
     const dataFiltro = dataSelecionada ? new Date(dataSelecionada) : null;
 
@@ -107,10 +109,11 @@ function filtrarEExibir() {
     // Exibe estatísticas com os dados do filtro de cálculo
     exibirEstatisticas(filtradosParaCalculo);
 
-    // FILTRO 2: Para exibição da tabela (data EXATA selecionada)
+    // FILTRO 2: Para exibição da tabela (data EXATA selecionada + situação)
     const filtradosParaTabela = todosOsDados.filter((row) => {
         const dataPlanilha = row["DATA"] || "";
         const respPlanilha = row["Encarregada"] || "";
+        const situacaoPlanilha = (row["SituaÃ§Ã£o"] || row["Situação"] || "").trim().toLowerCase();
 
         const dataConvertida = converterData(dataPlanilha);
 
@@ -118,7 +121,15 @@ function filtrarEExibir() {
         const matchData = !dataSelecionada || dataConvertida === dataSelecionada;
         const matchResp = !responsavelSelecionado || respPlanilha === responsavelSelecionado;
 
-        return matchData && matchResp;
+        // Filtro de situação (apenas para tabela)
+        let matchSituacao = true;
+        if (situacaoSelecionada === "executadas") {
+            matchSituacao = situacaoPlanilha === "feito";
+        } else if (situacaoSelecionada === "nao-executadas") {
+            matchSituacao = situacaoPlanilha !== "feito";
+        }
+
+        return matchData && matchResp && matchSituacao;
     });
 
     // Exibe tabela com os dados do filtro de exibição
@@ -135,7 +146,10 @@ function filtrarEExibir() {
     html += `</tr></thead><tbody>`;
 
     filtradosParaTabela.forEach(row => {
-        html += `<tr>`;
+        const situacaoPlanilha = (row["SituaÃ§Ã£o"] || row["Situação"] || "").trim().toLowerCase();
+        const classePendente = situacaoPlanilha !== "feito" ? ' class="pendente"' : '';
+
+        html += `<tr${classePendente}>`;
         colunasExibir.forEach(coluna => {
             html += `<td>${row[coluna] || ''}</td>`;
         });
@@ -179,6 +193,7 @@ async function carregar() {
 // Eventos de filtro
 dataInput.addEventListener("change", filtrarEExibir);
 selectResp.addEventListener("change", filtrarEExibir);
+selectSituacao.addEventListener("change", filtrarEExibir);
 
 // Inicia
 document.addEventListener("DOMContentLoaded", carregar);

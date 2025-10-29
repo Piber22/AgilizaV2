@@ -190,7 +190,7 @@ textarea {
     border: 1px solid #ffffff;
     padding: 10px;
     color: #fff;
-    vertical-align: top;
+    vertical-align: center;
     text-align: center;
 }
 
@@ -252,6 +252,9 @@ textarea {
   margin-top: 4px;
 }
 
+tr.pendente {
+    color: #ff460a;
+}
 /* RESPONSIVO */
 @media (max-width: 768px) {
     section {
