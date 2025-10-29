@@ -252,9 +252,10 @@ textarea {
   margin-top: 4px;
 }
 
-tr.pendente {
-    color: #ff460a;
+tbody tr.pendente td {
+    color: orange !important;
 }
+
 /* RESPONSIVO */
 @media (max-width: 768px) {
     section {
