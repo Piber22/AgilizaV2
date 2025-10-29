@@ -146,6 +146,12 @@ function filtrarEExibir() {
     html += `</tr></thead><tbody>`;
 
     filtradosParaTabela.forEach(row => {
+        // Debug: mostra todas as chaves do objeto
+        if (filtradosParaTabela.indexOf(row) === 0) {
+            console.log("Todas as colunas:", Object.keys(row));
+            console.log("Objeto completo:", row);
+        }
+
         // Busca a coluna de situação pelo nome exato que vem do CSV
         const situacaoPlanilha = (row["SituaÃ§Ã£o"] || "").trim().toLowerCase();
         console.log("Situação:", situacaoPlanilha, "| É feito?", situacaoPlanilha === "feito");
