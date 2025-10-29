@@ -12,7 +12,7 @@ const urlCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGp
 
 let todosOsDados = [];
 
-// Colunas visíveis (índices 1, 2, 3, 4 = posições 2, 3, 4, 5 do CSV)
+// Colunas visíveis (índices 1, 2, 3, 4 = posições 2, 3, 4, 5 do CSV )
 const colunasVisiveis = [1, 2, 3];
 
 // Parse CSV
