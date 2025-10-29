@@ -12,7 +12,7 @@ const urlCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGp
 
 let todosOsDados = [];
 
-// Colunas visíveis (índices 1, 2, 3, 4 = posições 2, 3, 4, 5 do CSV)
+// Colunas visíveis (índices 1, 2, 3 = posições 2, 3, 4 do CSV)
 const colunasVisiveis = [1, 2, 3];
 
 // Parse CSV
@@ -91,7 +91,7 @@ function filtrarEExibir() {
 
     const dataFiltro = dataSelecionada ? new Date(dataSelecionada) : null;
 
-    // FILTRO 1: Para cálculos (data <= selecionada) - MANTIDO ORIGINAL
+    // FILTRO 1: Para cálculos (data <= selecionada)
     const filtradosParaCalculo = todosOsDados.filter((row) => {
         const dataPlanilha = row["DATA"] || "";
         const respPlanilha = row["Encarregada"] || "";
@@ -99,17 +99,15 @@ function filtrarEExibir() {
         const dataConvertida = converterData(dataPlanilha);
         const dataObj = dataConvertida ? new Date(dataConvertida) : null;
 
-        // Apenas datas ANTERIORES à selecionada
         const matchData = !dataFiltro || (dataObj && dataObj < dataFiltro);
         const matchResp = !responsavelSelecionado || respPlanilha === responsavelSelecionado;
 
         return matchData && matchResp;
     });
 
-    // Exibe estatísticas com os dados do filtro de cálculo
     exibirEstatisticas(filtradosParaCalculo);
 
-    // FILTRO 2: Para exibição da tabela (data EXATA selecionada + situação)
+    // FILTRO 2: Para exibição da tabela
     const filtradosParaTabela = todosOsDados.filter((row) => {
         const dataPlanilha = row["DATA"] || "";
         const respPlanilha = row["Encarregada"] || "";
@@ -117,84 +115,5 @@ function filtrarEExibir() {
 
         const dataConvertida = converterData(dataPlanilha);
 
-        // Se não há data selecionada, mostra todos (ou apenas filtro de responsável)
         const matchData = !dataSelecionada || dataConvertida === dataSelecionada;
-        const matchResp = !responsavelSelecionado || respPlanilha === responsavelSelecionado;
-
-        // Filtro de situação (apenas para tabela)
-        let matchSituacao = true;
-        if (situacaoSelecionada === "executadas") {
-            matchSituacao = situacaoPlanilha === "feito";
-        } else if (situacaoSelecionada === "nao-executadas") {
-            matchSituacao = situacaoPlanilha !== "feito";
-        }
-
-        return matchData && matchResp && matchSituacao;
-    });
-
-    // Exibe tabela com os dados do filtro de exibição
-    if (filtradosParaTabela.length === 0) {
-        secaoDados.innerHTML = `<h2>Consulta</h2><p>Nenhum item encontrado para os filtros selecionados.</p>`;
-        return;
-    }
-
-    const todasColunas = Object.keys(filtradosParaTabela[0]);
-    const colunasExibir = colunasVisiveis.map(idx => todasColunas[idx]).filter(Boolean);
-
-    let html = `<table><thead><tr>`;
-    colunasExibir.forEach(h => html += `<th>${h}</th>`);
-    html += `</tr></thead><tbody>`;
-
-    filtradosParaTabela.forEach(row => {
-        // Busca a coluna de situação (nome correto que vem no objeto)
-        const situacaoPlanilha = (row["Situação"] || "").trim().toLowerCase();
-        const classePendente = situacaoPlanilha !== "feito" ? ' class="pendente"' : '';
-
-        html += `<tr${classePendente}>`;
-        colunasExibir.forEach(coluna => {
-            html += `<td>${row[coluna] || ''}</td>`;
-        });
-        html += `</tr>`;
-    });
-
-    html += `</tbody></table>`;
-    secaoDados.innerHTML = html;
-}
-
-// Carrega dados da planilha
-async function carregar() {
-    try {
-        secaoDados.innerHTML = "<h2>Consulta</h2><p>Carregando dados da planilha...</p>";
-
-        const res = await fetch(urlCSV);
-        if (!res.ok) throw new Error("Erro HTTP: " + res.status);
-
-        const text = await res.text();
-        todosOsDados = parseCSV(text);
-
-        if (todosOsDados.length === 0) {
-            secaoDados.innerHTML = "<h2>Consulta</h2><p>Nenhum dado na planilha.</p>";
-            return;
-        }
-
-        // Preenche o select com encarregadas únicas
-        const responsaveis = [...new Set(todosOsDados.map(r => r["Encarregada"]).filter(Boolean))];
-        while (selectResp.options.length > 1) selectResp.remove(1);
-        responsaveis.forEach(nome => selectResp.add(new Option(nome, nome)));
-
-        // Exibe todos os dados inicialmente
-        filtrarEExibir();
-
-    } catch (err) {
-        console.error("Erro:", err);
-        secaoDados.innerHTML = `<h2>Consulta</h2><p style="color:red">Erro ao carregar: ${err.message}</p>`;
-    }
-}
-
-// Eventos de  filtro
-dataInput.addEventListener("change", filtrarEExibir);
-selectResp.addEventListener("change", filtrarEExibir);
-selectSituacao.addEventListener("change", filtrarEExibir);
-
-// Inicia
-document.addEventListener("DOMContentLoaded", carregar);
+        const<|eos|>
