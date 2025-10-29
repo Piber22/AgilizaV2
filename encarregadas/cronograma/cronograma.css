@@ -264,7 +264,7 @@ tbody tr.pendente td {
     }
 
     #dados {
-        padding: 5px 5px;           /* Menos espaço lateral */
+        padding: 5px 15px;           /* Menos espaço lateral */
         margin: 10px 20px;            /* Menos margem */
 
     }
