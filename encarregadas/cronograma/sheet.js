@@ -85,13 +85,13 @@ function exibirEstatisticas(dados) {
 
 // Filtra e exibe
 function filtrarEExibir() {
-    const dataSelecionada = dataInput.value; // yyyy-mm-dd
+    const dataSelecionada = dataInput.value;
     const responsavelSelecionado = selectResp.value;
     const situacaoSelecionada = selectSituacao.value;
 
     const dataFiltro = dataSelecionada ? new Date(dataSelecionada) : null;
 
-    // FILTRO 1: Para cálculos (data <= selecionada)
+    // FILTRO 1: Para cálculos
     const filtradosParaCalculo = todosOsDados.filter((row) => {
         const dataPlanilha = row["DATA"] || "";
         const respPlanilha = row["Encarregada"] || "";
@@ -107,7 +107,7 @@ function filtrarEExibir() {
 
     exibirEstatisticas(filtradosParaCalculo);
 
-    // FILTRO 2: Para exibição da tabela
+    // FILTRO 2: Para exibição
     const filtradosParaTabela = todosOsDados.filter((row) => {
         const dataPlanilha = row["DATA"] || "";
         const respPlanilha = row["Encarregada"] || "";
@@ -116,4 +116,89 @@ function filtrarEExibir() {
         const dataConvertida = converterData(dataPlanilha);
 
         const matchData = !dataSelecionada || dataConvertida === dataSelecionada;
-        const<|eos|>
+        const matchResp = !responsavelSelecionado || respPlanilha === responsavelSelecionado;
+
+        let matchSituacao = true;
+        if (situacaoSelecionada === "executadas") {
+            matchSituacao = situacaoPlanilha === "feito";
+        } else if (situacaoSelecionada === "nao-executadas") {
+            matchSituacao = situacaoPlanilha !== "feito";
+        }
+
+        return matchData && matchResp && matchSituacao;
+    });
+
+    if (filtradosParaTabela.length === 0) {
+        secaoDados.innerHTML = `<h2>Consulta</h2><p>Nenhum item encontrado para os filtros selecionados.</p>`;
+        return;
+    }
+
+    const todasColunas = Object.keys(filtradosParaTabela[0]);
+    const colunasExibir = colunasVisiveis.map(idx => todasColunas[idx]).filter(Boolean);
+
+    // ENVOLVE A TABELA COM DIV (para CSS mobile)
+    let html = `<div class="table-wrapper"><table><thead><tr>`;
+
+    // ALTERAÇÃO: "Encarregada" → "EQUIPE"
+    colunasExibir.forEach((h, index) => {
+        let titulo = h;
+        if (h === "Encarregada" || h.toLowerCase().includes("encarregada")) {
+            titulo = "EQUIPE";
+        }
+        html += `<th>${titulo}</th>`;
+    });
+
+    html += `</tr></thead><tbody>`;
+
+    filtradosParaTabela.forEach(row => {
+        const situacaoPlanilha = (row["Situação"] || "").trim().toLowerCase();
+        const classePendente = situacaoPlanilha !== "feito" ? ' class="pendente"' : '';
+
+        html += `<tr${classePendente}>`;
+        colunasExibir.forEach(coluna => {
+            html += `<td>${row[coluna] || ''}</td>`;
+        });
+        html += `</tr>`;
+    });
+
+    html += `</tbody></table></div>`;
+    secaoDados.innerHTML = html;
+}
+
+// Carrega dados da planilha
+async function carregar() {
+    try {
+        secaoDados.innerHTML = "<h2>Consulta</h2><p>Carregando dados da planilha...</p>";
+
+        const res = await fetch(urlCSV);
+        if (!res.ok) throw new Error("Erro HTTP: " + res.status);
+
+        const text = await res.text();
+        todosOsDados = parseCSV(text);
+
+        if (todosOsDados.length === 0) {
+            secaoDados.innerHTML = "<h2>Consulta</h2><p>Nenhum dado na planilha.</p>";
+            return;
+        }
+
+        // Preenche o select com encarregadas únicas
+        const responsaveis = [...new Set(todosOsDados.map(r => r["Encarregada"]).filter(Boolean))];
+        while (selectResp.options.length > 1) selectResp.remove(1);
+        responsaveis.forEach(nome => selectResp.add(new Option(nome, nome)));
+
+        // Exibe todos os dados inicialmente
+        filtrarEExibir();
+
+    } catch (err) {
+        console.error("Erro:", err);
+        secaoDados.innerHTML = `<h2>Consulta</h2><p style="color:red">Erro ao carregar: ${err.message}</p>`;
+    }
+}
+
+// Eventos de filtro
+dataInput.addEventListener("change", filtrarEExibir);
+selectResp.addEventListener("change", filtrarEExibir);
+selectSituacao.addEventListener("change", filtrarEExibir);
+
+// Inicia
+document.addEventListener("DOMContentLoaded", carregar);
