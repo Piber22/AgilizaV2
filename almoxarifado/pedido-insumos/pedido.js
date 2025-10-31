@@ -64,7 +64,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         { nome: "Saco Preto 60 Litros", valor: sp60, codigo: "55522" },
         { nome: "Saco Verde 60 Litros", valor: sv60, codigo: "58645" },
         { nome: "Saco Branco 50 Litros", valor: sb50, codigo: "56322" },
-        { nome: "Saco Laranja 50 Litros", valor: sb50, codigo: "58599" },
+        { nome: "Saco Laranja 50 Litros", valor: sl50, codigo: "58599" },
         { nome: "Saco Preto 20 Litros", valor: sp20, codigo: "58520" },
         { nome: "Saco Verde 20 Litros", valor: sv20, codigo: "58519" },
         { nome: "Cartela de validade", valor: cv, codigo: "58691" },
