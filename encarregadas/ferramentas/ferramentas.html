@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferramentas</title>
+
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="ferramentas.css">
+
+    <!-- PapaParse – para ler CSV do Google Sheets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../encarregadas.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Ferramentas</h1>
+        </header>
+
+        <!-- Informações -->
+        <section id="info">
+
+    <!--<label>Data: <input type="date" id="dataRecebimento"></label>-->
+    <label>
+        <span>Responsável:</span>
+        <select id="responsavel" name="responsavel">
+            <option value="" disabled selected>Nome:</option>
+            <option value="Graciela">Graciela</option>
+            <option value="Giovana">Giovana</option>
+            <option value="Jéssica">Jéssica</option>
+            <option value="Jacqueline">Jacqueline</option>
+            <option value="Daiane">Daiane</option>
+            <option value="Adrisson">Ádrisson</option>
+        </select>
+    </label>
+</section>
+
+        <section id="estatisticas" style="display: none;">
+            <h3>Acompanhamento</h3>
+            <p>Selecione filtros para ver as estatísticas</p>
+        </section>
+        <section id="status">
+        <!-- Consulta (será preenchida dinamicamente) -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-label">AP:</div>
+                <div class="stat-value">10/10</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">IPSMA:</div>
+                <div class="stat-value sucesso">10/10</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">OPAI:</div>
+                <div class="stat-value pendente">10/10</div>
+            </div>
+        </div>
+        </section>
+         <section id="ferramentas">
+             <button type="button" class="login-option" id="ap">AP</button>
+             <button type="button" class="login-option" id="ipsma">IPSMA</button>
+            <button type="button" class="login-option" id="opai">OPAI</button>
+        </section>
+        <section id="Forms">
+             <!-- Aqui vem uma série de inputs dinamicos -->
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Seus scripts  -->
+    <script src="ferramentas.js"></script>
+    <script src="ap.js"></script>
+    <script src="ipsma.js"></script>
+    <script src="opai.js"></script>
+
+</body>
+</html>
