@@ -37,6 +37,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     const sp60 = parseInt(document.getElementById("sp60").value || 0);
     const sv60 = parseInt(document.getElementById("sv60").value || 0);
     const sb50 = parseInt(document.getElementById("sb50").value || 0);
+    const sl50 = parseInt(document.getElementById("sl50").value || 0);
     const sp20 = parseInt(document.getElementById("sp20").value || 0);
     const sv20 = parseInt(document.getElementById("sv20").value || 0);
     const cv = parseInt(document.getElementById("cv").value || 0);
@@ -63,6 +64,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         { nome: "Saco Preto 60 Litros", valor: sp60, codigo: "55522" },
         { nome: "Saco Verde 60 Litros", valor: sv60, codigo: "58645" },
         { nome: "Saco Branco 50 Litros", valor: sb50, codigo: "56322" },
+        { nome: "Saco Laranja 50 Litros", valor: sb50, codigo: "58599" },
         { nome: "Saco Preto 20 Litros", valor: sp20, codigo: "58520" },
         { nome: "Saco Verde 20 Litros", valor: sv20, codigo: "58519" },
         { nome: "Cartela de validade", valor: cv, codigo: "58691" },
@@ -94,7 +96,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         responsavel,
         ph, pt, toalha, alcool, sabonete, sabonetebac, gojo,
         sacopicotado, sacohamper, sp100, sv100, sb100, sl100,
-        sp60, sv60, sb50, sp20, sv20, cv, cl, adesivo,
+        sp60, sv60, sb50, sl50, sp20, sv20, cv, cl, adesivo,
         canetatecido, canetapermanente
     };
 
