@@ -2,7 +2,7 @@
 console.log("✅ Script de envio para planilha carregado!");
 
 // URL do seu Apps Script
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzIqMYmIRZ9OagQ78VVHsfm6Ux4kcWvurQi03U4OvdKDzQpLerwrNMnRNuaO4Yc-TM4/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbys0IfPC0Z5Pn10UQuy0VIhxhkUAd5eI1yURA9NX3OVU4GJtY2RXNvlsP8ZTkP9CIey/exec';
 
 // Função para enviar dados para a planilha
 async function enviarParaPlanilha(dados) {
