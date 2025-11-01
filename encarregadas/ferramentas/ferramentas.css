@@ -138,7 +138,7 @@ select {
   justify-content: space-around; /* distribui igualmente */
   align-items: center;
   flex-wrap: wrap; /* quebra linha se não couber na tela */
-  gap: 15px;
+  gap: 0px;
 }
 
 .stat-box {
