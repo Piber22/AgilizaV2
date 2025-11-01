@@ -195,7 +195,7 @@ function criarCamposAP(container) {
   botaoEnviar.addEventListener("click", async () => {
     const dadosRecebimento = coletarDadosFormulario();
 
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyxgrkjLrcxNCSO-3tFtWBat5t2IWdhdA4tJ7BgXibYySy7y8lAscP_9qztRprHA9-qHA/exec';
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzFQKBdjIUJkb04Hre7XGhNOFQln5cJjfDTL1IEcjCbbT0aMMDaQmwA5ayCBjLcfQuWGg/exec';
 
     async function enviarParaPlanilha(dados) {
       try {
