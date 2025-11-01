@@ -165,6 +165,40 @@ tbody tr.pendente td {
     color: #ff460a !important;
 }
 
+/* Estilo do botão "Enviar" */
+#enviar-ap {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px;
+    background-color: #E94B22;
+    border: 2px solid #E94B22;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+
+}
+
+/* Quando o botão está desabilitado */
+#enviar-ap:disabled {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px;
+    background-color: #201F20;
+    border: 2px solid #5b5b5b;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    idth: 100%;
+
+}
+
 /* RESPONSIVO  */
 @media (max-width: 768px) {
     section {
