@@ -31,12 +31,7 @@ function criarCamposAP(container) {
   placeholder.selected = true;
   selectTipo.appendChild(placeholder);
   ["Área","Equipamento/Máquina","Comportamento","Procedimentos","Ferramenta"]
-    .forEach(op => {
-      const o = document.createElement("option");
-      o.value = op;
-      o.textContent = op;
-      selectTipo.appendChild(o);
-    });
+    .forEach(op => { const o = document.createElement("option"); o.value = op; o.textContent = op; selectTipo.appendChild(o); });
   labelTipo.appendChild(selectTipo);
 
   const divSubtipo = document.createElement("div");
@@ -74,13 +69,7 @@ function criarCamposAP(container) {
         break;
     }
 
-    opcoesSub.forEach(op => {
-      const o = document.createElement("option");
-      o.value = op;
-      o.textContent = op;
-      selectSubtipo.appendChild(o);
-    });
-
+    opcoesSub.forEach(op => { const o = document.createElement("option"); o.value = op; o.textContent = op; selectSubtipo.appendChild(o); });
     labelSubtipo.appendChild(selectSubtipo);
     divSubtipo.appendChild(labelSubtipo);
   });
@@ -97,12 +86,7 @@ function criarCamposAP(container) {
   placeholderCrit.disabled = true;
   placeholderCrit.selected = true;
   selectCriticidade.appendChild(placeholderCrit);
-  ["Baixo","Moderado","Crítico"].forEach(op => {
-    const o = document.createElement("option");
-    o.value = op;
-    o.textContent = op;
-    selectCriticidade.appendChild(o);
-  });
+  ["Baixo","Moderado","Crítico"].forEach(op => { const o = document.createElement("option"); o.value = op; o.textContent = op; selectCriticidade.appendChild(o); });
   labelCriticidade.appendChild(selectCriticidade);
 
   const labelAcao = document.createElement("label");
@@ -117,13 +101,7 @@ function criarCamposAP(container) {
   placeholderAcao.disabled = true;
   placeholderAcao.selected = true;
   selectAcao.appendChild(placeholderAcao);
-  ["Paralisação da atividade","Notificação do superior imediato ou cipeiro/representante","Orientação da equipe ou colega de trabalho","Acionamento da brigada de emergência","Evacuação da área","Adoção de medidas de contenção","Sinalização e/ou isolamento da área"]
-    .forEach(op => {
-      const o = document.createElement("option");
-      o.value = op;
-      o.textContent = op;
-      selectAcao.appendChild(o);
-    });
+  ["Paralisação da atividade","Notificação do superior imediato ou cipeiro/representante","Orientação da equipe ou colega de trabalho","Acionamento da brigada de emergência","Evacuação da área","Adoção de medidas de contenção","Sinalização e/ou isolamento da área"].forEach(op => { const o = document.createElement("option"); o.value = op; o.textContent = op; selectAcao.appendChild(o); });
   labelAcao.appendChild(selectAcao);
 
   const labelRecebido = document.createElement("label");
@@ -146,12 +124,7 @@ function criarCamposAP(container) {
   placeholderTratado.disabled = true;
   placeholderTratado.selected = true;
   selectTratado.appendChild(placeholderTratado);
-  ["Sim","Não"].forEach(op => {
-    const o = document.createElement("option");
-    o.value = op;
-    o.textContent = op;
-    selectTratado.appendChild(o);
-  });
+  ["Sim","Não"].forEach(op => { const o = document.createElement("option"); o.value = op; o.textContent = op; selectTratado.appendChild(o); });
   labelTratado.appendChild(selectTratado);
 
   container.append(labelData,labelSetor,labelTipo,divSubtipo,labelCriticidade,labelAcao,labelRecebido,labelTratado);
@@ -175,10 +148,29 @@ function criarCamposAP(container) {
   const campos = container.querySelectorAll("input, select");
   campos.forEach(c => { c.addEventListener("input", validarCampos); c.addEventListener("change", validarCampos); });
 
-  // ===== Coletar dados =====
+  // ===== Funções de envio =====
+  async function enviarParaPlanilha(dados) {
+      const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycby5h7rUu-ohrqMWeZbw6kWxtO4wVU51MlMHftA2VmCsdGRdy5YamligI4CFaZiikVqYqQ/exec';
+      try {
+          await fetch(URL_APPS_SCRIPT, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(dados)
+          });
+          return true;
+      } catch (erro) {
+          console.error("❌ Erro:", erro);
+          return false;
+      }
+  }
+
   function coletarDadosFormulario() {
+    const partesData = inputData.value.split("-");
+    const dataFormatada = partesData.length === 3 ? `${partesData[2]}/${partesData[1]}/${partesData[0]}` : inputData.value;
+
     return {
-      data: inputData.value,
+      data: dataFormatada,
       horario: new Date().toLocaleTimeString(),
       local_ocorrencia: inputSetor.value,
       tipo_desvio: selectTipo.value,
@@ -191,49 +183,28 @@ function criarCamposAP(container) {
     };
   }
 
-  // ===== Envio =====
   botaoEnviar.addEventListener("click", async () => {
-    const dadosRecebimento = coletarDadosFormulario();
+      const dadosRecebimento = coletarDadosFormulario();
+      const enviadoComSucesso = await enviarParaPlanilha(dadosRecebimento);
 
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycby5h7rUu-ohrqMWeZbw6kWxtO4wVU51MlMHftA2VmCsdGRdy5YamligI4CFaZiikVqYqQ/exec';
+      if (enviadoComSucesso) {
+          // Mensagem centralizada
+          const mensagem = document.createElement("div");
+          mensagem.textContent = "Salvo!";
+          mensagem.style.color = "#4CAF50";
+          mensagem.style.textAlign = "center";
+          mensagem.style.marginTop = "10px";
+          container.appendChild(mensagem);
 
-    async function enviarParaPlanilha(dados) {
-      try {
-        await fetch(URL_APPS_SCRIPT, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(dados)
-        });
-        return true;
-      } catch (erro) {
-        console.error("❌ Erro:", erro);
-        return false;
+          // Limpar inputs
+          container.querySelectorAll("input, select").forEach(campo => campo.value = "");
+          botaoEnviar.disabled = true;
+          botaoEnviar.style.opacity = "0.6";
+          botaoEnviar.style.cursor = "not-allowed";
+
+          setTimeout(() => { mensagem.remove(); }, 2000);
+      } else {
+          alert("Erro ao enviar os dados. Tente novamente.");
       }
-    }
-
-    const enviadoComSucesso = await enviarParaPlanilha(dadosRecebimento);
-
-    if (enviadoComSucesso) {
-    // Cria o container da mensagem
-    const mensagem = document.createElement("div");
-    mensagem.textContent = "Salvo!";
-    mensagem.style.color = "#4CAF50";
-    mensagem.style.textAlign = "center"; // centraliza horizontalmente
-    mensagem.style.marginTop = "10px";   // distância do botão
-    // Insere logo após o botão
-    botaoEnviar.parentNode.insertBefore(mensagem, botaoEnviar.nextSibling);
-
-    // Limpa os inputs
-    container.querySelectorAll("input, select").forEach(campo => campo.value = "");
-
-    // Reset do botão
-    botaoEnviar.disabled = true;
-    botaoEnviar.style.opacity = "0.6";
-    botaoEnviar.style.cursor = "not-allowed";
-
-    // Remove a mensagem após 2 segundos
-    setTimeout(() => mensagem.remove(), 2000);
-    }
   });
 }
