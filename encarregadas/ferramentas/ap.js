@@ -215,21 +215,25 @@ function criarCamposAP(container) {
     const enviadoComSucesso = await enviarParaPlanilha(dadosRecebimento);
 
     if (enviadoComSucesso) {
-      const mensagem = document.createElement("span");
-      mensagem.textContent = "Salvo!";
-      mensagem.style.color = "#4CAF50";
-      mensagem.style.marginLeft = "10px";
-      botaoEnviar.parentNode.insertBefore(mensagem, botaoEnviar.nextSibling);
+    // Cria o container da mensagem
+    const mensagem = document.createElement("div");
+    mensagem.textContent = "Salvo!";
+    mensagem.style.color = "#4CAF50";
+    mensagem.style.textAlign = "center"; // centraliza horizontalmente
+    mensagem.style.marginTop = "10px";   // distância do botão
+    // Insere logo após o botão
+    botaoEnviar.parentNode.insertBefore(mensagem, botaoEnviar.nextSibling);
 
-      container.querySelectorAll("input, select").forEach(campo => campo.value = "");
+    // Limpa os inputs
+    container.querySelectorAll("input, select").forEach(campo => campo.value = "");
 
-      botaoEnviar.disabled = true;
-      botaoEnviar.style.opacity = "0.6";
-      botaoEnviar.style.cursor = "not-allowed";
+    // Reset do botão
+    botaoEnviar.disabled = true;
+    botaoEnviar.style.opacity = "0.6";
+    botaoEnviar.style.cursor = "not-allowed";
 
-      setTimeout(() => mensagem.remove(), 2000);
-    } else {
-      alert("Erro ao enviar os dados. Tente novamente.");
+    // Remove a mensagem após 2 segundos
+    setTimeout(() => mensagem.remove(), 2000);
     }
   });
 }
