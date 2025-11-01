@@ -66,6 +66,10 @@ section {
 }
 
 /* Labels lado a lado */
+label#respon {
+    margin-bottom: 0px;
+}
+
 label {
     display: flex;
     justify-content: space-between;
@@ -145,7 +149,7 @@ select {
   border-radius: 8px;
   padding: 10px 16px;
   text-align: center;
-  min-width: 120px;
+  min-width: 80px;
   color: #fff;
   border: 2px solid #5b5b5b;
 }
