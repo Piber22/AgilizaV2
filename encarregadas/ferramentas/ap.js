@@ -150,7 +150,7 @@ function criarCamposAP(container) {
 
   // ===== Funções de envio =====
   async function enviarParaPlanilha(dados) {
-    const URL_APPS_SCRIPT = 'COLE_AQUI_SEU_URL_DO_APPS_SCRIPT';
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycby5h7rUu-ohrqMWeZbw6kWxtO4wVU51MlMHftA2VmCsdGRdy5YamligI4CFaZiikVqYqQ/exec';
     try {
       await fetch(URL_APPS_SCRIPT, {
         method:'POST',
