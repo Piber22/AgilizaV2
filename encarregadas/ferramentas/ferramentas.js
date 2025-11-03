@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOCdgTpKJg52io24jaXoqqCL2yXRyUeoK23-LbkNcZTBxzGuy8yxKTWXopmdqcP4bJboGeagpaHLPm/pub?output=csv";
 
     const selectResponsavel = document.getElementById("responsavel");
-    const estatisticasSection = document.getElementById("estatisticas");
     const statValues = document.querySelectorAll(".stat-box .stat-value");
 
     // Função para atualizar as estatísticas
@@ -85,8 +84,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 // Atualiza os valores na tela
-                estatisticasSection.style.display = "block";
-
                 statValues[0].textContent = `${ap}/10`;
                 statValues[1].textContent = `${ipsma}/10`;
                 statValues[2].textContent = `${opai}/10`;
