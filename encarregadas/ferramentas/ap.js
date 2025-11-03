@@ -83,6 +83,9 @@ function criarCamposAP(container) {
 
     labelSubtipo.appendChild(selectSubtipo);
     divSubtipo.appendChild(labelSubtipo);
+
+    // Adiciona listener no subtipo para revalidar
+    selectSubtipo.addEventListener("change", validarCampos);
   });
 
   const labelCriticidade = document.createElement("label");
@@ -166,14 +169,36 @@ function criarCamposAP(container) {
 
   // ===== Validação =====
   function validarCampos() {
+    // Valida campos do formulário
     const campos = container.querySelectorAll("input, select");
-    const todosPreenchidos = Array.from(campos).every(c => c.value.trim()!=="");
-    botaoEnviar.disabled = !todosPreenchidos;
-    botaoEnviar.style.opacity = todosPreenchidos ? "1" : "0.6";
-    botaoEnviar.style.cursor = todosPreenchidos ? "pointer" : "not-allowed";
+    const todosPreenchidos = Array.from(campos).every(c => c.value.trim() !== "");
+
+    // Valida responsável (não pode ser vazio ou "Todos")
+    const selectResponsavel = document.getElementById("responsavel");
+    const responsavelValido = selectResponsavel &&
+                              selectResponsavel.value.trim() !== "" &&
+                              selectResponsavel.value !== "Todos";
+
+    // Botão só fica habilitado se AMBOS forem verdadeiros
+    const podeEnviar = todosPreenchidos && responsavelValido;
+
+    botaoEnviar.disabled = !podeEnviar;
+    botaoEnviar.style.opacity = podeEnviar ? "1" : "0.6";
+    botaoEnviar.style.cursor = podeEnviar ? "pointer" : "not-allowed";
   }
+
+  // Adiciona listeners nos campos do formulário
   const campos = container.querySelectorAll("input, select");
-  campos.forEach(c => { c.addEventListener("input", validarCampos); c.addEventListener("change", validarCampos); });
+  campos.forEach(c => {
+    c.addEventListener("input", validarCampos);
+    c.addEventListener("change", validarCampos);
+  });
+
+  // Adiciona listener no select de responsável (fora do formulário)
+  const selectResponsavel = document.getElementById("responsavel");
+  if (selectResponsavel) {
+    selectResponsavel.addEventListener("change", validarCampos);
+  }
 
   // ===== Coletar dados =====
   function coletarDadosFormulario() {
@@ -215,25 +240,25 @@ function criarCamposAP(container) {
     const enviadoComSucesso = await enviarParaPlanilha(dadosRecebimento);
 
     if (enviadoComSucesso) {
-    // Cria o container da mensagem
-    const mensagem = document.createElement("div");
-    mensagem.textContent = "Salvo!";
-    mensagem.style.color = "#4CAF50";
-    mensagem.style.textAlign = "center"; // centraliza horizontalmente
-    mensagem.style.marginTop = "10px";   // distância do botão
-    // Insere logo após o botão
-    botaoEnviar.parentNode.insertBefore(mensagem, botaoEnviar.nextSibling);
+      // Cria o container da mensagem
+      const mensagem = document.createElement("div");
+      mensagem.textContent = "Salvo!";
+      mensagem.style.color = "#4CAF50";
+      mensagem.style.textAlign = "center";
+      mensagem.style.marginTop = "10px";
+      // Insere logo após o botão
+      botaoEnviar.parentNode.insertBefore(mensagem, botaoEnviar.nextSibling);
 
-    // Limpa os inputs
-    container.querySelectorAll("input, select").forEach(campo => campo.value = "");
+      // Limpa os inputs
+      container.querySelectorAll("input, select").forEach(campo => campo.value = "");
 
-    // Reset do botão
-    botaoEnviar.disabled = true;
-    botaoEnviar.style.opacity = "0.6";
-    botaoEnviar.style.cursor = "not-allowed";
+      // Reset do botão
+      botaoEnviar.disabled = true;
+      botaoEnviar.style.opacity = "0.6";
+      botaoEnviar.style.cursor = "not-allowed";
 
-    // Remove a mensagem após 2 segundos
-    setTimeout(() => mensagem.remove(), 2000);
-}
+      // Remove a mensagem após 2 segundos
+      setTimeout(() => mensagem.remove(), 2000);
+    }
   });
 }
