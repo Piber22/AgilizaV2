@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
             formsSection.innerHTML = "";
 
             // Chama a função correspondente à ferramenta
-            switch(button.id) {
+            switch (button.id) {
                 case "ap":
                     if (typeof criarCamposAP === "function") {
                         criarCamposAP(formsSection);
@@ -41,26 +41,30 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // === NOVO TRECHO: ATUALIZAÇÃO DINÂMICA DAS ESTATÍSTICAS ===
-    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOCdgTpKJg52io24jaXoqqCL2yXRyUeoK23-LbkNcZTBxzGuy8yxKTWXopmdqcP4bJboGeagpaHLPm/pub?gid=0&single=true&output=csv";
+    // 🔗 Substitua este link pelo CSV publicado da sua planilha Google Sheets
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOCdgTpKJg52io24jaXoqqCL2yXRyUeoK23-LbkNcZTBxzGuy8yxKTWXopmdqcP4bJboGeagpaHLPm/pub?output=csv";
+
     const selectResponsavel = document.getElementById("responsavel");
     const estatisticasSection = document.getElementById("estatisticas");
     const statValues = document.querySelectorAll(".stat-box .stat-value");
 
-    // Quando o usuário escolher um responsável
-    selectResponsavel.addEventListener("change", function() {
+    selectResponsavel.addEventListener("change", function () {
         const responsavel = this.value;
 
         Papa.parse(url, {
             download: true,
             header: true,
-            complete: function(results) {
+            complete: function (results) {
                 const dados = results.data;
+                console.log("✅ Dados recebidos do Google Sheets:", dados); // DEBUG
 
-                // Encontra o registro do responsável (ignora maiúsculas/minúsculas e espaços)
+                // Procura o registro correspondente (ignora maiúsculas/minúsculas e espaços)
                 const registro = dados.find(r =>
-                    r.Responsável &&
-                    r.Responsável.trim().toLowerCase() === responsavel.trim().toLowerCase()
+                    (r.Responsável || r.Responsavel) &&
+                    (r.Responsável || r.Responsavel).trim().toLowerCase() === responsavel.trim().toLowerCase()
                 );
+
+                console.log("🔍 Registro encontrado:", registro); // DEBUG
 
                 if (registro) {
                     estatisticasSection.style.display = "block";
@@ -70,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     statValues[1].textContent = `${registro.IPSMA || 0}/10`;
                     statValues[2].textContent = `${registro.OPAI || 0}/10`;
 
-                    // Aplica classes visuais conforme desempenho
+                    // Aplica classes de cor (verde/vermelho)
                     statValues[0].className = (registro.AP >= 10) ? "stat-value sucesso" : "stat-value pendente";
                     statValues[1].className = (registro.IPSMA >= 10) ? "stat-value sucesso" : "stat-value pendente";
                     statValues[2].className = (registro.OPAI >= 10) ? "stat-value sucesso" : "stat-value pendente";
@@ -82,8 +86,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
                 }
             },
-            error: function(err) {
-                console.error("Erro ao carregar planilha:", err);
+            error: function (err) {
+                console.error("❌ Erro ao carregar planilha:", err);
             }
         });
     });
