@@ -56,9 +56,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log("✅ Dados recebidos do Google Sheets:", dados);
 
                 let ap = 0, ipsma = 0, opai = 0;
+                let metaAP, metaIPSMA, metaOPAI;
 
                 if (!responsavel || responsavel === "") {
-                    // SEM FILTRO: soma todos os responsáveis
+                    // SEM FILTRO: soma todos os responsáveis + meta da equipe
                     dados.forEach(r => {
                         if (r.Responsável || r.Responsavel) {
                             ap += parseInt(r.AP || 0);
@@ -66,9 +67,13 @@ document.addEventListener("DOMContentLoaded", function () {
                             opai += parseInt(r.OPAI || 0);
                         }
                     });
+                    // Metas da equipe
+                    metaAP = 106;
+                    metaIPSMA = 10;
+                    metaOPAI = 16;
                     console.log("📊 Total geral - AP:", ap, "IPSMA:", ipsma, "OPAI:", opai);
                 } else {
-                    // COM FILTRO: busca apenas o responsável selecionado
+                    // COM FILTRO: busca apenas o responsável selecionado + meta individual
                     const registro = dados.find(r =>
                         (r.Responsável || r.Responsavel) &&
                         (r.Responsável || r.Responsavel).trim().toLowerCase() === responsavel.trim().toLowerCase()
@@ -81,17 +86,21 @@ document.addEventListener("DOMContentLoaded", function () {
                         ipsma = parseInt(registro.IPSMA || 0);
                         opai = parseInt(registro.OPAI || 0);
                     }
+                    // Metas individuais
+                    metaAP = 18;
+                    metaIPSMA = 2;
+                    metaOPAI = 4;
                 }
 
                 // Atualiza os valores na tela
-                statValues[0].textContent = `${ap}/10`;
-                statValues[1].textContent = `${ipsma}/10`;
-                statValues[2].textContent = `${opai}/10`;
+                statValues[0].textContent = `${ap}/${metaAP}`;
+                statValues[1].textContent = `${ipsma}/${metaIPSMA}`;
+                statValues[2].textContent = `${opai}/${metaOPAI}`;
 
-                // Aplica classes de cor (verde se >= 10, vermelho se < 10)
-                statValues[0].className = (ap >= 10) ? "stat-value sucesso" : "stat-value pendente";
-                statValues[1].className = (ipsma >= 10) ? "stat-value sucesso" : "stat-value pendente";
-                statValues[2].className = (opai >= 10) ? "stat-value sucesso" : "stat-value pendente";
+                // Aplica classes de cor (verde se atingiu a meta, vermelho se não)
+                statValues[0].className = (ap >= metaAP) ? "stat-value sucesso" : "stat-value pendente";
+                statValues[1].className = (ipsma >= metaIPSMA) ? "stat-value sucesso" : "stat-value pendente";
+                statValues[2].className = (opai >= metaOPAI) ? "stat-value sucesso" : "stat-value pendente";
             },
             error: function (err) {
                 console.error("❌ Erro ao carregar planilha:", err);
