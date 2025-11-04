@@ -1,0 +1,22 @@
+﻿# Ignorar pastas do PyCharm
+.idea/
+
+# Ignorar ambiente virtual
+.venv/
+
+# Ignorar caches e temporários Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorar arquivos Excel temporários e logs
+*.xlsx
+*.xls
+*.log
+*.tmp
+
+# Ignorar arquivos de sistema do Windows e OneDrive
+Thumbs.db
+desktop.ini
+~$*

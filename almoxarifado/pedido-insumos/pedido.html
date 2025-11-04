@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido de insumos</title>
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- CSS específico -->
+    <link rel="stylesheet" href="pedido.css">
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../almoxarifado.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Pedido de insumos</h1>
+        </header>
+
+        <!-- Informações -->
+        <section id="info">
+            <label><span id="dataRecebimento"></span></label>
+            <label>Solicitante: <input type="text" id="responsavel" placeholder="Nome:"></label>
+        </section>
+
+        <!-- Setores -->
+        <section id="setor">
+            <h2>Insumos</h2>
+            <br>
+            <label>Papel higiênico: <input type="number" id="ph" placeholder="Quantidade"></label>
+            <label>Papel toalha: <input type="number" id="pt" placeholder="Quantidade"></label>
+            <label>Toalha multiuso: <input type="number" id="toalha" placeholder="Quantidade"></label>
+            <br>
+            <br>
+            <label>Álcool em gel: <input type="number" id="alcool" placeholder="Quantidade"></label>
+            <label>Sabonete: <input type="number" id="sabonete" placeholder="Quantidade"></label>
+            <label>Sabonete bactericida: <input type="number" id="sabonetebac" placeholder="Quantidade"></label>
+            <label>Gojo: <input type="number" id="gojo" placeholder="Quantidade"></label>
+            <br>
+            <br>
+            <label>Saco picotado: <input type="number" id="sacopicotado" placeholder="Quantidade"></label>
+            <label>Saco Hamper: <input type="number" id="sacohamper" placeholder="Quantidade"></label>
+            <br>
+            <br>
+            <label>Saco Preto 100 Litros: <input type="number" id="sp100" placeholder="Quantidade"></label>
+            <label>Saco Verde 100 Litros: <input type="number" id="sv100" placeholder="Quantidade"></label>
+            <label>Saco Branco 100 Litros: <input type="number" id="sb100" placeholder="Quantidade"></label>
+            <label>Saco Laranja 100 Litros: <input type="number" id="sl100" placeholder="Quantidade"></label>
+            <label>Saco Preto 60 Litros: <input type="number" id="sp60" placeholder="Quantidade"></label>
+            <label>Saco Verde 60 Litros: <input type="number" id="sv60" placeholder="Quantidade"></label>
+            <label>Saco Branco 50 Litros: <input type="number" id="sb50" placeholder="Quantidade"></label>
+            <label>Saco Laranja 50 Litros: <input type="number" id="sl50" placeholder="Quantidade"></label>
+            <label>Saco Preto 20 Litros: <input type="number" id="sp20" placeholder="Quantidade"></label>
+            <label>Saco Verde 20 Litros: <input type="number" id="sv20" placeholder="Quantidade"></label>
+            <br>
+            <br>
+            <label>Cartela de validade: <input type="number" id="cv" placeholder="Quantidade"></label>
+            <label>Controle de limpeza: <input type="number" id="cl" placeholder="Quantidade"></label>
+            <label>Adesivo: <input type="number" id="adesivo" placeholder="Quantidade"></label>
+            <br>
+            <br>
+            <label>Caneta de tecido: <input type="number" id="canetatecido" placeholder="Quantidade"></label>
+            <label>Caneta permanente: <input type="number" id="canetapermanente" placeholder="Quantidade"></label>
+            <br>
+
+        </section>
+
+        <!-- Botões -->
+        <button id="gerarBtn" class="login-option">Gerar Mensagem</button>
+
+        <!-- Mensagem gerada -->
+        <section id="mensagem">
+            <h2>Mensagem gerada:</h2>
+            <textarea id="resultado" rows="15" readonly></textarea>
+            <button id="copiarBtn" class="login-option">📋 Copiar Mensagem</button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="pedido.js"></script>
+    <script src="sheet.js"></script>
+</body>
+</html>

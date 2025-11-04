@@ -1,0 +1,177 @@
+/* =====================
+   RESET & BASE
+===================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+html, body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #201F20;
+  color: #fff;
+}
+
+/* =====================
+   MAIN
+===================== */
+main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* =====================
+   LOGIN CONTAINER
+===================== */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* LOGO */
+.logo-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.logo-placeholder img {
+  margin-top: 20px;
+  max-width: 220px;
+  width: 100%;
+  height: auto;
+}
+
+/* BOX */
+.login-box {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeSlideIn 0.6s ease forwards;
+  background-color: #201F20;
+  padding: 30px 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 320px;
+}
+
+@keyframes fadeSlideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* BOTÕES DE OPÇÃO */
+.login-option {
+  display: inline-block;      /* permite largura e padding como botão */
+  text-align: center;         /* centraliza o texto */
+  text-decoration: none;      /* remove sublinhado padrão */
+  padding: 12px;
+  background-color: #201F20;
+  border: 2px solid #E94B22;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.login-option:hover:not(.disabled) {
+  background-color: #E94B22;
+}
+
+.login-option:active:not(.disabled) {
+  transform: scale(0.97);
+}
+
+.login-option.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* MENSAGEM DE ERRO */
+.login-error {
+  color: #DDDDDD;       /* cor branca */
+  font-size: 13px;       /* um pouco menor que antes */
+  height: auto;          /* ajusta a altura automaticamente ao texto */
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 0px;
+}
+
+    /* EFEITO HOVER BORDER BOX
+    .login-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      padding: 2px;
+      border-radius: 10px;
+      background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), #E94B22 0%, transparent 70%);
+      mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      opacity: 1;
+      z-index: 2;
+    }
+    */
+/* =====================
+   FOOTER
+===================== */
+.footer {
+  text-align: center;
+  padding: 15px 10px;
+  font-size: 14px;
+  color: #777;
+  border-top: 1px solid #2a2a2a;
+}
+
+.footer strong {
+  color: #999;
+}
+
+/* =====================
+   RESPONSIVE
+===================== */
+@media (max-width: 480px) {
+  .logo-placeholder img {
+    max-width: 180px;
+  }
+
+  .login-box {
+    padding: 20px;
+    max-width: 90%;
+  }
+
+  .login-option {
+    font-size: 15px;
+    padding: 12px;
+  }
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma</title>
+
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="cronograma.css">
+
+    <!-- PapaParse – para ler CSV do Google Sheets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../encarregadas.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Cronograma</h1>
+        </header>
+
+        <!-- Informações -->
+        <section id="info">
+    <h2>Filtros</h2>
+    <label>Data: <input type="date" id="dataRecebimento"></label>
+    <label>
+        <span>Responsável:</span>
+        <select id="responsavel" name="responsavel">
+            <option value="" disabled selected>Selecione o nome</option>
+            <option value="Graciela">Graciela</option>
+            <option value="Giovana">Giovana</option>
+            <option value="Jéssica">Jéssica</option>
+            <option value="Jacqueline">Jacqueline</option>
+        </select>
+    </label>
+    <label>
+        <span>Situação:</span>
+        <select id="situacao" name="situacao">
+            <option value="">Todas as situações</option>
+            <option value="executadas">Executadas</option>
+            <option value="nao-executadas">Não executadas</option>
+        </select>
+    </label>
+</section>
+
+        <section id="estatisticas" style="display: none;">
+            <h3>Acompanhamento</h3>
+            <p>Selecione filtros para ver as estatísticas</p>
+        </section>
+
+        <!-- Consulta (será preenchida dinamicamente) -->
+        <section id="dados">
+            <!--<h2>Consulta</h2>-->
+            <p>Carregando dados...</p>
+        </section>
+
+        <!-- Botões
+        <button id="gerarBtn" class="login-option">Gerar Mensagem</button>
+
+         Mensagem gerada
+        <section id="mensagem">
+            <h2>Mensagem gerada:</h2>
+            <textarea id="resultado" rows="20" readonly></textarea>
+            <button id="copiarBtn" class="login-option">Copiar Mensagem</button>
+        </section>-->
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Seus scripts  -->
+    <script src="sheet.js"></script>
+</body>
+</html>

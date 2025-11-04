@@ -1,0 +1,6 @@
+git init
+git add .
+git commit -m "Primeiro commit do projeto reestruturado"
+git branch -M main
+git remote add origin https://github.com/Piber22/AgilizaV2.git
+git push -u origin main

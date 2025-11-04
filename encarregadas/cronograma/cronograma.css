@@ -1,0 +1,300 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #201F20;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 40px;
+}
+
+main {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 0px;
+}
+
+/* CABEÇALHO */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Cabeçalho ocupa toda a largura */
+    padding: 10px 20px;
+    background-color: #201F20;
+    position: relative;
+    margin-bottom: 0px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.logo-link {
+    position: absolute;
+    left: 20px; /* Mantém a logo alinhada à esquerda */
+}
+
+.logo {
+    width: 40px;
+    height: auto;
+}
+
+.header h1 {
+    text-align: center;
+    font-size: 1.8em;
+    margin: 0;
+}
+
+/* SEÇÕES */
+h2, h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+section {
+    background-color: #201F20;
+    padding: 25px 30px;
+    margin: 10px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+
+/* Labels lado a lado */
+label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+label span {
+    width: 45%; /* Alinha o texto à esquerda */
+    text-align: left;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="date"],
+select {
+    width: 50%; /* Alinha o input/select à direita */
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 2px solid #5b5b5b;
+    background-color: #201F20;
+    color: #fff;
+    font-size: 14px;
+}
+
+/* Removendo aparência padrão do select e mantendo estilo */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+#gerarBtn, #copiarBtn {
+    margin: 15px auto;
+    display: block;
+    width: 90%;
+}
+
+textarea {
+    width: 90%;
+    margin: 0 auto;
+    display: block;
+    border-radius: 8px;
+    border: 2px solid #5b5b5b;
+    background-color: #201F20;
+    color: #fff;
+    padding: 10px;
+    font-size: 14px;
+    resize: none;
+}
+
+/* BOTÕES  */
+.login-option {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px;
+    background-color: #201F20;
+    border: 2px solid #E94B22;
+    box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 90%;
+    margin: 10px auto;
+}
+
+.login-option:hover {
+    background-color: #E94B22;
+}
+
+.login-option:active {
+    transform: scale(0.97);
+}
+
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #777;
+}
+
+/* ===========================================
+   ESTILOS DA TABELA DE CONSULTA
+============================================= */
+
+/* Container da tabela */
+#dados {
+    overflow-x: auto; /* Scroll horizontal em telas pequenas */
+}
+
+/* Tabela principal */
+#dados table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+    background-color: #201F20;
+    overflow: hidden;
+    outline-offset: -2px;
+}
+
+/* Cabeçalho da tabela */
+#dados th {
+
+    color: white;
+    font-weight: 600;
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 2px solid #c83c1a;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    border: 1px solid #ffffff;
+}
+
+/* Células da tabela  */
+#dados td {
+    font-size: 12px;
+    border: 1px solid #ffffff;
+    padding: 10px;
+    color: #fff;
+    vertical-align: center;
+    text-align: center;
+}
+
+
+#dados tr:nth-child(odd) {
+    background-color: #201F20;
+}
+
+/* Hover nas linhas */
+#dados tr:hover {
+    background-color: #3a3a3a !important;
+    transition: background-color 0.2s ease;
+}
+
+/* Alinhamento específico por tipo de conteúdo */
+#dados td:first-child { /* Primeira coluna */
+    font-weight: 500;
+    color: #fff;
+}
+
+#dados td:nth-child(2) { /* Segunda coluna */
+    font-weight: 500;
+    color: #fff;
+}
+
+/* Mensagem de "nenhum item" */
+#dados p {
+    text-align: center;
+    color: #ccc;
+    font-style: italic;
+    padding: 20px;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: space-around; /* distribui igualmente */
+  align-items: center;
+  flex-wrap: wrap; /* quebra linha se não couber na tela */
+  gap: 15px;
+}
+
+.stat-box {
+  border-radius: 8px;
+  padding: 10px 16px;
+  text-align: center;
+  min-width: 120px;
+  color: #fff;
+  border: 2px solid #5b5b5b;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+tbody tr.pendente td {
+    color: #ff460a !important;
+}
+
+/* RESPONSIVO  */
+@media (max-width: 768px) {
+    section {
+        margin: 10px 20px;
+        padding: 25px 25px;
+    }
+
+    #dados {
+        padding: 0px 15px 15px 15px;         /* Menos espaço lateral */
+        margin: 10px 20px;            /* Menos margem */
+
+    }
+
+    .header h1 {
+        font-size: 1.2em;
+    }
+    h2, h3 {
+        font-size: 1.2em;
+    }
+
+    .logo {
+        width: 30px;
+    }
+
+    .logo-link {
+        left: 30px;
+    }
+
+    /* Tabela responsiva */
+    #dados table {
+        font-size: 12px;
+    }
+
+    #dados th, #dados td {
+        padding: 8px 6px;
+    }
+
+    #dados th {
+        font-size: 11px;
+    }
+
+}

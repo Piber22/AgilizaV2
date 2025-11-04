@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Encarregadas</title>
+
+  <!-- Fonte -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="../login.css" />
+</head>
+<body>
+  <main>
+    <div class="login-container">
+      <form class="login-box">
+
+        <!-- Logo -->
+        <div class="logo-placeholder">
+          <a href="../index.html" class="logo-link">
+            <img src="../img/logo.png" alt="Logo da Manserv" class="logo">
+          </a>
+        </div>
+
+        <!-- Botões de acesso -->
+        <button type="button" class="login-option" onclick="window.location.href='dimensionamento/dimensionamento.html'">
+          Dimensionamento
+        </button>
+        <button type="button" class="login-option" onclick="window.location.href='efetivo/efetivo.html'">
+          Efetivo
+        </button>
+        <button type="button" class="login-option" onclick="window.location.href='troca-de-plantao/trocaplantao.html'">
+          Passagem de plantão
+        </button>
+        <button type="button" class="login-option" id="btn-cronograma">
+          Cronograma
+        </button>
+        <button type="button" class="login-option" id="btn-ferramentas">
+          Ferramentas
+        </button>
+
+        <!-- Mensagem de erro -->
+        <p class="login-error" id="login-error"></p>
+      </form>
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="footer">
+    <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- JavaScript externo -->
+  <script src="cronograma-acesso.js"></script>
+</body>
+</html>

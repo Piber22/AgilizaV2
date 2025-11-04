@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troca de plantão</title>
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- CSS específico -->
+    <link rel="stylesheet" href="rp_trocaplantao.css">
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../rouparia.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Troca de plantão</h1>
+        </header>
+
+        <!-- Informações -->
+        <section id="info">
+            <h2>Informações</h2>
+            <label>Data: <input type="date" id="dataRecebimento"></label>
+            <label>Responsável: <input type="text" id="responsavel" placeholder="Nome:"></label>
+        </section>
+
+        <!-- Enxoval -->
+        <section id="enxoval">
+            <h2>Enxoval</h2>
+            <label>Lençóis no carrinho: <input type="number" id="lencolCarrinho" min="0"></label>
+            <label>Lençóis na prateleira: <input type="number" id="lencolPrateleira" min="0"></label>
+            <br>
+            <label>Camisola: <input type="number" id="camisolaQtd" min="0"></label>
+            <br>
+            <label>Cobertor: <input type="number" id="cobertorQtd" min="0"></label>
+            <br>
+            <label>Fronha: <input type="number" id="fronhaQtd" min="0"></label>
+        </section>
+
+        <!-- Botões -->
+        <button id="gerarBtn" class="login-option">Gerar Mensagem</button>
+
+        <!-- Mensagem gerada -->
+        <section id="mensagem">
+            <h2>Mensagem gerada:</h2>
+            <textarea id="resultado" rows="15" readonly></textarea>
+            <button id="copiarBtn" class="login-option">📋 Copiar Mensagem</button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="rp_trocaplantao.js"></script>
+    <script src="sheet.js"></script>
+</body>
+</html>
