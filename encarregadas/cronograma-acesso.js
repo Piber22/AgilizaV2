@@ -1,18 +1,19 @@
 // === CONFIGURAÇÃO DA SENHA ===
-const SENHA_CORRETA = "1"; // Altere aqui se quiser
+const SENHA_CORRETA = "1"; // Mesma senha para Cronograma e Ferramentas
 
 // === ELEMENTOS DO DOM ===
 const btnCronograma = document.getElementById("btn-cronograma");
+const btnFerramentas = document.getElementById("btn-ferramentas");
 const errorMsg = document.getElementById("login-error");
 
-// === FUNÇÃO PRINCIPAL ===
-function protegerAcessoCronograma() {
-  btnCronograma.addEventListener("click", function(e) {
-    e.preventDefault(); // Impede clique padrão
+// === FUNÇÃO REUTILIZÁVEL PARA PROTEGER BOTÃO ===
+function protegerBotao(botao, urlDestino) {
+  botao.addEventListener("click", function(e) {
+    e.preventDefault(); // Impede comportamento padrão
 
-    const senha = prompt("Digite a senha para acessar o Cronograma:");
+    const senha = prompt("Digite a senha para acessar esta área:");
 
-    // Usuário cancelou
+    // Cancelou
     if (senha === null) {
       mostrarErro("Acesso cancelado.");
       return;
@@ -20,25 +21,30 @@ function protegerAcessoCronograma() {
 
     // Senha correta
     if (senha === SENHA_CORRETA) {
-      window.location.href = 'cronograma/cronograma.html';
+      window.location.href = urlDestino;
     } else {
       mostrarErro("Senha incorreta. Tente novamente.");
     }
   });
 }
 
-// === FUNÇÃO AUXILIAR PARA MENSAGEM DE ERRO ===
+// === FUNÇÃO PARA MOSTRAR ERRO COM FADE ===
 function mostrarErro(mensagem) {
   errorMsg.textContent = mensagem;
   errorMsg.style.color = "#e74c3c";
   errorMsg.style.opacity = "1";
 
-  // Remove a mensagem após 3 segundos
+  // Fade out após 3 segundos
   setTimeout(() => {
     errorMsg.style.opacity = "0";
-    setTimeout(() => errorMsg.textContent = "", 300); // Remove texto após fade
+    setTimeout(() => {
+      errorMsg.textContent = "";
+    }, 300);
   }, 3000);
 }
 
 // === INICIA QUANDO A PÁGINA CARREGA ===
-document.addEventListener("DOMContentLoaded", protegerAcessoCronograma);
+document.addEventListener("DOMContentLoaded", () => {
+  protegerBotao(btnCronograma, 'cronograma/cronograma.html');
+  protegerBotao(btnFerramentas, 'ferramentas/ferramentas.html');
+});
