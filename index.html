@@ -64,5 +64,12 @@
 
   <!-- Script -->
   <script src="login.js"></script>
+<script>
+  // Força o modo app instalado
+  window.addEventListener('DOMContentLoaded', () => {
+    let link = document.querySelector("link[rel='manifest']");
+    if (link) link.href = '/AgilizaV2/manifest.json';
+  });
+</script>
 </body>
 </html>
