@@ -9,20 +9,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 
   <!-- Estilos -->
-  <link rel="stylesheet" href="login.css" />
+  <link rel="stylesheet" href="./login.css" />
 
   <!-- Favicon tradicional (navegador) -->
-  <link rel="icon" type="image/png" href="img/icone.png">
+  <link rel="icon" type="image/png" href="./img/icone.png">
 
-  <!-- Ícones para PWA / Atalho no celular (OBRIGATÓRIO) -->
-  <link rel="icon" type="image/png" sizes="192x192" href="img/icon-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="img/icon-512.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="img/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="img/icon-512.png">
+  <!-- Ícones para PWA / Atalho no celular -->
+  <link rel="icon" type="image/png" sizes="192x192" href="./img/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="./img/icon-512.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="./img/icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="./img/icon-512.png">
 
-  <!-- Manifest PWA (OBRIGATÓRIO para ícone no atalho) -->
-  <link rel="manifest" href="manifest.json">
-  <base href="/AgilizaV2/">
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="./manifest.json">
 </head>
 <body>
   <main>
@@ -31,7 +30,7 @@
 
         <!-- Logo -->
         <div class="logo-placeholder">
-          <img src="img/logo.png" alt="Logo da Manserv" class="logo">
+          <img src="./img/logo.png" alt="Logo da Manserv" class="logo">
         </div>
 
         <!-- Botões de categoria -->
@@ -63,13 +62,6 @@
   </footer>
 
   <!-- Script -->
-  <script src="login.js"></script>
-<script>
-  // Força o modo app instalado
-  window.addEventListener('DOMContentLoaded', () => {
-    let link = document.querySelector("link[rel='manifest']");
-    if (link) link.href = '/AgilizaV2/manifest.json';
-  });
-</script>
+  <script src="./login.js"></script>
 </body>
 </html>
