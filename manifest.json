@@ -5,7 +5,7 @@
   "scope": "/AgilizaV2/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#4CAF50",
+  "theme_color": "#201F20",
   "icons": [
     {
       "src": "./img/icon-192.png",
