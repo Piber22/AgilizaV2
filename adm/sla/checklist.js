@@ -380,9 +380,6 @@ async function calcularNota() {
     document.getElementById('formulario').style.display = 'none';
     document.getElementById('resultado').style.display = 'block';
 
-    // Exibir assinatura
-    exibirAssinatura();
-
     // Mostrar primeira categoria com questões
     if (questoesZerada.length > 0) {
         mostrarCategoria('zerada');
