@@ -107,7 +107,6 @@ section {
 /* Labels lado a lado */
 label {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
 }
@@ -368,7 +367,7 @@ select {
 }
 
 #todasQuestoes .nota-075 {
-    background-color: #3688ff;
+    background-color: #399aea;
     color: white;
 }
 
@@ -477,7 +476,6 @@ select {
 }
 
 .canvas-container {
-    background-color: white;
     border-radius: 8px;
     padding: 10px;
     margin-bottom: 20px;

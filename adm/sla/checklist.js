@@ -226,7 +226,7 @@ const questoes = [
 let respostasUsuario = [];
 
 // URL da sua API do Apps Script
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZ_QyVTkl_tg8X5PrXBD6ukziYFLmYy2JS3MuqiiX5hJmUwFaiHWDNiC6_8I_tQ62mwQ/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/SEU_SCRIPT_ID_AQUI/exec';
 
 // Função para gerar o formulário
 function gerarFormulario() {
@@ -261,8 +261,12 @@ function gerarFormulario() {
 
 // Função para calcular a nota
 async function calcularNota() {
+    // Mostrar loading
+    mostrarLoading();
+
     const avaliador = document.getElementById('avaliador').value.trim();
     if (!avaliador) {
+        esconderLoading();
         alert('Por favor, insira o nome do avaliador.');
         return;
     }
@@ -312,6 +316,7 @@ async function calcularNota() {
     });
 
     if (!todasRespondidas) {
+        esconderLoading();
         alert('Por favor, responda todas as questões antes de finalizar.');
         return;
     }
@@ -388,6 +393,18 @@ async function calcularNota() {
     } else {
         mostrarCategoria('maxima');
     }
+
+    // Esconder loading
+    esconderLoading();
+}
+
+// Funções de Loading
+function mostrarLoading() {
+    document.getElementById('loadingOverlay').classList.add('ativo');
+}
+
+function esconderLoading() {
+    document.getElementById('loadingOverlay').classList.remove('ativo');
 }
 
 // Função para criar lista de questões
