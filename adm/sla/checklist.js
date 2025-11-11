@@ -222,6 +222,12 @@ const questoes = [
     }
 ];
 
+// Variável global para armazenar respostas
+let respostasUsuario = [];
+
+// URL da sua API do Apps Script
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwpL2vjvlYKEKqe4Ji0-FAf4zSrYlmQqr3L4DHDxGiKNGHKMPJQztH_s9xT10b4ogbGcA/exec';
+
 // Função para gerar o formulário
 function gerarFormulario() {
     const form = document.getElementById('checklistForm');
@@ -254,7 +260,7 @@ function gerarFormulario() {
 }
 
 // Função para calcular a nota
-function calcularNota() {
+async function calcularNota() {
     const avaliador = document.getElementById('avaliador').value.trim();
     if (!avaliador) {
         alert('Por favor, insira o nome do avaliador.');
@@ -313,6 +319,27 @@ function calcularNota() {
     // Converter para porcentagem (0-100)
     notaTotal = (notaTotal * 100).toFixed(2);
 
+    // Preparar dados para enviar ao Google Sheets
+    const dadosParaEnviar = {
+        avaliador: avaliador,
+        notaFinal: notaTotal,
+        questoesMaxima: questoesMaxima.length,
+        questoesAlta: questoesAlta.length,
+        questoesBaixa: questoesBaixa.length,
+        questoesZerada: questoesZerada.length,
+        respostas: respostasUsuario,
+        assinatura: assinaturaDataURL
+    };
+
+    // Enviar para Google Sheets
+    const resultado = await enviarParaGoogleSheets(dadosParaEnviar);
+
+    if (resultado.success) {
+        console.log('Dados enviados com sucesso!');
+    } else {
+        console.error('Erro ao enviar dados:', resultado.erro);
+    }
+
     // Exibir resultado
     document.getElementById('notaFinal').textContent = `${notaTotal}%`;
     document.getElementById('avaliadorInfo').innerHTML = `<p style="text-align: center; margin: 10px 0;"><strong>Avaliador:</strong> ${avaliador}</p>`;
@@ -340,7 +367,7 @@ function calcularNota() {
 
     // Criar listas de questões
     criarListaQuestoes('maxima', questoesMaxima, 'Questões com Nota Máxima', '#4CAF50');
-    criarListaQuestoes('alta', questoesAlta, 'Questões com Nota Alta (0.75)', '#FFC107');
+    criarListaQuestoes('alta', questoesAlta, 'Questões com Nota Alta (0.75)', '#399AEA');
     criarListaQuestoes('baixa', questoesBaixa, 'Questões com Nota Baixa (0.5)', '#FF9800');
     criarListaQuestoes('zerada', questoesZerada, 'Questões Zeradas (0)', '#f44336');
 
@@ -408,12 +435,6 @@ function mostrarCategoria(categoria) {
     document.getElementById(`lista-${categoria}`).classList.add('ativa');
 }
 
-// Gerar formulário ao carregar a página
-window.addEventListener('DOMContentLoaded', gerarFormulario);
-
-// Variável global para armazenar respostas
-let respostasUsuario = [];
-
 // Função para alternar visualização de todas as questões
 function toggleTodasQuestoes() {
     const container = document.getElementById('todasQuestoes');
@@ -472,3 +493,27 @@ function gerarTodasQuestoes() {
         container.appendChild(div);
     });
 }
+
+// Função para enviar dados para o Google Sheets
+async function enviarParaGoogleSheets(dadosAvaliacao) {
+    try {
+        const response = await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dadosAvaliacao)
+        });
+
+        // Com mode: 'no-cors', não conseguimos ler a resposta
+        // Mas o Apps Script vai processar os dados
+        return { success: true };
+
+    } catch (erro) {
+        console.error('Erro ao enviar dados:', erro);
+        return { success: false, erro: erro.toString() };
+    }
+}
+
+// Gerar formulário ao carregar a página
+window.addEventListener('DOMContentLoaded', gerarFormulario);
