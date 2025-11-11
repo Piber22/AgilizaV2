@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist de qualidade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="checklist.css">
+</head>
+<body>
+    <main>
+        <header class="header">
+            <a href="../gestao.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Checklist de Qualidade</h1>
+        </header>
+
+        <section>
+            <label>
+                <span>Avaliador:</span>
+                <input type="text" id="avaliador" placeholder="Nome do avaliador" required>
+            </label>
+        </section>
+
+        <section id="formulario">
+            <h2>Questionário de Avaliação</h2>
+            <form id="checklistForm">
+                <!-- As questões serão inseridas aqui pelo JavaScript -->
+            </form>
+            <button type="button" id="enviar-btn" onclick="calcularNota()">Finalizar Avaliação</button>
+        </section>
+
+        <section id="resultado">
+            <h2>Resultado da Avaliação</h2>
+            <div class="nota-final" id="notaFinal"></div>
+            <div id="avaliadorInfo"></div>
+            <div class="categorias-btn" id="categoriasContainer"></div>
+            <div id="questoesContainer"></div>
+            <button class="btn-visualizar" onclick="toggleTodasQuestoes()">📋 Ver Todas as Questões</button>
+            <div id="todasQuestoes"></div>
+            <button class="btn-imprimir" onclick="window.print()">Imprimir Resultado</button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="checklist.js"></script>
+</body>
+</html>
