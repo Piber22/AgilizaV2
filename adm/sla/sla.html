@@ -6,6 +6,7 @@
     <title>Checklist de qualidade</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="checklist.css">
+    <script src="assinatura.js"></script>
 </head>
 <body>
     <main>
@@ -28,13 +29,14 @@
             <form id="checklistForm">
                 <!-- As questões serão inseridas aqui pelo JavaScript -->
             </form>
-            <button type="button" id="enviar-btn" onclick="calcularNota()">Finalizar Avaliação</button>
+            <button type="button" id="enviar-btn" onclick="abrirModalAssinatura()">Finalizar Avaliação</button>
         </section>
 
         <section id="resultado">
             <h2>Resultado da Avaliação</h2>
             <div class="nota-final" id="notaFinal"></div>
             <div id="avaliadorInfo"></div>
+            <div id="assinaturaContainer"></div>
             <div class="categorias-btn" id="categoriasContainer"></div>
             <div id="questoesContainer"></div>
             <button class="btn-visualizar" onclick="toggleTodasQuestoes()">📋 Ver Todas as Questões</button>

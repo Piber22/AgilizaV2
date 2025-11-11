@@ -348,6 +348,9 @@ function calcularNota() {
     document.getElementById('formulario').style.display = 'none';
     document.getElementById('resultado').style.display = 'block';
 
+    // Exibir assinatura
+    exibirAssinatura();
+
     // Mostrar primeira categoria com questões
     if (questoesZerada.length > 0) {
         mostrarCategoria('zerada');
@@ -457,10 +460,12 @@ function gerarTodasQuestoes() {
         }
 
         div.innerHTML = `
-            <div class="question-title">${index + 1}. ${resposta.titulo}</div>
+            <div class="question-title">
+                <span>${index + 1}. ${resposta.titulo}</span>
+                <span class="resposta-nota ${classeNota}">${textNota}</span>
+            </div>
             <div class="resposta-selecionada">
                 ${resposta.resposta}
-                <span class="resposta-nota ${classeNota}">${textNota}</span>
             </div>
         `;
 
