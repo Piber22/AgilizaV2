@@ -7,6 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="checklist.css">
     <script src="assinatura.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <main>
@@ -29,19 +31,18 @@
             <form id="checklistForm">
                 <!-- As questões serão inseridas aqui pelo JavaScript -->
             </form>
-            <button type="button" id="enviar-btn" onclick="abrirModalAssinatura()">Finalizar Avaliação</button>
+            <button type="button" id="enviar-btn">Finalizar Avaliação</button>
         </section>
 
         <section id="resultado">
             <h2>Resultado da Avaliação</h2>
             <div class="nota-final" id="notaFinal"></div>
             <div id="avaliadorInfo"></div>
-            <div id="assinaturaContainer"></div>
+            <!--<div id="assinaturaContainer"></div>-->
             <div class="categorias-btn" id="categoriasContainer"></div>
             <div id="questoesContainer"></div>
             <button class="btn-visualizar" onclick="toggleTodasQuestoes()">📋 Ver Todas as Questões</button>
             <div id="todasQuestoes"></div>
-            <button class="btn-imprimir" onclick="window.print()">Imprimir Resultado</button>
         </section>
     </main>
 
@@ -50,5 +51,6 @@
     </footer>
 
     <script src="checklist.js"></script>
+    <script src="pdf-generator.js"></script>
 </body>
 </html>

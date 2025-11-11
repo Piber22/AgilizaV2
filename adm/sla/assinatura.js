@@ -1,11 +1,17 @@
-// Variáveis globais para assinatura
+// assinatura.js - Versão final compatível com integração PDF
+
+// === VARIÁVEIS GLOBAIS (acessíveis por outros arquivos) ===
 let canvas;
 let ctx;
 let desenhando = false;
 let assinaturaVazia = true;
 let assinaturaDataURL = null;
 
-// Função para abrir modal de assinatura
+// === EXPORTAR VARIÁVEIS PARA O WINDOW (para uso em checklist.js) ===
+window.assinaturaVazia = true;
+window.assinaturaDataURL = null;
+
+// === FUNÇÃO: ABRIR MODAL DE ASSINATURA ===
 function abrirModalAssinatura() {
     const avaliador = document.getElementById('avaliador').value.trim();
     if (!avaliador) {
@@ -39,48 +45,49 @@ function abrirModalAssinatura() {
                 <canvas id="canvasAssinatura" width="500" height="200"></canvas>
             </div>
             <div class="modal-buttons">
-                <button class="btn-limpar" onclick="limparAssinatura()">🗑️ Limpar</button>
-                <button class="btn-cancelar" onclick="fecharModalAssinatura()">❌ Cancelar</button>
-                <button class="btn-confirmar" onclick="confirmarAssinatura()">✓ Confirmar</button>
+                <button class="btn-limpar" onclick="limparAssinatura()">Limpar</button>
+                <button class="btn-cancelar" onclick="fecharModalAssinatura()">Cancelar</button>
+                <button class="btn-confirmar" onclick="confirmarAssinatura()">Confirmar</button>
             </div>
         </div>
     `;
-
     document.body.appendChild(modal);
 
     // Inicializar canvas
     inicializarCanvas();
 
+    // Resetar estado
+    assinaturaVazia = true;
+    window.assinaturaVazia = true;
+
     return false;
 }
 
-// Função para inicializar o canvas
+// === FUNÇÃO: INICIALIZAR CANVAS ===
 function inicializarCanvas() {
     canvas = document.getElementById('canvasAssinatura');
     ctx = canvas.getContext('2d');
 
-    // Configurar estilo do canvas
     ctx.strokeStyle = '#E94B22';
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    // Eventos de mouse
     canvas.addEventListener('mousedown', iniciarDesenho);
     canvas.addEventListener('mousemove', desenhar);
     canvas.addEventListener('mouseup', pararDesenho);
     canvas.addEventListener('mouseleave', pararDesenho);
 
-    // Eventos de touch (mobile)
     canvas.addEventListener('touchstart', iniciarDesenhoTouch);
     canvas.addEventListener('touchmove', desenharTouch);
     canvas.addEventListener('touchend', pararDesenho);
 }
 
-// Funções de desenho - Mouse
+// === DESENHO - MOUSE ===
 function iniciarDesenho(e) {
     desenhando = true;
     assinaturaVazia = false;
+    window.assinaturaVazia = false;
     const rect = canvas.getBoundingClientRect();
     ctx.beginPath();
     ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
@@ -97,11 +104,12 @@ function pararDesenho() {
     desenhando = false;
 }
 
-// Funções de desenho - Touch
+// === DESENHO - TOUCH ===
 function iniciarDesenhoTouch(e) {
     e.preventDefault();
     desenhando = true;
     assinaturaVazia = false;
+    window.assinaturaVazia = false;
     const rect = canvas.getBoundingClientRect();
     const touch = e.touches[0];
     ctx.beginPath();
@@ -117,13 +125,14 @@ function desenharTouch(e) {
     ctx.stroke();
 }
 
-// Função para limpar assinatura
+// === LIMPAR ASSINATURA ===
 function limparAssinatura() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     assinaturaVazia = true;
+    window.assinaturaVazia = true;
 }
 
-// Função para fechar modal
+// === FECHAR MODAL ===
 function fecharModalAssinatura() {
     const modal = document.getElementById('modalAssinatura');
     if (modal) {
@@ -131,36 +140,32 @@ function fecharModalAssinatura() {
     }
 }
 
-// Função para confirmar assinatura
+// === CONFIRMAR ASSINATURA (versão base - será sobrescrita) ===
 function confirmarAssinatura() {
     if (assinaturaVazia) {
         alert('Por favor, faça sua assinatura antes de confirmar.');
         return;
     }
 
-    // Salvar assinatura como imagem
+    // Salvar assinatura
     assinaturaDataURL = canvas.toDataURL('image/png');
+    window.assinaturaDataURL = assinaturaDataURL;
 
     // Fechar modal
     fecharModalAssinatura();
 
-    // Prosseguir com o cálculo da nota
-    calcularNota();
-}
-
-// Função para exibir assinatura no resultado
-function exibirAssinatura() {
-    if (assinaturaDataURL) {
-        const assinaturaDiv = document.getElementById('assinaturaContainer');
-        if (assinaturaDiv) {
-            assinaturaDiv.innerHTML = `
-                <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #5b5b5b;">
-                    <h3 style="text-align: center; margin-bottom: 10px;">Assinatura Digital</h3>
-                    <div style="text-align: center;">
-                        <img src="${assinaturaDataURL}" alt="Assinatura" style="max-width: 100%; border: 2px solid #5b5b5b; border-radius: 8px; background-color: white; padding: 10px;">
-                    </div>
-                </div>
-            `;
-        }
+    // === AQUI O checklist.js VAI SOBRESCREVER ===
+    // Por padrão, só calcula nota (comportamento antigo)
+    if (typeof window.finalizarComPDF === 'function') {
+        window.finalizarComPDF();
+    } else {
+        calcularNota();
     }
 }
+
+// === EXPORTAR TODAS AS FUNÇÕES PARA O WINDOW ===
+window.abrirModalAssinatura = abrirModalAssinatura;
+window.inicializarCanvas = inicializarCanvas;
+window.limparAssinatura = limparAssinatura;
+window.fecharModalAssinatura = fecharModalAssinatura;
+window.confirmarAssinatura = confirmarAssinatura; // será sobrescrito

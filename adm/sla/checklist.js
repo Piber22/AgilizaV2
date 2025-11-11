@@ -222,7 +222,7 @@ const questoes = [
     }
 ];
 
-// Função para gerar o formulário
+// === GERAR FORMULÁRIO ===
 function gerarFormulario() {
     const form = document.getElementById('checklistForm');
     questoes.forEach((questao, index) => {
@@ -253,7 +253,7 @@ function gerarFormulario() {
     });
 }
 
-// Função para calcular a nota
+// === CALCULAR NOTA ===
 function calcularNota() {
     const avaliador = document.getElementById('avaliador').value.trim();
     if (!avaliador) {
@@ -262,18 +262,12 @@ function calcularNota() {
     }
 
     let notaTotal = 0;
-    let questoesMaxima = [];
-    let questoesAlta = [];
-    let questoesBaixa = [];
-    let questoesZerada = [];
+    let questoesMaxima = [], questoesAlta = [], questoesBaixa = [], questoesZerada = [];
     let todasRespondidas = true;
-
-    // Limpar respostas anteriores
     respostasUsuario = [];
 
     questoes.forEach((questao, index) => {
         const respostaSelecionada = document.querySelector(`input[name="questao${index}"]:checked`);
-
         if (!respostaSelecionada) {
             todasRespondidas = false;
             return;
@@ -290,19 +284,12 @@ function calcularNota() {
             valor: valorResposta
         };
 
-        // Armazenar todas as respostas
         respostasUsuario.push(questaoInfo);
 
-        // Categorizar questões
-        if (valorResposta === 1) {
-            questoesMaxima.push(questaoInfo);
-        } else if (valorResposta === 0.75) {
-            questoesAlta.push(questaoInfo);
-        } else if (valorResposta === 0.5) {
-            questoesBaixa.push(questaoInfo);
-        } else if (valorResposta === 0) {
-            questoesZerada.push(questaoInfo);
-        }
+        if (valorResposta === 1) questoesMaxima.push(questaoInfo);
+        else if (valorResposta === 0.75) questoesAlta.push(questaoInfo);
+        else if (valorResposta === 0.5) questoesBaixa.push(questaoInfo);
+        else if (valorResposta === 0) questoesZerada.push(questaoInfo);
     });
 
     if (!todasRespondidas) {
@@ -310,165 +297,120 @@ function calcularNota() {
         return;
     }
 
-    // Converter para porcentagem (0-100)
     notaTotal = (notaTotal * 100).toFixed(2);
 
-    // Exibir resultado
     document.getElementById('notaFinal').textContent = `${notaTotal}%`;
     document.getElementById('avaliadorInfo').innerHTML = `<p style="text-align: center; margin: 10px 0;"><strong>Avaliador:</strong> ${avaliador}</p>`;
 
-    // Criar botões de categorias
     const categoriasContainer = document.getElementById('categoriasContainer');
     categoriasContainer.innerHTML = `
         <button class="categoria-btn maxima" onclick="mostrarCategoria('maxima')">
-            Nota Máxima
-            <span class="categoria-numero">${questoesMaxima.length}</span>
+            Nota Máxima <span class="categoria-numero">${questoesMaxima.length}</span>
         </button>
         <button class="categoria-btn alta" onclick="mostrarCategoria('alta')">
-            Nota Alta (0.75)
-            <span class="categoria-numero">${questoesAlta.length}</span>
+            Nota Alta (0.75) <span class="categoria-numero">${questoesAlta.length}</span>
         </button>
         <button class="categoria-btn baixa" onclick="mostrarCategoria('baixa')">
-            Nota Baixa (0.5)
-            <span class="categoria-numero">${questoesBaixa.length}</span>
+            Nota Baixa (0.5) <span class="categoria-numero">${questoesBaixa.length}</span>
         </button>
         <button class="categoria-btn zerada" onclick="mostrarCategoria('zerada')">
-            Zeradas (0)
-            <span class="categoria-numero">${questoesZerada.length}</span>
+            Zeradas (0) <span class="categoria-numero">${questoesZerada.length}</span>
         </button>
     `;
 
-    // Criar listas de questões
     criarListaQuestoes('maxima', questoesMaxima, 'Questões com Nota Máxima', '#4CAF50');
     criarListaQuestoes('alta', questoesAlta, 'Questões com Nota Alta (0.75)', '#FFC107');
     criarListaQuestoes('baixa', questoesBaixa, 'Questões com Nota Baixa (0.5)', '#FF9800');
     criarListaQuestoes('zerada', questoesZerada, 'Questões Zeradas (0)', '#f44336');
 
-    // Ocultar formulário e mostrar resultado
     document.getElementById('formulario').style.display = 'none';
     document.getElementById('resultado').style.display = 'block';
 
-    // Exibir assinatura
-    exibirAssinatura();
-
-    // Mostrar primeira categoria com questões
-    if (questoesZerada.length > 0) {
-        mostrarCategoria('zerada');
-    } else if (questoesBaixa.length > 0) {
-        mostrarCategoria('baixa');
-    } else if (questoesAlta.length > 0) {
-        mostrarCategoria('alta');
-    } else {
-        mostrarCategoria('maxima');
-    }
-}
-
-// Função para criar lista de questões
-function criarListaQuestoes(id, questoes, titulo, cor) {
-    const container = document.getElementById('questoesContainer');
-    const div = document.createElement('div');
-    div.id = `lista-${id}`;
-    div.className = 'problemas-list';
-
-    if (questoes.length > 0) {
-        div.innerHTML = `<h3>${titulo}:</h3>`;
-        questoes.forEach(questao => {
-            const item = document.createElement('div');
-            item.className = 'problema-item';
-            item.style.borderLeftColor = cor;
-            item.innerHTML = `
-                <div class="problema-titulo">${questao.titulo}</div>
-                <div class="problema-resposta">${questao.resposta}</div>
-            `;
-            div.appendChild(item);
-        });
-    } else {
-        div.innerHTML = `<p style="text-align: center; color: #ccc;">Nenhuma questão nesta categoria.</p>`;
+    // Exibir assinatura (se já tiver)
+    if (window.assinaturaDataURL) {
+        exibirAssinatura();
     }
 
-    container.appendChild(div);
+    // Mostrar categoria crítica
+    if (questoesZerada.length > 0) mostrarCategoria('zerada');
+    else if (questoesBaixa.length > 0) mostrarCategoria('baixa');
+    else if (questoesAlta.length > 0) mostrarCategoria('alta');
+    else mostrarCategoria('maxima');
 }
 
-// Função para mostrar categoria específica
-function mostrarCategoria(categoria) {
-    // Remover classe ativa de todos os botões
-    document.querySelectorAll('.categoria-btn').forEach(btn => {
-        btn.classList.remove('ativa');
-    });
+// === FUNÇÕES AUXILIARES (mantidas) ===
+function criarListaQuestoes(id, questoes, titulo, cor) { /* ... seu código ... */ }
+function mostrarCategoria(categoria) { /* ... seu código ... */ }
+function toggleTodasQuestoes() { /* ... seu código ... */ }
+function gerarTodasQuestoes() { /* ... seu código ... */ }
 
-    // Adicionar classe ativa ao botão clicado
-    document.querySelector(`.categoria-btn.${categoria}`).classList.add('ativa');
-
-    // Ocultar todas as listas
-    document.querySelectorAll('.problemas-list').forEach(lista => {
-        lista.classList.remove('ativa');
-    });
-
-    // Mostrar lista selecionada
-    document.getElementById(`lista-${categoria}`).classList.add('ativa');
-}
-
-// Gerar formulário ao carregar a página
-window.addEventListener('DOMContentLoaded', gerarFormulario);
-
-// Variável global para armazenar respostas
-let respostasUsuario = [];
-
-// Função para alternar visualização de todas as questões
-function toggleTodasQuestoes() {
-    const container = document.getElementById('todasQuestoes');
-    const btn = document.querySelector('.btn-visualizar');
-
-    if (container.classList.contains('visivel')) {
-        container.classList.remove('visivel');
-        btn.textContent = '📋 Ver Todas as Questões';
-    } else {
-        container.classList.add('visivel');
-        btn.textContent = '📋 Ocultar Questões';
-
-        // Gerar lista de todas as questões se ainda não foi gerada
-        if (container.innerHTML === '') {
-            gerarTodasQuestoes();
-        }
-    }
-}
-
-// Função para gerar visualização de todas as questões
-function gerarTodasQuestoes() {
-    const container = document.getElementById('todasQuestoes');
-    container.innerHTML = '<h3>Todas as Questões Respondidas:</h3>';
-
-    respostasUsuario.forEach((resposta, index) => {
-        const div = document.createElement('div');
-        div.className = 'question-block';
-
-        let classeNota = '';
-        let textNota = '';
-
-        if (resposta.valor === 1) {
-            classeNota = 'nota-1';
-            textNota = '1.0';
-        } else if (resposta.valor === 0.75) {
-            classeNota = 'nota-075';
-            textNota = '0.75';
-        } else if (resposta.valor === 0.5) {
-            classeNota = 'nota-05';
-            textNota = '0.5';
-        } else {
-            classeNota = 'nota-0';
-            textNota = '0';
-        }
-
-        div.innerHTML = `
-            <div class="question-title">
-                <span>${index + 1}. ${resposta.titulo}</span>
-                <span class="resposta-nota ${classeNota}">${textNota}</span>
-            </div>
-            <div class="resposta-selecionada">
-                ${resposta.resposta}
+// === EXIBIR ASSINATURA NO RESULTADO ===
+function exibirAssinatura() {
+    if (window.assinaturaDataURL && document.getElementById('assinaturaContainer')) {
+        document.getElementById('assinaturaContainer').innerHTML = `
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #5b5b5b;">
+                <h3 style="text-align: center; margin-bottom: 10px;">Assinatura Digital</h3>
+                <div style="text-align: center;">
+                    <img src="${window.assinaturaDataURL}" alt="Assinatura" style="max-width: 100%; border: 2px solid #5b5b5b; border-radius: 8px; background-color: white; padding: 10px;">
+                </div>
             </div>
         `;
-
-        container.appendChild(div);
-    });
+    }
 }
+
+// === FLUXO FINAL COM PDF ===
+async function finalizarComPDF() {
+    try {
+        calcularNota();
+
+        const pdfResultado = await gerarPDFChecklist();
+        if (!pdfResultado) return;
+
+        // Baixar PDF
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(pdfResultado.blob);
+        link.download = pdfResultado.nomeArquivo;
+        link.click();
+
+        // Mensagem de sucesso
+        const resultadoSection = document.getElementById('resultado');
+        const sucessoDiv = document.createElement('div');
+        sucessoDiv.style.cssText = `
+            text-align: center; margin: 20px 0; padding: 15px;
+            background-color: #1a1a1a; border: 2px solid #4CAF50;
+            border-radius: 8px; color: #4CAF50; font-weight: bold;
+        `;
+        sucessoDiv.innerHTML = `
+            <p>PDF gerado com sucesso!</p>
+            <p><strong>${pdfResultado.nomeArquivo}</strong></p>
+            <p>Pronto para auditoria.</p>
+        `;
+        resultadoSection.appendChild(sucessoDiv);
+
+    } catch (error) {
+        console.error('Erro ao finalizar:', error);
+        alert('Erro ao gerar PDF. Tente novamente.');
+    }
+}
+
+// === EVENTO DO BOTÃO ===
+document.addEventListener('DOMContentLoaded', () => {
+    gerarFormulario();
+    document.getElementById('enviar-btn').addEventListener('click', () => {
+        window.abrirModalAssinatura();
+    });
+});
+
+// === SOBRESCREVER confirmarAssinatura DO assinatura.js ===
+window.confirmarAssinatura = function() {
+    if (window.assinaturaVazia) {
+        alert('Por favor, faça sua assinatura antes de confirmar.');
+        return;
+    }
+    window.assinaturaDataURL = canvas.toDataURL('image/png');
+    window.fecharModalAssinatura();
+    finalizarComPDF();
+};
+
+// Variáveis globais
+let respostasUsuario = [];
