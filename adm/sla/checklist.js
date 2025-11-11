@@ -226,7 +226,7 @@ const questoes = [
 let respostasUsuario = [];
 
 // URL da sua API do Apps Script
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_7i9MUnsCX5DnI-Hb_7_-UgQBYggcDVb8WC77OQReT8NRlYAsJDgQ2VxMoq8Vf4mwQg/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtJlAj93hiCeIz9LrMBXSGAux5J6gLt416tvRXg-LexOoK9cZHjX6L_ao-BmLfnc97GA/exec';
 
 // Função para gerar o formulário
 function gerarFormulario() {
