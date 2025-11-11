@@ -206,7 +206,7 @@ select {
 .categoria-btn.ativa {
     border-color: #E94B22;
     background-color: #E94B22;
-    transform: scale(1.05);
+    transform: scale(1.00);
 }
 
 .categoria-btn .categoria-numero {
@@ -226,12 +226,12 @@ select {
 }
 
 .categoria-btn.alta {
-    border-color: #FFC107;
+    border-color: #399AEA;
 }
 
 .categoria-btn.alta.ativa {
-    background-color: #FFC107;
-    border-color: #FFC107;
+    background-color: #399AEA;
+    border-color: #399AEA;
     color: #201F20;
 }
 
@@ -368,7 +368,7 @@ select {
 }
 
 #todasQuestoes .nota-075 {
-    background-color: #3688ff;
+    background-color: #4795D1;
     color: white;
 }
 
@@ -451,7 +451,7 @@ select {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(32, 31, 32, 1);
+    background-color: rgba(0, 0, 0, 0.8);
     align-items: center;
     justify-content: center;
 }
@@ -477,7 +477,7 @@ select {
 }
 
 .canvas-container {
-    /*background-color: white;*/
+    background-color: white;
     border-radius: 8px;
     padding: 10px;
     margin-bottom: 20px;
