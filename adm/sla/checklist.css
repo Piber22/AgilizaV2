@@ -222,6 +222,7 @@ select {
 .categoria-btn.maxima.ativa {
     background-color: #4CAF50;
     border-color: #4CAF50;
+    color: #201F20;
 }
 
 .categoria-btn.alta {
@@ -241,6 +242,7 @@ select {
 .categoria-btn.baixa.ativa {
     background-color: #FF9800;
     border-color: #FF9800;
+    color: #201F20;
 }
 
 .categoria-btn.zerada {
@@ -250,6 +252,7 @@ select {
 .categoria-btn.zerada.ativa {
     background-color: #f44336;
     border-color: #f44336;
+    color: #201F20;
 }
 
 .problemas-list {
