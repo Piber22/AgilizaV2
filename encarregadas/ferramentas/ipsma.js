@@ -1,40 +1,44 @@
 function criarCamposIPSMA(container) {
   container.innerHTML = "";
 
+  // ===== [1] DECLARAÇÃO DAS VARIÁVEIS NO ESCOPO DA FUNÇÃO =====
+  let inputData, inputHoraInicio, inputHoraFim, inputLocal, inputElementos;
+  let selectClassificacao, selectConforme, selectChecklist, inputAcoes;
+
   // ===== 1. Data =====
   const labelData = document.createElement("label");
   labelData.textContent = "Data:";
-  const inputData = document.createElement("input");
+  inputData = document.createElement("input");
   inputData.type = "date";
   inputData.id = "data-ipsma";
   inputData.name = "data-ipsma";
   inputData.required = true;
   labelData.appendChild(inputData);
 
-  // ===== 2. Horário de Início =====
+  // ===== 2. Hora de início =====
   const labelHoraInicio = document.createElement("label");
-  labelHoraInicio.textContent = "Horário de Início:";
-  const inputHoraInicio = document.createElement("input");
+  labelHoraInicio.textContent = "Hora de início:";
+  inputHoraInicio = document.createElement("input");
   inputHoraInicio.type = "time";
   inputHoraInicio.id = "hora-inicio-ipsma";
   inputHoraInicio.name = "hora-inicio-ipsma";
   inputHoraInicio.required = true;
   labelHoraInicio.appendChild(inputHoraInicio);
 
-  // ===== 3. Horário de Término =====
+  // ===== 3. Hora de término =====
   const labelHoraFim = document.createElement("label");
-  labelHoraFim.textContent = "Horário de Término:";
-  const inputHoraFim = document.createElement("input");
+  labelHoraFim.textContent = "Hora de término:";
+  inputHoraFim = document.createElement("input");
   inputHoraFim.type = "time";
   inputHoraFim.id = "hora-fim-ipsma";
   inputHoraFim.name = "hora-fim-ipsma";
   inputHoraFim.required = true;
   labelHoraFim.appendChild(inputHoraFim);
 
-  // ===== 4. Área, Máquina, Equipamento ou Ferramenta =====
+  // ===== 4. Local =====
   const labelLocal = document.createElement("label");
   labelLocal.textContent = "Área, máquina, equipamento ou ferramenta:";
-  const inputLocal = document.createElement("input");
+  inputLocal = document.createElement("input");
   inputLocal.type = "text";
   inputLocal.id = "local-ipsma";
   inputLocal.name = "local-ipsma";
@@ -42,10 +46,10 @@ function criarCamposIPSMA(container) {
   inputLocal.required = true;
   labelLocal.appendChild(inputLocal);
 
-  // ===== 5. Elementos Verificados =====
+  // ===== 5. Elementos verificados =====
   const labelElementos = document.createElement("label");
   labelElementos.textContent = "Elementos verificados:";
-  const inputElementos = document.createElement("input");
+  inputElementos = document.createElement("input");
   inputElementos.type = "text";
   inputElementos.id = "elementos-ipsma";
   inputElementos.name = "elementos-ipsma";
@@ -53,80 +57,62 @@ function criarCamposIPSMA(container) {
   inputElementos.required = true;
   labelElementos.appendChild(inputElementos);
 
-  // ===== 6. Classificação do Desvio =====
+  // ===== 6. Classificação do desvio =====
   const labelClassificacao = document.createElement("label");
   labelClassificacao.textContent = "Classificação do desvio:";
-  const selectClassificacao = document.createElement("select");
+  selectClassificacao = document.createElement("select");
   selectClassificacao.id = "classificacao-ipsma";
   selectClassificacao.name = "classificacao-ipsma";
   selectClassificacao.required = true;
   const placeholderClass = document.createElement("option");
-  placeholderClass.textContent = "";
-  placeholderClass.value = "";
-  placeholderClass.disabled = true;
-  placeholderClass.selected = true;
+  placeholderClass.textContent = ""; placeholderClass.value = ""; placeholderClass.disabled = true; placeholderClass.selected = true;
   selectClassificacao.appendChild(placeholderClass);
   ["Crítico", "Moderado", "Despresível"].forEach(op => {
-    const o = document.createElement("option");
-    o.value = op;
-    o.textContent = op;
-    selectClassificacao.appendChild(o);
+    const o = document.createElement("option"); o.value = op; o.textContent = op; selectClassificacao.appendChild(o);
   });
   labelClassificacao.appendChild(selectClassificacao);
 
   // ===== 7. Conforme =====
   const labelConforme = document.createElement("label");
   labelConforme.textContent = "Conforme:";
-  const selectConforme = document.createElement("select");
+  selectConforme = document.createElement("select");
   selectConforme.id = "conforme-ipsma";
   selectConforme.name = "conforme-ipsma";
   selectConforme.required = true;
   const placeholderConf = document.createElement("option");
-  placeholderConf.textContent = "";
-  placeholderConf.value = "";
-  placeholderConf.disabled = true;
-  placeholderConf.selected = true;
+  placeholderConf.textContent = ""; placeholderConf.value = ""; placeholderConf.disabled = true; placeholderConf.selected = true;
   selectConforme.appendChild(placeholderConf);
   ["Item conforme", "Não conforme", "Não aplicável"].forEach(op => {
-    const o = document.createElement("option");
-    o.value = op;
-    o.textContent = op;
-    selectConforme.appendChild(o);
+    const o = document.createElement("option"); o.value = op; o.textContent = op; selectConforme.appendChild(o);
   });
   labelConforme.appendChild(selectConforme);
 
-  // ===== 8. Checklist de Inspeção Rotineira =====
+  // ===== 8. Checklist =====
   const labelChecklist = document.createElement("label");
   labelChecklist.textContent = "Checklist de inspeção rotineira:";
-  const selectChecklist = document.createElement("select");
+  selectChecklist = document.createElement("select");
   selectChecklist.id = "checklist-ipsma";
   selectChecklist.name = "checklist-ipsma";
   selectChecklist.required = true;
   const placeholderCheck = document.createElement("option");
-  placeholderCheck.textContent = "";
-  placeholderCheck.value = "";
-  placeholderCheck.disabled = true;
-  placeholderCheck.selected = true;
+  placeholderCheck.textContent = ""; placeholderCheck.value = ""; placeholderCheck.disabled = true; placeholderCheck.selected = true;
   selectChecklist.appendChild(placeholderCheck);
   ["Adequado", "Inadequado", "Inexistente"].forEach(op => {
-    const o = document.createElement("option");
-    o.value = op;
-    o.textContent = op;
-    selectChecklist.appendChild(o);
+    const o = document.createElement("option"); o.value = op; o.textContent = op; selectChecklist.appendChild(o);
   });
   labelChecklist.appendChild(selectChecklist);
 
-  // ===== 9. Ações Corretivas (sempre visível) =====
+  // ===== 9. Ações corretivas =====
   const labelAcoes = document.createElement("label");
   labelAcoes.textContent = "Ações corretivas:";
-  const inputAcoes = document.createElement("input");
+  inputAcoes = document.createElement("input");
   inputAcoes.type = "text";
   inputAcoes.id = "acoes-ipsma";
   inputAcoes.name = "acoes-ipsma";
   inputAcoes.placeholder = "Ex: Limpar área, sinalizar risco";
   labelAcoes.appendChild(inputAcoes);
 
-  // Adiciona todos os campos ao container
+  // ===== Adiciona ao container =====
   container.append(
     labelData, labelHoraInicio, labelHoraFim,
     labelLocal, labelElementos,
@@ -143,7 +129,7 @@ function criarCamposIPSMA(container) {
   botaoEnviar.style.cursor = "not-allowed";
   container.appendChild(botaoEnviar);
 
-  // ===== Validação em Tempo Real =====
+  // ===== Validação =====
   function validarCampos() {
     const campos = container.querySelectorAll("input, select");
     const todosPreenchidos = Array.from(campos).every(c => c.value.trim() !== "");
@@ -156,38 +142,38 @@ function criarCamposIPSMA(container) {
     botaoEnviar.style.cursor = podeEnviar ? "pointer" : "not-allowed";
   }
 
-  // Adiciona listeners em todos os campos
-  container.querySelectorAll("input, select").forEach(campo => {
-    campo.addEventListener("input", validarCampos);
-    campo.addEventListener("change", validarCampos);
+  container.querySelectorAll("input, select").forEach(c => {
+    c.addEventListener("input", validarCampos);
+    c.addEventListener("change", validarCampos);
   });
+  document.getElementById("responsavel")?.addEventListener("change", validarCampos);
 
-  // Listener no select global de responsável
-  const selectResponsavel = document.getElementById("responsavel");
-  if (selectResponsavel) {
-    selectResponsavel.addEventListener("change", validarCampos);
-  }
-
-  // ===== Coletar Dados =====
+  // ===== COLETAR DADOS (TODAS AS VARIÁVEIS ACESSÍVEIS) =====
   function coletarDadosFormulario() {
+    const inspetor = document.getElementById("responsavel")?.value || "";
+    const { re = "", funcao = "" } = getDadosResponsavel(inspetor);
+
     return {
       data: inputData.value,
-      horario_inicio: inputHoraInicio.value,
-      horario_termino: inputHoraFim.value,
+      hora_inicio: inputHoraInicio.value,
+      hora_termino: inputHoraFim.value,
       local_inspecionado: inputLocal.value,
+      inspetor: inspetor,
+      re: re,
+      funcao: funcao,
       elementos_verificados: inputElementos.value,
       classificacao_desvio: selectClassificacao.value,
       conforme: selectConforme.value,
       checklist_rotineiro: selectChecklist.value,
       acoes_corretivas: inputAcoes.value,
-      emitido_por: document.getElementById("responsavel")?.value || ""
+      responsavel: inspetor
     };
   }
 
-  // ===== Envio para Google Sheets =====
+  // ===== ENVIO =====
   botaoEnviar.addEventListener("click", async () => {
     const dados = coletarDadosFormulario();
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbypJaPZVEuUHub4v3J-sXBYQzdMimdGR2XOLW1lyMMUbCd8Gb8P7ccYuX20ZVGMMb8zxw/exec';
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbypJaPZVEuUHub4v3J-sXBYQzdMimdGR2XOLW1lyMMUbCd8Gb8P7ccYuX20ZVGMMb8zxw/exec'; // ← COLOQUE A URL DO SEU APPS SCRIPT
 
     const sucesso = await fetch(URL_APPS_SCRIPT, {
       method: 'POST',
@@ -204,7 +190,6 @@ function criarCamposIPSMA(container) {
       msg.style.marginTop = "10px";
       botaoEnviar.parentNode.insertBefore(msg, botaoEnviar.nextSibling);
 
-      // Limpa todos os campos
       container.querySelectorAll("input, select").forEach(c => c.value = "");
       botaoEnviar.disabled = true;
       botaoEnviar.style.opacity = "0.6";
@@ -212,17 +197,5 @@ function criarCamposIPSMA(container) {
 
       setTimeout(() => msg.remove(), 2000);
     }
-    const MAPA_RESPONSAVEIS = {
-  "Graciela":   { re: "037120", funcao: "Encarregada" },
-  "Giovana":    { re: "054651", funcao: "Encarregada" },
-  "Jéssica":    { re: "049971", funcao: "Líder" },
-  "Jacqueline": { re: "123456", funcao: "Líder" },
-  "Daiane":     { re: "062074", funcao: "Encarregada" },
-  "Ádrisson":   { re: "056367", funcao: "Planejador" }
-};
-
-function getDadosResponsavel(nome) {
-  return MAPA_RESPONSAVEIS[nome] || { re: "", funcao: "" };
-}
   });
 }
