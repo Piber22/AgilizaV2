@@ -1,3 +1,24 @@
+// ================================================================
+// IPSMA.JS – VERSÃO 100% INDEPENDENTE E FUNCIONAL
+// ================================================================
+
+// === MAPEAMENTO DE RESPONSÁVEIS (RE + FUNÇÃO) ===
+const MAPA_RESPONSAVEIS = {
+  "Graciela":   { re: "037120", funcao: "Encarregada" },
+  "Giovana":    { re: "054651", funcao: "Encarregada" },
+  "Jéssica":    { re: "049971", funcao: "Líder" },
+  "Jacqueline": { re: "123456", funcao: "Líder" },
+  "Daiane":     { re: "062074", funcao: "Encarregada" },
+  "Ádrisson":   { re: "056367", funcao: "Planejador" }
+};
+
+// Função para obter RE e Função
+function getDadosResponsavel(nome) {
+  return MAPA_RESPONSAVEIS[nome] || { re: "", funcao: "" };
+}
+
+// ================================================================
+
 function criarCamposIPSMA(container) {
   container.innerHTML = "";
 
@@ -148,7 +169,7 @@ function criarCamposIPSMA(container) {
   });
   document.getElementById("responsavel")?.addEventListener("change", validarCampos);
 
-  // ===== COLETAR DADOS (TODAS AS VARIÁVEIS ACESSÍVEIS) =====
+  // ===== COLETAR DADOS =====
   function coletarDadosFormulario() {
     const inspetor = document.getElementById("responsavel")?.value || "";
     const { re = "", funcao = "" } = getDadosResponsavel(inspetor);
@@ -173,29 +194,34 @@ function criarCamposIPSMA(container) {
   // ===== ENVIO =====
   botaoEnviar.addEventListener("click", async () => {
     const dados = coletarDadosFormulario();
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbypJaPZVEuUHub4v3J-sXBYQzdMimdGR2XOLW1lyMMUbCd8Gb8P7ccYuX20ZVGMMb8zxw/exec'; // ← COLOQUE A URL DO SEU APPS SCRIPT
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbypJaPZVEuUHub4v3J-sXBYQzdMimdGR2XOLW1lyMMUbCd8Gb8P7ccYuX20ZVGMMb8zxw/exec'; // ← SUBSTITUA
 
-    const sucesso = await fetch(URL_APPS_SCRIPT, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dados)
-    }).then(() => true).catch(() => false);
+    try {
+      await fetch(URL_APPS_SCRIPT, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+      });
 
-    if (sucesso) {
+      // Feedback visual
       const msg = document.createElement("div");
       msg.textContent = "Salvo!";
       msg.style.color = "#4CAF50";
       msg.style.textAlign = "center";
       msg.style.marginTop = "10px";
+      msg.style.fontWeight = "bold";
       botaoEnviar.parentNode.insertBefore(msg, botaoEnviar.nextSibling);
 
+      // Limpa formulário
       container.querySelectorAll("input, select").forEach(c => c.value = "");
       botaoEnviar.disabled = true;
       botaoEnviar.style.opacity = "0.6";
       botaoEnviar.style.cursor = "not-allowed";
 
       setTimeout(() => msg.remove(), 2000);
+    } catch (err) {
+      alert("Erro ao enviar. Verifique a conexão.");
     }
   });
 }
