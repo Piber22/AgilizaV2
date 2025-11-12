@@ -353,7 +353,7 @@ async function calcularNota() {
     const categoriasContainer = document.getElementById('categoriasContainer');
     categoriasContainer.innerHTML = `
         <button class="categoria-btn maxima" onclick="mostrarCategoria('maxima')">
-            Nota Máxima
+            Nota Máxima (1.0)
             <span class="categoria-numero">${questoesMaxima.length}</span>
         </button>
         <button class="categoria-btn alta" onclick="mostrarCategoria('alta')">
@@ -365,16 +365,16 @@ async function calcularNota() {
             <span class="categoria-numero">${questoesBaixa.length}</span>
         </button>
         <button class="categoria-btn zerada" onclick="mostrarCategoria('zerada')">
-            Zeradas (0)
+            Nota mínima (0)
             <span class="categoria-numero">${questoesZerada.length}</span>
         </button>
     `;
 
     // Criar listas de questões
-    criarListaQuestoes('maxima', questoesMaxima, 'Questões com Nota Máxima', '#4CAF50');
-    criarListaQuestoes('alta', questoesAlta, 'Questões com Nota Alta (0.75)', '#399AEA');
-    criarListaQuestoes('baixa', questoesBaixa, 'Questões com Nota Baixa (0.5)', '#FF9800');
-    criarListaQuestoes('zerada', questoesZerada, 'Questões Zeradas (0)', '#f44336');
+    criarListaQuestoes('maxima', questoesMaxima, 'Questões com nota (1.0)', '#4CAF50');
+    criarListaQuestoes('alta', questoesAlta, 'Questões com nota (0.75)', '#399AEA');
+    criarListaQuestoes('baixa', questoesBaixa, 'Questões com com nota (0.5)', '#FF9800');
+    criarListaQuestoes('zerada', questoesZerada, 'Questões com nota (0.0)', '#f44336');
 
     // Ocultar formulário e mostrar resultado
     document.getElementById('formulario').style.display = 'none';
