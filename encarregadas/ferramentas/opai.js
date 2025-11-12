@@ -2,7 +2,8 @@
 // OPAI.JS – FRONT-END 100% FUNCIONAL (sem envio)
 // ================================================================
 
-const MAPA_RESPONSAVEIS = {
+// === MAPEAMENTO DE RESPONSÁVEIS (RE + FUNÇÃO) – NOME ÚNICO PARA OPAI ===
+const MAPA_RESPONSAVEIS_OPAI = {
   "Graciela":   { re: "037120", funcao: "Encarregada" },
   "Giovana":    { re: "054651", funcao: "Encarregada" },
   "Jéssica":    { re: "049971", funcao: "Líder" },
@@ -11,8 +12,8 @@ const MAPA_RESPONSAVEIS = {
   "Ádrisson":   { re: "056367", funcao: "Planejador" }
 };
 
-function getDadosResponsavel(nome) {
-  return MAPA_RESPONSAVEIS[nome] || { re: "", funcao: "" };
+function getDadosResponsavelOPAI(nome) {
+  return MAPA_RESPONSAVEIS_OPAI[nome] || { re: "", funcao: "" };
 }
 
 // ================================================================
@@ -59,7 +60,7 @@ function criarCamposOPAI(container) {
   selectPessoas.appendChild(phP);
   for (let i = 1; i <= 5; i++) {
     const o = document.createElement("option"); o.value = i; o.textContent = i; selectPessoas.appendChild(o);
-  }
+  });
   labelPessoas.appendChild(selectPessoas);
 
   // ===== 4. Local =====
@@ -94,7 +95,7 @@ function criarCamposOPAI(container) {
   inputComportamentos.type = "text";
   inputComportamentos.id = "comportamentos-opai";
   inputComportamentos.placeholder = "Ex: Uso correto de EPI";
-  inputComportamentos.required = false; // inicial
+  inputComportamentos.required = false;
   divComportamentos.appendChild(inputComportamentos);
 
   // ===== Adiciona ao DOM =====
@@ -112,7 +113,7 @@ function criarCamposOPAI(container) {
   // ===== LÓGICA CONDICIONAL =====
   selectDesvios.addEventListener("change", () => {
     if (selectDesvios.value === "Não") {
-      divComportamentos.style.display = "block"; // ou "flex" se CSS suportar
+      divComportamentos.style.display = "block";
       inputComportamentos.required = true;
     } else {
       divComportamentos.style.display = "none";
@@ -144,6 +145,6 @@ function criarCamposOPAI(container) {
   });
   document.getElementById("responsavel")?.addEventListener("change", validarCampos);
 
-  // Chama validação inicial
+  // Validação inicial
   validarCampos();
 }
