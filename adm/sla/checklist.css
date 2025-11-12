@@ -489,6 +489,7 @@ select {
     cursor: crosshair;
     border: 2px dashed #5b5b5b;
     border-radius: 6px;
+    touch-action: none; /* CORREÇÃO: Previne scroll ao desenhar no mobile */
 }
 
 .modal-buttons {

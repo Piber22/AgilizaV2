@@ -104,8 +104,16 @@ function iniciarDesenhoTouch(e) {
     assinaturaVazia = false;
     const rect = canvas.getBoundingClientRect();
     const touch = e.touches[0];
+
+    // Calcular escala do canvas
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
     ctx.beginPath();
-    ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+    ctx.moveTo(
+        (touch.clientX - rect.left) * scaleX,
+        (touch.clientY - rect.top) * scaleY
+    );
 }
 
 function desenharTouch(e) {
@@ -113,7 +121,15 @@ function desenharTouch(e) {
     if (!desenhando) return;
     const rect = canvas.getBoundingClientRect();
     const touch = e.touches[0];
-    ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+
+    // Calcular escala do canvas
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    ctx.lineTo(
+        (touch.clientX - rect.left) * scaleX,
+        (touch.clientY - rect.top) * scaleY
+    );
     ctx.stroke();
 }
 
