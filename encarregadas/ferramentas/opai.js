@@ -481,7 +481,7 @@ function criarCamposOPAI(container) {
         }
       });
 
-      dados.comportamentos_seguros = ""; // Limpa quando há desvi os
+      dados.comportamentos_seguros = ""; // Limpa quando há desvios
     }
 
     return dados;
