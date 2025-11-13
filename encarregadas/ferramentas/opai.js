@@ -84,6 +84,7 @@ function criarCamposOPAI(container) {
   function criarGrupoRadio(pergunta, name, opcoes) {
     const questionBlock = document.createElement("div");
     questionBlock.className = "radio-question-block";
+    questionBlock.dataset.groupName = name; // Para identificar o grupo
 
     const spanPergunta = document.createElement("span");
     spanPergunta.className = "radio-group-title";
@@ -108,7 +109,149 @@ function criarCamposOPAI(container) {
       questionBlock.appendChild(labelOpcao);
     });
 
+    // Container para campos extras (inicialmente vazio)
+    const camposExtrasContainer = document.createElement("div");
+    camposExtrasContainer.className = "campos-extras-container";
+    camposExtrasContainer.id = `extras-${name}`;
+    camposExtrasContainer.style.display = "none";
+    camposExtrasContainer.style.marginTop = "15px";
+    camposExtrasContainer.style.paddingLeft = "10px";
+    camposExtrasContainer.style.borderLeft = "3px solid #E94B22";
+
+    questionBlock.appendChild(camposExtrasContainer);
+
+    // Adicionar listener para mostrar/ocultar campos extras e permitir desmarcar
+    let ultimoRadioMarcado = null;
+
+    opcoes.forEach((_, index) => {
+      const radio = questionBlock.querySelectorAll('input[type="radio"]')[index];
+
+      // Listener no click para permitir desmarcar
+      radio.addEventListener("click", (e) => {
+        if (ultimoRadioMarcado === radio) {
+          // Se clicar no mesmo que já estava marcado, desmarca
+          radio.checked = false;
+          ultimoRadioMarcado = null;
+          limparCamposExtras(name);
+          validarCampos();
+        } else {
+          // Se marcar um diferente, atualiza o último marcado
+          ultimoRadioMarcado = radio;
+          mostrarCamposExtras(name, camposExtrasContainer);
+          validarCampos();
+        }
+      });
+
+      // Listener no change para atualizar quando mudar via teclado
+      radio.addEventListener("change", () => {
+        if (radio.checked) {
+          ultimoRadioMarcado = radio;
+          mostrarCamposExtras(name, camposExtrasContainer);
+        }
+      });
+    });
+
     return questionBlock;
+  }
+
+  // ===== Função para mostrar campos extras =====
+  function mostrarCamposExtras(groupName, container) {
+    // Limpa conteúdo anterior
+    container.innerHTML = "";
+
+    // 1. Ação Corretiva Imediata
+    const labelAcao = document.createElement("label");
+    const spanAcao = document.createElement("span");
+    spanAcao.textContent = "Ação corretiva imediata:";
+    const selectAcao = document.createElement("select");
+    selectAcao.id = `acao-${groupName}`;
+    selectAcao.required = true;
+    selectAcao.classList.add("campo-extra");
+
+    const placeholderAcao = document.createElement("option");
+    placeholderAcao.value = "";
+    placeholderAcao.textContent = "";
+    placeholderAcao.disabled = true;
+    placeholderAcao.selected = true;
+    selectAcao.appendChild(placeholderAcao);
+
+    [
+      "Conscientizado o colaborador",
+      "Corrigida a condição insegura",
+      "Comunicado ao supervisor",
+      "Interrompido o serviço",
+      "Solicitado a correção da condição insegura"
+    ].forEach(opcao => {
+      const opt = document.createElement("option");
+      opt.value = opcao;
+      opt.textContent = opcao;
+      selectAcao.appendChild(opt);
+    });
+
+    labelAcao.appendChild(spanAcao);
+    labelAcao.appendChild(selectAcao);
+
+    // 2. Criticidade
+    const labelCriticidade = document.createElement("label");
+    const spanCriticidade = document.createElement("span");
+    spanCriticidade.textContent = "Criticidade:";
+    const selectCriticidade = document.createElement("select");
+    selectCriticidade.id = `criticidade-${groupName}`;
+    selectCriticidade.required = true;
+    selectCriticidade.classList.add("campo-extra");
+
+    const placeholderCriticidade = document.createElement("option");
+    placeholderCriticidade.value = "";
+    placeholderCriticidade.textContent = "";
+    placeholderCriticidade.disabled = true;
+    placeholderCriticidade.selected = true;
+    selectCriticidade.appendChild(placeholderCriticidade);
+
+    ["DESPREZÍVEL", "MODERADO", "CRÍTICO", "NÃO APLICÁVEL"].forEach(opcao => {
+      const opt = document.createElement("option");
+      opt.value = opcao;
+      opt.textContent = opcao;
+      selectCriticidade.appendChild(opt);
+    });
+
+    labelCriticidade.appendChild(spanCriticidade);
+    labelCriticidade.appendChild(selectCriticidade);
+
+    // 3. Descrição do desvio
+    const labelDescricao = document.createElement("label");
+    const spanDescricao = document.createElement("span");
+    spanDescricao.textContent = "Descrição do desvio / observação:";
+    const inputDescricao = document.createElement("input");
+    inputDescricao.type = "text";
+    inputDescricao.id = `descricao-${groupName}`;
+    inputDescricao.placeholder = "Descreva o desvio observado";
+    inputDescricao.required = true;
+    inputDescricao.classList.add("campo-extra");
+
+    labelDescricao.appendChild(spanDescricao);
+    labelDescricao.appendChild(inputDescricao);
+
+    // Adiciona os campos ao container
+    container.appendChild(labelAcao);
+    container.appendChild(labelCriticidade);
+    container.appendChild(labelDescricao);
+
+    // Mostra o container
+    container.style.display = "block";
+
+    // Adiciona listeners para validação
+    selectAcao.addEventListener("change", validarCampos);
+    selectCriticidade.addEventListener("change", validarCampos);
+    inputDescricao.addEventListener("input", validarCampos);
+  }
+
+  // ===== Função para limpar campos extras quando desmarcar =====
+  function limparCamposExtras(groupName) {
+    const container = document.getElementById(`extras-${groupName}`);
+    if (container) {
+      container.innerHTML = "";
+      container.style.display = "none";
+    }
   }
 
   // ===== Lógica condicional: "Não" =====
@@ -176,7 +319,7 @@ function criarCamposOPAI(container) {
       divCondicional.appendChild(grupoProcedimentos);
       divCondicional.appendChild(grupoEPI);
 
-      // Adiciona listeners nos rádios
+      // Adiciona listeners nos rádios para validação
       divCondicional.querySelectorAll('input[type="radio"]').forEach(radio => {
         radio.addEventListener("change", validarCampos);
       });
@@ -218,18 +361,33 @@ function criarCamposOPAI(container) {
       condicionaisValidos = inputComportamentos && inputComportamentos.value.trim() !== "";
     }
     else if (selectDesvios.value === "Sim") {
-      const gruposRadio = new Set();
-      divCondicional.querySelectorAll('input[type="radio"]').forEach(radio => {
-        gruposRadio.add(radio.name);
+      // Verificar se pelo menos um grupo foi marcado
+      const gruposRadio = ["reacao-pessoas", "posicao-pessoas", "ordem-limpeza",
+                          "ferramenta-equipamento", "procedimentos", "epi"];
+
+      let peloMenosUmGrupoMarcado = false;
+      let todosGruposMarcadosValidos = true;
+
+      gruposRadio.forEach(groupName => {
+        const radioMarcado = container.querySelector(`input[name="${groupName}"]:checked`);
+
+        if (radioMarcado) {
+          peloMenosUmGrupoMarcado = true;
+
+          // Verificar se os campos extras deste grupo estão preenchidos
+          const selectAcao = container.querySelector(`#acao-${groupName}`);
+          const selectCriticidade = container.querySelector(`#criticidade-${groupName}`);
+          const inputDescricao = container.querySelector(`#descricao-${groupName}`);
+
+          if (!selectAcao || !selectAcao.value ||
+              !selectCriticidade || !selectCriticidade.value ||
+              !inputDescricao || !inputDescricao.value.trim()) {
+            todosGruposMarcadosValidos = false;
+          }
+        }
       });
 
-      for (const name of gruposRadio) {
-        const marcado = container.querySelector(`input[name="${name}"]:checked`);
-        if (!marcado) {
-          condicionaisValidos = false;
-          break;
-        }
-      }
+      condicionaisValidos = peloMenosUmGrupoMarcado && todosGruposMarcadosValidos;
     } else {
       condicionaisValidos = false;
     }
@@ -273,21 +431,57 @@ function criarCamposOPAI(container) {
     if (selectDesvios.value === "Não") {
       const inputComportamentos = container.querySelector("#comportamentos-opai");
       dados.comportamentos_seguros = inputComportamentos?.value || "";
+
+      // Limpar campos de desvios quando não há desvios
+      for (let i = 1; i <= 6; i++) {
+        dados[`desvio${i}_categoria`] = "";
+        dados[`desvio${i}_opcao`] = "";
+        dados[`desvio${i}_acao`] = "";
+        dados[`desvio${i}_criticidade`] = "";
+        dados[`desvio${i}_descricao`] = "";
+      }
     }
     else if (selectDesvios.value === "Sim") {
-      const reacao = container.querySelector('input[name="reacao-pessoas"]:checked');
-      const posicao = container.querySelector('input[name="posicao-pessoas"]:checked');
-      const ordem = container.querySelector('input[name="ordem-limpeza"]:checked');
-      const ferramenta = container.querySelector('input[name="ferramenta-equipamento"]:checked');
-      const procedimentos = container.querySelector('input[name="procedimentos"]:checked');
-      const epi = container.querySelector('input[name="epi"]:checked');
+      const gruposRadio = ["reacao-pessoas", "posicao-pessoas", "ordem-limpeza",
+                          "ferramenta-equipamento", "procedimentos", "epi"];
 
-      dados.reacao_pessoas = reacao?.value || "";
-      dados.posicao_pessoas = posicao?.value || "";
-      dados.ordem_limpeza = ordem?.value || "";
-      dados.ferramenta_equipamento = ferramenta?.value || "";
-      dados.procedimentos = procedimentos?.value || "";
-      dados.epi = epi?.value || "";
+      let desvioIndex = 1;
+
+      // Primeiro, inicializa todos os campos de desvios como vazios
+      for (let i = 1; i <= 6; i++) {
+        dados[`desvio${i}_categoria`] = "";
+        dados[`desvio${i}_opcao`] = "";
+        dados[`desvio${i}_acao`] = "";
+        dados[`desvio${i}_criticidade`] = "";
+        dados[`desvio${i}_descricao`] = "";
+      }
+
+      // Depois, preenche apenas os desvios marcados
+      gruposRadio.forEach(groupName => {
+        const radioMarcado = container.querySelector(`input[name="${groupName}"]:checked`);
+
+        if (radioMarcado && desvioIndex <= 6) {
+          // Mapeamento dos nomes técnicos para nomes legíveis
+          const categoriasMap = {
+            "reacao-pessoas": "Reação das Pessoas",
+            "posicao-pessoas": "Posição das Pessoas",
+            "ordem-limpeza": "Ordem, Limpeza e Organização",
+            "ferramenta-equipamento": "Ferramenta/Equipamento",
+            "procedimentos": "Procedimentos",
+            "epi": "EPI"
+          };
+
+          dados[`desvio${desvioIndex}_categoria`] = categoriasMap[groupName];
+          dados[`desvio${desvioIndex}_opcao`] = radioMarcado.value;
+          dados[`desvio${desvioIndex}_acao`] = container.querySelector(`#acao-${groupName}`)?.value || "";
+          dados[`desvio${desvioIndex}_criticidade`] = container.querySelector(`#criticidade-${groupName}`)?.value || "";
+          dados[`desvio${desvioIndex}_descricao`] = container.querySelector(`#descricao-${groupName}`)?.value || "";
+
+          desvioIndex++;
+        }
+      });
+
+      dados.comportamentos_seguros = ""; // Limpa quando há desvios
     }
 
     return dados;
