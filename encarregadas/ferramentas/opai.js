@@ -491,7 +491,7 @@ function criarCamposOPAI(container) {
   botaoEnviar.addEventListener("click", async () => {
     const dadosFormulario = coletarDadosFormulario();
 
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwtq3nT59pLt0_TSEOcaH98hzQFDr_pWhnfmbsrMu6f0aiFfCeB5Zx90TGox58HYzKq7A/exec'; // Substitua pela URL do Google Apps Script
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbw6wr64w6RtHTMFK-WwKO-J05LLyxgAcsxfmsACzqaRXlcjY1ja5KljhYfznH62kULA5g/exec'; // Substitua pela URL do Google Apps Script
 
     async function enviarParaPlanilha(dados) {
       try {
