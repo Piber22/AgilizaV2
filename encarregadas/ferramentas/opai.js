@@ -1,6 +1,16 @@
 function criarCamposOPAI(container) {
   container.innerHTML = "";
 
+  // ===== Mapa de Responsáveis =====
+  const MAPA_RESPONSAVEIS = {
+    "Graciela":   { re: "037120", funcao: "Encarregada" },
+    "Giovana":    { re: "054651", funcao: "Encarregada" },
+    "Jéssica":    { re: "049971", funcao: "Líder" },
+    "Jacqueline": { re: "123456", funcao: "Líder" },
+    "Daiane":     { re: "062074", funcao: "Encarregada" },
+    "Ádrisson":   { re: "056367", funcao: "Planejador" }
+  };
+
   // ===== Campos Base =====
   const labelData = document.createElement("label");
   labelData.textContent = "Data:";
@@ -419,13 +429,18 @@ function criarCamposOPAI(container) {
 
   // ===== Coletar dados =====
   function coletarDadosFormulario() {
+    const responsavelNome = document.getElementById("responsavel")?.value || "";
+    const responsavelInfo = MAPA_RESPONSAVEIS[responsavelNome] || { re: "", funcao: "" };
+
     const dados = {
       data: inputData.value,
+      responsavel: responsavelNome,
+      re: responsavelInfo.re,
+      funcao: responsavelInfo.funcao,
       equipe_observada: selectEquipe.value,
       num_pessoas: selectPessoas.value,
       local_observado: inputLocal.value,
-      encontrou_desvios: selectDesvios.value,
-      responsavel: document.getElementById("responsavel")?.value || ""
+      encontrou_desvios: selectDesvios.value
     };
 
     if (selectDesvios.value === "Não") {
