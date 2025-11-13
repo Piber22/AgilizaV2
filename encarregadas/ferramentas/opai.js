@@ -481,7 +481,7 @@ function criarCamposOPAI(container) {
         }
       });
 
-      dados.comportamentos_seguros = ""; // Limpa quando há desvi os
+      dados.comportamentos_seguros = ""; // Limpa quando há desvios
     }
 
     return dados;
@@ -491,7 +491,11 @@ function criarCamposOPAI(container) {
   botaoEnviar.addEventListener("click", async () => {
     const dadosFormulario = coletarDadosFormulario();
 
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbw6wr64w6RtHTMFK-WwKO-J05LLyxgAcsxfmsACzqaRXlcjY1ja5KljhYfznH62kULA5g/exec'; // Substitua pela URL do Google Apps Script
+    // DEBUG: Mostrar dados no console
+    console.log("📦 Dados coletados:", dadosFormulario);
+    console.log("📊 Dados em JSON:", JSON.stringify(dadosFormulario, null, 2));
+
+    const URL_APPS_SCRIPT = 'SUA_URL_AQUI'; // Substitua pela URL do Google Apps Script
 
     async function enviarParaPlanilha(dados) {
       try {
