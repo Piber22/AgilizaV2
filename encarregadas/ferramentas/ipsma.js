@@ -63,7 +63,7 @@ function criarCamposIPSMA(container) {
   inputLocal.type = "text";
   inputLocal.id = "local-ipsma";
   inputLocal.name = "local-ipsma";
-  inputLocal.placeholder = "Ex: Prensa Hidráulica 01";
+  inputLocal.placeholder = "Ex: A300, Bandeirante";
   inputLocal.required = true;
   labelLocal.appendChild(inputLocal);
 
