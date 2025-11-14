@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Metas da equipe
                     metaAP = 106;
                     metaIPSMA = 10;
-                    metaOPAI = 16;
+                    metaOPAI = 20;
                     console.log("📊 Total geral - AP:", ap, "IPSMA:", ipsma, "OPAI:", opai);
                 } else {
                     // COM FILTRO: busca apenas o responsável selecionado + meta individual
