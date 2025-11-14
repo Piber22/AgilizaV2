@@ -510,7 +510,7 @@ function criarCamposOPAI(container) {
     console.log("📦 Dados coletados:", dadosFormulario);
     console.log("📊 Dados em JSON:", JSON.stringify(dadosFormulario, null, 2));
 
-    const URL_APPS_SCRIPT = 'SUA_URL_AQUI'; // Substitua pela URL do Google Apps Script
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbw9o75zFSAw9rC0N94aH1U6xDqNm0ZKkmn98T2BnedUZbYYrjpagzGuQml4sQvZjrIZjA/exec'; // Substitua pela URL do Google Apps Script
 
     async function enviarParaPlanilha(dados) {
       try {
