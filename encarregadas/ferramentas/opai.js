@@ -514,15 +514,20 @@ function criarCamposOPAI(container) {
 
     async function enviarParaPlanilha(dados) {
       try {
-        await fetch(URL_APPS_SCRIPT, {
+        console.log("🚀 Enviando para:", URL_APPS_SCRIPT);
+        console.log("📤 Payload:", JSON.stringify(dados));
+
+        const response = await fetch(URL_APPS_SCRIPT, {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(dados)
         });
+
+        console.log("✅ Resposta recebida:", response);
         return true;
       } catch (erro) {
-        console.error("❌ Erro:", erro);
+        console.error("❌ Erro ao enviar:", erro);
         return false;
       }
     }
