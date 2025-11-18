@@ -226,7 +226,7 @@ const questoes = [
 let respostasUsuario = [];
 
 // URL da sua API do Apps Script
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAwYFJt-gAQi9mDn8nYEy8OmG_jplGkdpjzPR1UPNKuQJHGzs0zvXlBWg-dDFAAKxShA/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGiSRIpQnvNdqqPR6pvR3oVKEEu9IGIAatxoFHWgSyLWC4aetxU4I99dgAfu9WXmSd/exec';
 
 // Função para gerar o formulário
 function gerarFormulario() {
@@ -265,9 +265,25 @@ async function calcularNota() {
     mostrarLoading();
 
     const avaliador = document.getElementById('avaliador').value.trim();
+    const setor = document.getElementById('setor').value;
+    const avaliado = document.getElementById('avaliado').value.trim();
+
+    // Validações
     if (!avaliador) {
         esconderLoading();
         alert('Por favor, insira o nome do avaliador.');
+        return;
+    }
+
+    if (!setor) {
+        esconderLoading();
+        alert('Por favor, selecione o setor.');
+        return;
+    }
+
+    if (!avaliado) {
+        esconderLoading();
+        alert('Por favor, insira o nome do colaborador avaliado.');
         return;
     }
 
@@ -327,6 +343,8 @@ async function calcularNota() {
     // Preparar dados para enviar ao Google Sheets
     const dadosParaEnviar = {
         avaliador: avaliador,
+        setor: setor,
+        avaliado: avaliado,
         notaFinal: notaTotal,
         questoesMaxima: questoesMaxima.length,
         questoesAlta: questoesAlta.length,
@@ -347,7 +365,13 @@ async function calcularNota() {
 
     // Exibir resultado
     document.getElementById('notaFinal').textContent = `${notaTotal}%`;
-    document.getElementById('avaliadorInfo').innerHTML = `<p style="text-align: center; margin: 10px 0;"><strong>Avaliador:</strong> ${avaliador}</p>`;
+    document.getElementById('avaliadorInfo').innerHTML = `
+        <p style="text-align: center; margin: 10px 0;">
+            <strong>Avaliador:</strong> ${avaliador}<br>
+            <strong>Setor:</strong> ${setor}<br>
+            <strong>Colaborador avaliado:</strong> ${avaliado}
+        </p>
+    `;
 
     // Criar botões de categorias
     const categoriasContainer = document.getElementById('categoriasContainer');
