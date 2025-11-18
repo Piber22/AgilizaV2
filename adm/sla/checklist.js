@@ -226,7 +226,7 @@ const questoes = [
 let respostasUsuario = [];
 
 // URL da sua API do Apps Script
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGiSRIpQnvNdqqPR6pvR3oVKEEu9IGIAatxoFHWgSyLWC4aetxU4I99dgAfu9WXmSd/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAwYFJt-gAQi9mDn8nYEy8OmG_jplGkdpjzPR1UPNKuQJHGzs0zvXlBWg-dDFAAKxShA/exec';
 
 // Função para gerar o formulário
 function gerarFormulario() {
@@ -554,6 +554,20 @@ async function enviarParaGoogleSheets(dadosAvaliacao) {
         // Mesmo com erro, os dados podem ter sido enviados
         return { success: true };
     }
+}
+
+// Função para novo registro (recarregar página)
+function novoRegistro() {
+    // Scroll suave até o topo
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+
+    // Aguardar animação de scroll terminar antes de recarregar
+    setTimeout(() => {
+        location.reload();
+    }, 500);
 }
 
 // Gerar formulário ao carregar a página
