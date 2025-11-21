@@ -201,7 +201,7 @@ function criarCamposOPAI(container) {
     placeholderCriticidade.disabled = true;
     placeholderCriticidade.selected = true;
     selectCriticidade.appendChild(placeholderCriticidade);
-    ["DESPREZÍVEL", "MODERADO", "CRÍTICO", "NÃO APLICÁVEL"].forEach(opcao => {
+    ["DESPREZÍVEL", "MODERADO", "CRÍTICO"].forEach(opcao => {
       const opt = document.createElement("option");
       opt.value = opcao;
       opt.textContent = opcao;
