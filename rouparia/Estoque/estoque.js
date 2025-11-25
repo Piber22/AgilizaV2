@@ -1,77 +1,102 @@
-document.addEventListener("DOMContentLoaded", function () {
+// =================================================
+// 1. CONFIGURAÇÃO
+// =================================================
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvpPG9-1mNVgErsPa79TqB2koPrRIfU0Gd17hiojJ2gjdRAJgQtU3u8bLXx_E-NTS7mlrqxvTvAv7H/pub?output=csv";
 
-    const itensContainer = document.getElementById("itensContainer");
-    const addItemBtn = document.getElementById("addItemBtn");
-    const formMovimentos = document.getElementById("formMovimentos");
+// Lista estruturada de itens
+let listaDeItens = [];
 
-    // 🔧 Função para criar um bloco de item
-    function criarItemSection() {
-        const bloco = document.createElement("section");
-        bloco.classList.add("item-section");
+// =================================================
+// 2. Carregar os itens da planilha (com ID)
+// =================================================
+async function carregarItens() {
+    try {
+        const resposta = await fetch(CSV_URL);
+        const csvTexto = await resposta.text();
 
-        bloco.innerHTML = `
-            <label>Item:
-                <input type="text" class="item" required placeholder="Item:">
-            </label>
+        const linhas = csvTexto.split("\n").map(l => l.trim());
+        const cabecalho = linhas.shift(); // remove header
 
-            <label>Quantidade:
-                <input type="number" class="quantidade" required min="1" placeholder="Quantidade:">
-            </label>
+        listaDeItens = linhas
+            .map(linha => linha.split(","))
+            .filter(col => col.length >= 4)  // valida linha completa
+            .map(col => ({
+                id: col[0],
+                item: col[1],
+                categoria: col[2],
+                local: col[3]
+            }));
 
-            <label>Ação:
-                <select class="acao" required>
-                    <option value="">Selecione:</option>
-                    <option value="Entrada">Entrada</option>
-                    <option value="Saída">Saída</option>
-                </select>
-            </label>
+        popularTodosSelects();
 
-            <label>Local:
-                <select class="local" required>
-                    <option value="">Selecione:</option>
-                    <option value="Sala100">Sala 100</option>
-                    <option value="PCD">Banheiro PCD</option>
-                </select>
-            </label>
-        `;
-
-        return bloco;
+    } catch (erro) {
+        console.error("Erro ao carregar itens:", erro);
+        alert("Erro ao carregar itens do estoque!");
     }
+}
 
-    // ➕ Adicionar novo item
-    addItemBtn.addEventListener("click", () => {
-        itensContainer.appendChild(criarItemSection());
+// =================================================
+// 3. Popular os SELECTS com ID + Nome
+// =================================================
+function popularTodosSelects() {
+    document.querySelectorAll("select.item").forEach(select => popularSelect(select));
+}
+
+function popularSelect(select) {
+    select.innerHTML = `<option value="">Selecione:</option>`;
+
+    listaDeItens.forEach(obj => {
+        const opt = document.createElement("option");
+        opt.value = obj.id;           // <-- IMPORTANTE: value será o ID
+        opt.textContent = obj.item;   // <-- Mostramos o nome
+        select.appendChild(opt);
     });
+}
 
-    // 📄 Registrar movimento
-    formMovimentos.addEventListener("submit", function (e) {
-        e.preventDefault();
+// =================================================
+// 4. Adicionar novo item
+// =================================================
+document.getElementById("addItemBtn").addEventListener("click", () => {
+    const container = document.getElementById("itensContainer");
+    const modelo = container.querySelector(".item-section");
 
-        const responsavel = document.getElementById("responsavel").value;
+    const novoItem = modelo.cloneNode(true);
 
-        const itens = [...document.querySelectorAll(".item-section")].map(sec => {
-            return {
-                item: sec.querySelector(".item").value,
-                quantidade: sec.querySelector(".quantidade").value,
-                acao: sec.querySelector(".acao").value,
-                local: sec.querySelector(".local").value
-            };
-        });
+    // limpa todos os campos
+    novoItem.querySelectorAll("input, select").forEach(el => el.value = "");
 
-        // 🔥 Aqui você pode escolher o destino dos dados (planilha, API, histórico, etc.)
-        console.log("Responsável:", responsavel);
-        console.log("Movimentações:", itens);
+    container.appendChild(novoItem);
 
-        alert("Movimentação registrada com sucesso!");
-
-        // 🔄 RESET total do formulário
-        formMovimentos.reset();
-
-        // remover todos os itens adicionados
-        itensContainer.innerHTML = "";
-
-        // recriar apenas 1 item-section inicial
-        itensContainer.appendChild(criarItemSection());
-    });
-
+    // popular o novo select
+    const novoSelect = novoItem.querySelector("select.item");
+    popularSelect(novoSelect);
 });
+
+// =================================================
+// 5. Ao salvar: reset mantém apenas 1 item
+// =================================================
+document.getElementById("formMovimentos").addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    // Em breve faremos o envio pro Google Sheets
+    alert("Movimento salvo! (implementaremos o envio depois)");
+
+    // Reset
+    const form = document.getElementById("formMovimentos");
+    form.reset();
+
+    const container = document.getElementById("itensContainer");
+
+    // deixa apenas o primeiro bloco
+    const modelo = container.querySelector(".item-section");
+    container.innerHTML = "";
+    container.appendChild(modelo);
+
+    // repopular o select do item
+    popularTodosSelects();
+});
+
+// =================================================
+// 6. Inicialização
+// =================================================
+carregarItens();
