@@ -49,7 +49,7 @@ function atualizarSelectsDeItens() {
         itensBD.forEach(obj => {
             const option = document.createElement("option");
             option.value = obj.item;
-            option.textContent = `${obj.item} (ID ${obj.id})`;
+            option.textContent = `${obj.item}`;
             option.dataset.id = obj.id;
             select.appendChild(option);
         });
