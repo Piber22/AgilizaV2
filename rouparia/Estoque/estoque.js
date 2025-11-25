@@ -1,102 +1,154 @@
-// =================================================
-// 1. CONFIGURAÇÃO
-// =================================================
+// =============================
+// CONFIGURAÇÕES
+// =============================
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvpPG9-1mNVgErsPa79TqB2koPrRIfU0Gd17hiojJ2gjdRAJgQtU3u8bLXx_E-NTS7mlrqxvTvAv7H/pub?output=csv";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbyP_jZ9ypcwSVa8kYRrwZAXAlFBu5x1IPMK0gDFy9cGLyuJytSEKwr6bMvntn6ELjLE/exec";
 
-// Lista estruturada de itens
-let listaDeItens = [];
+let itensBD = []; // Onde ficam os itens carregados da planilha (ID + nome)
 
-// =================================================
-// 2. Carregar os itens da planilha (com ID)
-// =================================================
+
+// =============================
+// 1) Carregar lista de itens via CSV
+// =============================
 async function carregarItens() {
-    try {
-        const resposta = await fetch(CSV_URL);
-        const csvTexto = await resposta.text();
+    const response = await fetch(sheetCSVUrl);
+    const csvText = await response.text();
 
-        const linhas = csvTexto.split("\n").map(l => l.trim());
-        const cabecalho = linhas.shift(); // remove header
+    const linhas = csvText.split("\n").map(l => l.trim());
+    const resultado = [];
 
-        listaDeItens = linhas
-            .map(linha => linha.split(","))
-            .filter(col => col.length >= 4)  // valida linha completa
-            .map(col => ({
+    // Ignora a primeira linha (cabeçalho)
+    for (let i = 1; i < linhas.length; i++) {
+        const col = linhas[i].split(",");
+
+        if (col.length >= 4) {
+            resultado.push({
                 id: col[0],
                 item: col[1],
                 categoria: col[2],
                 local: col[3]
-            }));
-
-        popularTodosSelects();
-
-    } catch (erro) {
-        console.error("Erro ao carregar itens:", erro);
-        alert("Erro ao carregar itens do estoque!");
+            });
+        }
     }
+
+    itensBD = resultado;
+
+    atualizarSelectsDeItens();
 }
 
-// =================================================
-// 3. Popular os SELECTS com ID + Nome
-// =================================================
-function popularTodosSelects() {
-    document.querySelectorAll("select.item").forEach(select => popularSelect(select));
-}
 
-function popularSelect(select) {
-    select.innerHTML = `<option value="">Selecione:</option>`;
+// =============================
+// 2) Preencher todos os selects .item
+// =============================
+function atualizarSelectsDeItens() {
+    const selects = document.querySelectorAll(".item");
 
-    listaDeItens.forEach(obj => {
-        const opt = document.createElement("option");
-        opt.value = obj.id;           // <-- IMPORTANTE: value será o ID
-        opt.textContent = obj.item;   // <-- Mostramos o nome
-        select.appendChild(opt);
+    selects.forEach(select => {
+        select.innerHTML = `<option value="">Selecione o item:</option>`;
+
+        itensBD.forEach(obj => {
+            const option = document.createElement("option");
+            option.value = obj.item;
+            option.textContent = `${obj.item} (ID ${obj.id})`;
+            option.dataset.id = obj.id;
+            select.appendChild(option);
+        });
     });
 }
 
-// =================================================
-// 4. Adicionar novo item
-// =================================================
+
+// =============================
+// 3) Duplicar item ao clicar em "Adicionar item"
+// =============================
 document.getElementById("addItemBtn").addEventListener("click", () => {
     const container = document.getElementById("itensContainer");
-    const modelo = container.querySelector(".item-section");
+    const modelo = document.querySelector(".item-section");
 
-    const novoItem = modelo.cloneNode(true);
+    const novo = modelo.cloneNode(true);
 
-    // limpa todos os campos
-    novoItem.querySelectorAll("input, select").forEach(el => el.value = "");
+    // Limpar campos
+    novo.querySelector(".item").value = "";
+    novo.querySelector(".quantidade").value = "";
+    novo.querySelector(".acao").value = "";
+    novo.querySelector(".local").value = "";
 
-    container.appendChild(novoItem);
+    container.appendChild(novo);
 
-    // popular o novo select
-    const novoSelect = novoItem.querySelector("select.item");
-    popularSelect(novoSelect);
+    atualizarSelectsDeItens();
 });
 
-// =================================================
-// 5. Ao salvar: reset mantém apenas 1 item
-// =================================================
-document.getElementById("formMovimentos").addEventListener("submit", (e) => {
+
+// =============================
+// 4) Enviar dados ao WebApp
+// =============================
+document.getElementById("formMovimentos").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // Em breve faremos o envio pro Google Sheets
-    alert("Movimento salvo! (implementaremos o envio depois)");
+    const responsavel = document.getElementById("responsavel").value.trim();
+    const itensSecoes = document.querySelectorAll(".item-section");
 
-    // Reset
-    const form = document.getElementById("formMovimentos");
-    form.reset();
+    if (!responsavel) {
+        alert("Informe o responsável.");
+        return;
+    }
 
-    const container = document.getElementById("itensContainer");
+    const agora = new Date();
+    const data = agora.toLocaleDateString("pt-BR");
+    const horario = agora.toLocaleTimeString("pt-BR");
 
-    // deixa apenas o primeiro bloco
-    const modelo = container.querySelector(".item-section");
-    container.innerHTML = "";
-    container.appendChild(modelo);
+    let registros = [];
 
-    // repopular o select do item
-    popularTodosSelects();
+    itensSecoes.forEach(secao => {
+        const selectItem = secao.querySelector(".item");
+        const itemNome = selectItem.value;
+        const itemID = selectItem.options[selectItem.selectedIndex]?.dataset?.id || "";
+
+        registros.push({
+            data: data,
+            horario: horario,
+            id: itemID,
+            item: itemNome,
+            tipo: secao.querySelector(".acao").value,
+            quantidade: secao.querySelector(".quantidade").value,
+            observacao: ""
+        });
+    });
+
+    // Envia ao WebApp
+    const resposta = await fetch(webAppUrl, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(registros)
+    });
+
+    // Reseta formulário mantendo apenas 1 item
+    resetarFormulario();
+
+    alert("Movimento registrado com sucesso!");
 });
 
-// =================================================
-// 6. Inicialização
-// =================================================
+
+// =============================
+// 5) Resetar formulário
+// =============================
+function resetarFormulario() {
+    document.getElementById("responsavel").value = "";
+
+    const container = document.getElementById("itensContainer");
+    const primeiro = document.querySelector(".item-section");
+
+    // Mantém apenas o primeiro
+    container.innerHTML = "";
+    container.appendChild(primeiro);
+
+    primeiro.querySelector(".item").value = "";
+    primeiro.querySelector(".quantidade").value = "";
+    primeiro.querySelector(".acao").value = "";
+    primeiro.querySelector(".local").value = "";
+
+    atualizarSelectsDeItens();
+}
+
+
+// Iniciar sistema
 carregarItens();
