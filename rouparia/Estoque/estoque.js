@@ -43,10 +43,16 @@ async function carregarItens() {
 function atualizarSelectsDeItens() {
     const selects = document.querySelectorAll(".item");
 
+    // -------- ADIÇÃO: ORDENAR ALFABETICAMENTE --------
+    const itensOrdenados = [...itensBD].sort((a, b) =>
+        a.item.localeCompare(b.item, "pt-BR")
+    );
+    // -------------------------------------------------
+
     selects.forEach(select => {
         select.innerHTML = `<option value="">Selecione o item:</option>`;
 
-        itensBD.forEach(obj => {
+        itensOrdenados.forEach(obj => {
             const option = document.createElement("option");
             option.value = obj.item;
             option.textContent = `${obj.item}`;
@@ -110,7 +116,7 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
             item: itemNome,
             tipo: secao.querySelector(".acao").value,
             quantidade: secao.querySelector(".quantidade").value,
-            responsavel: responsavel,   // <-- AGORA POR ÚLTIMO
+            responsavel: responsavel,
             observacao: ""
         });
     });
