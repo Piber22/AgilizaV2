@@ -80,7 +80,17 @@ document.getElementById("addItemBtn").addEventListener("click", () => {
 
     container.appendChild(novo);
 
-    atualizarSelectsDeItens();
+    // Atualiza apenas o novo select
+    const novoSelect = novo.querySelector(".item");
+    novoSelect.innerHTML = `<option value="">Selecione o item:</option>`;
+
+    itensBD.forEach(obj => {
+        const option = document.createElement("option");
+        option.value = obj.item;
+        option.textContent = obj.item;
+        option.dataset.id = obj.id;
+        novoSelect.appendChild(option);
+    });
 });
 
 
