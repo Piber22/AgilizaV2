@@ -2,7 +2,7 @@
 // CONFIGURAÇÕES
 // =============================
 const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvpPG9-1mNVgErsPa79TqB2koPrRIfU0Gd17hiojJ2gjdRAJgQtU3u8bLXx_E-NTS7mlrqxvTvAv7H/pub?output=csv";
-const webAppUrl = "https://script.google.com/macros/s/AKfycbxXNbqKx5mqFdC5hfpT55huGP0_GZD5KK1-g9amnSNSXVuGtQUS4wEKQUhzeD7gAr7k/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbyzemVVGv7PT9BPKoIn2ydtbHOXZwqIr2kqR4-SvYV2FvyBaL9GYkzC_8axJhfc6qaQ/exec";
 
 let itensBD = []; // Onde ficam os itens carregados da planilha (ID + nome)
 
@@ -126,6 +126,7 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
             tipo: secao.querySelector(".acao").value,
             quantidade: secao.querySelector(".quantidade").value,
             responsavel: responsavel,
+            local: secao.querySelector(".local").value,  // ✅ ADICIONADO!
             observacao: ""
         });
     });
