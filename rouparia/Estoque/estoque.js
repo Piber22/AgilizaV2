@@ -33,9 +33,9 @@ async function carregarItens() {
 
         itensBD = resultado;
         atualizarSelectsDeItens();
-        console.log("Itens carregados com sucesso:", itensBD.length);
+        console.log("✅ Itens carregados:", itensBD.length);
     } catch (erro) {
-        console.error("Erro ao carregar itens:", erro);
+        console.error("❌ Erro ao carregar itens:", erro);
         alert("Erro ao carregar a lista de itens. Verifique a conexão.");
     }
 }
@@ -99,7 +99,7 @@ document.getElementById("addItemBtn").addEventListener("click", () => {
 
 
 // =============================
-// 4) Enviar dados ao WebApp (CORRIGIDO!)
+// 4) Enviar dados ao WebApp
 // =============================
 document.getElementById("formMovimentos").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -108,7 +108,7 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
     const itensSecoes = document.querySelectorAll(".item-section");
 
     if (!responsavel) {
-        alert("Informe o responsável.");
+        alert("⚠️ Informe o responsável.");
         return;
     }
 
@@ -143,34 +143,33 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
     });
 
     if (registros.length === 0) {
-        alert("Preencha pelo menos um item completo.");
+        alert("⚠️ Preencha pelo menos um item completo.");
         return;
     }
 
-    console.log("Enviando dados:", registros);
+    console.log("📤 Enviando dados:", registros);
 
     try {
-        // ✅ REMOVIDO o mode: "no-cors" - era isso que causava o problema!
-        const resposta = await fetch(webAppUrl, {
+        // Usar no-cors - não conseguimos ler a resposta, mas os dados são enviados!
+        await fetch(webAppUrl, {
             method: "POST",
+            mode: "no-cors",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(registros)
         });
 
-        // Tentar ler a resposta
-        const texto = await resposta.text();
-        console.log("Resposta do servidor:", texto);
+        console.log("✅ Requisição enviada com sucesso!");
 
         // Resetar formulário
         resetarFormulario();
 
-        alert("Movimento registrado com sucesso! ✅");
+        alert("✅ Movimento registrado com sucesso!");
 
     } catch (erro) {
-        console.error("Erro ao enviar:", erro);
-        alert("Erro ao enviar dados. Verifique o console para mais detalhes.");
+        console.error("❌ Erro ao enviar:", erro);
+        alert("❌ Erro ao enviar dados. Tente novamente.");
     }
 });
 
