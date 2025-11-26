@@ -126,8 +126,9 @@ select {
 }
 
 .login-option.active {
-    background-color: #5b5b5b;
+    background-color: #E94B22;
     transform: scale(1.02);
+    border: #E94B22;
 }
 
 .footer {
