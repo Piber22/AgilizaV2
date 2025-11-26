@@ -2,38 +2,42 @@
 // CONFIGURAÇÕES
 // =============================
 const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvpPG9-1mNVgErsPa79TqB2koPrRIfU0Gd17hiojJ2gjdRAJgQtU3u8bLXx_E-NTS7mlrqxvTvAv7H/pub?output=csv";
-const webAppUrl = "https://script.google.com/macros/s/AKfycbxGnAAfTXt1cUfvCylGkXVwtjHjM5Sv5pt_6Gr5zNMTG0YV26okMy0su8rdNtPj9CG_/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbwpcth1G1J6PgWCSCSuisx5JSuQzXM1ZGlUZwFcowhdqj9zA-vWztz9TvUOavk_upaP/exec";
 
-let itensBD = []; // Onde ficam os itens carregados da planilha (ID + nome)
+let itensBD = [];
 
 
 // =============================
 // 1) Carregar lista de itens via CSV
 // =============================
 async function carregarItens() {
-    const response = await fetch(sheetCSVUrl);
-    const csvText = await response.text();
+    try {
+        const response = await fetch(sheetCSVUrl);
+        const csvText = await response.text();
 
-    const linhas = csvText.split("\n").map(l => l.trim());
-    const resultado = [];
+        const linhas = csvText.split("\n").map(l => l.trim());
+        const resultado = [];
 
-    // Ignora a primeira linha (cabeçalho)
-    for (let i = 1; i < linhas.length; i++) {
-        const col = linhas[i].split(",");
+        for (let i = 1; i < linhas.length; i++) {
+            const col = linhas[i].split(",");
 
-        if (col.length >= 4) {
-            resultado.push({
-                id: col[0],
-                item: col[1],
-                categoria: col[2],
-                local: col[3]
-            });
+            if (col.length >= 4) {
+                resultado.push({
+                    id: col[0],
+                    item: col[1],
+                    categoria: col[2],
+                    local: col[3]
+                });
+            }
         }
+
+        itensBD = resultado;
+        atualizarSelectsDeItens();
+        console.log("Itens carregados com sucesso:", itensBD.length);
+    } catch (erro) {
+        console.error("Erro ao carregar itens:", erro);
+        alert("Erro ao carregar a lista de itens. Verifique a conexão.");
     }
-
-    itensBD = resultado;
-
-    atualizarSelectsDeItens();
 }
 
 
@@ -43,7 +47,6 @@ async function carregarItens() {
 function atualizarSelectsDeItens() {
     const selects = document.querySelectorAll(".item");
 
-    // Ordenar itens alfabeticamente
     const itensOrdenados = [...itensBD].sort((a, b) =>
         a.item.localeCompare(b.item, "pt-BR")
     );
@@ -54,7 +57,7 @@ function atualizarSelectsDeItens() {
         itensOrdenados.forEach(obj => {
             const option = document.createElement("option");
             option.value = obj.item;
-            option.textContent = `${obj.item}`;
+            option.textContent = obj.item;
             option.dataset.id = obj.id;
             select.appendChild(option);
         });
@@ -71,7 +74,6 @@ document.getElementById("addItemBtn").addEventListener("click", () => {
 
     const novo = modelo.cloneNode(true);
 
-    // Limpar campos
     novo.querySelector(".item").value = "";
     novo.querySelector(".quantidade").value = "";
     novo.querySelector(".acao").value = "";
@@ -79,11 +81,14 @@ document.getElementById("addItemBtn").addEventListener("click", () => {
 
     container.appendChild(novo);
 
-    // Atualiza apenas o novo select
     const novoSelect = novo.querySelector(".item");
     novoSelect.innerHTML = `<option value="">Selecione o item:</option>`;
 
-    itensBD.forEach(obj => {
+    const itensOrdenados = [...itensBD].sort((a, b) =>
+        a.item.localeCompare(b.item, "pt-BR")
+    );
+
+    itensOrdenados.forEach(obj => {
         const option = document.createElement("option");
         option.value = obj.item;
         option.textContent = obj.item;
@@ -94,7 +99,7 @@ document.getElementById("addItemBtn").addEventListener("click", () => {
 
 
 // =============================
-// 4) Enviar dados ao WebApp
+// 4) Enviar dados ao WebApp (CORRIGIDO!)
 // =============================
 document.getElementById("formMovimentos").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -117,31 +122,56 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
         const selectItem = secao.querySelector(".item");
         const itemNome = selectItem.value;
         const itemID = selectItem.options[selectItem.selectedIndex]?.dataset?.id || "";
+        const quantidade = secao.querySelector(".quantidade").value;
+        const acao = secao.querySelector(".acao").value;
+        const local = secao.querySelector(".local").value;
 
-        registros.push({
-            data: data,
-            horario: horario,
-            id: itemID,
-            item: itemNome,
-            tipo: secao.querySelector(".acao").value,
-            quantidade: secao.querySelector(".quantidade").value,
-            responsavel: responsavel,
-            local: secao.querySelector(".local").value,  // ✅ ADICIONADO!
-            observacao: ""
+        // Só adiciona se tiver item selecionado
+        if (itemNome && quantidade && acao) {
+            registros.push({
+                data: data,
+                horario: horario,
+                id: itemID,
+                item: itemNome,
+                tipo: acao,
+                quantidade: quantidade,
+                responsavel: responsavel,
+                local: local,
+                observacao: ""
+            });
+        }
+    });
+
+    if (registros.length === 0) {
+        alert("Preencha pelo menos um item completo.");
+        return;
+    }
+
+    console.log("Enviando dados:", registros);
+
+    try {
+        // ✅ REMOVIDO o mode: "no-cors" - era isso que causava o problema!
+        const resposta = await fetch(webAppUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(registros)
         });
-    });
 
-    // Envia ao WebApp
-    const resposta = await fetch(webAppUrl, {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify(registros)
-    });
+        // Tentar ler a resposta
+        const texto = await resposta.text();
+        console.log("Resposta do servidor:", texto);
 
-    // Resetar formulário
-    resetarFormulario();
+        // Resetar formulário
+        resetarFormulario();
 
-    alert("Movimento registrado com sucesso!");
+        alert("Movimento registrado com sucesso! ✅");
+
+    } catch (erro) {
+        console.error("Erro ao enviar:", erro);
+        alert("Erro ao enviar dados. Verifique o console para mais detalhes.");
+    }
 });
 
 
@@ -154,7 +184,6 @@ function resetarFormulario() {
     const container = document.getElementById("itensContainer");
     const primeiro = document.querySelector(".item-section");
 
-    // Mantém apenas o primeiro
     container.innerHTML = "";
     container.appendChild(primeiro);
 
