@@ -2,7 +2,7 @@
 // CONFIGURAÇÕES
 // =============================
 const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvpPG9-1mNVgErsPa79TqB2koPrRIfU0Gd17hiojJ2gjdRAJgQtU3u8bLXx_E-NTS7mlrqxvTvAv7H/pub?output=csv";
-const webAppUrl = "https://script.google.com/macros/s/AKfycbzhH9RGAAgZeVa-FROdSoNpRPkH_OSD5xTBCt4JMhUON-9tUUU9y0WGX6hmbLSwOArs/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbyhGveoG-NA3LUzoUXtIyUWmkBzCGVIBXRdqUU4SnpEb5i6brbWVGUcZ6VDSsc3PbnM/exec";
 
 let itensBD = [];
 
@@ -153,7 +153,7 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
         // Usar no-cors - não conseguimos ler a resposta, mas os dados são enviados!
         await fetch(webAppUrl, {
             method: "POST",
-            //mode: "no-cors",
+            mode: "no-cors",
             headers: {
                 "Content-Type": "application/json"
             },
