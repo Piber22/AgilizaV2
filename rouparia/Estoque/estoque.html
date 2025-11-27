@@ -35,10 +35,8 @@
             <!-- Primeiro item (modelo) -->
             <section class="item-section">
                 <label>Item:
-                    <select class="item" required>
-                        <option value="">Carregando itens...</option>
-                    </select>
-               </label>
+                    <input type="text" class="item" required placeholder="Item:">
+                </label>
 
                 <label>Quantidade:
                     <input type="number" class="quantidade" required min="1" placeholder="Quantidade:">
@@ -46,7 +44,7 @@
 
                 <label>Ação:
                     <select class="acao" required>
-                        <option value="">Selecione:</option>
+                        <option value="">Selecione</option>
                         <option value="Entrada">Entrada</option>
                         <option value="Saída">Saída</option>
                     </select>
@@ -60,18 +58,19 @@
                 </label>
             </section>
 
+
         </div>
 
         <!-- Botões -->
         <section style="text-align:center; box-shadow:none; background:none;">
             <button type="button" id="addItemBtn"
                 style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#444; color:white;">
-                + Adicionar item
+                + Adicionar outro item
             </button>
 
             <button type="submit"
-                style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#FF460A; color:white; margin-left:10px;">
-                Salvar
+                style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#0077ff; color:white; margin-left:10px;">
+                Registrar Movimento
             </button>
         </section>
 
