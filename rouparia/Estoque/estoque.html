@@ -35,32 +35,45 @@
             <!-- Primeiro item (modelo) -->
             <section class="item-section">
                 <label>Item:
-                     <select class="item" required>
-                         <option value="">Carregando itens...</option>
+                    <select class="item" required>
+                        <option value="">Carregando itens...</option>
                     </select>
+               </label>
+
+                <label>Quantidade:
+                    <input type="number" class="quantidade" required min="1" placeholder="Quantidade:">
                 </label>
 
-                <label>Quantidade: <input type="number" class="quantidade" required min="1" placeholder="Quantidade:">
-                </label>
                 <label>Ação:
                     <select class="acao" required>
                         <option value="">Selecione:</option>
                         <option value="Entrada">Entrada</option>
                         <option value="Saída">Saída</option>
-            </select>
-            </label>
-                <label>Local: <select class="local" required>
-                    <option value="">Selecione:</option>
-                    <option value="Sala100">Sala 100</option>
-                    <option value="PCD">Banheiro PCD</option>
-                </select>
+                    </select>
+                </label>
+                <label>Local:
+                    <select class="local" required>
+                        <option value="">Selecione:</option>
+                        <option value="Sala100">Sala 100</option>
+                        <option value="PCD">Banheiro PCD</option>
+                    </select>
                 </label>
             </section>
 
-
         </div>
 
-        <!-- Botões --> <section style="text-align:center; box-shadow:none; background:none;"> <button type="button" id="addItemBtn" style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#444; color:white;"> + Adicionar item </button> <button type="submit" style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#FF460A; color:white; margin-left:10px;"> Salvar </button> </section>
+        <!-- Botões -->
+        <section style="text-align:center; box-shadow:none; background:none;">
+            <button type="button" id="addItemBtn"
+                style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#444; color:white;">
+                + Adicionar item
+            </button>
+
+            <button type="submit"
+                style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#FF460A; color:white; margin-left:10px;">
+                Salvar
+            </button>
+        </section>
 
     </form>
 
