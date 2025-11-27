@@ -126,7 +126,6 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
         const acao = secao.querySelector(".acao").value;
         const local = secao.querySelector(".local").value;
 
-        // Só adiciona se tiver item selecionado
         if (itemNome && quantidade && acao) {
             registros.push({
                 data: data,
@@ -150,18 +149,18 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
     console.log("📤 Enviando dados:", registros);
 
     try {
-        // Usar no-cors - não conseguimos ler a resposta, mas os dados são enviados!
+        // Criar FormData para compatibilidade com no-cors
+        const formData = new FormData();
+        formData.append('dados', JSON.stringify(registros));
+
         await fetch(webAppUrl, {
             method: "POST",
             mode: "no-cors",
-            body: formData
+            body: formData  // Não incluir headers, deixar o navegador definir automaticamente
         });
 
         console.log("✅ Requisição enviada com sucesso!");
-
-        // Resetar formulário
         resetarFormulario();
-
         alert("✅ Movimento registrado com sucesso!");
 
     } catch (erro) {
@@ -169,7 +168,6 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
         alert("❌ Erro ao enviar dados. Tente novamente.");
     }
 });
-
 
 // =============================
 // 5) Resetar formulário
