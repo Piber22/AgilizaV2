@@ -2,7 +2,7 @@
 // CONFIGURAÇÕES
 // =============================
 const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvpPG9-1mNVgErsPa79TqB2koPrRIfU0Gd17hiojJ2gjdRAJgQtU3u8bLXx_E-NTS7mlrqxvTvAv7H/pub?output=csv";
-const webAppUrl = "https://script.google.com/macros/s/AKfycbymf7jzR4Gi0gRQ1QooZDUH_RnP2nE_5QpGXeK_ZyXBYfYDX4KYBpPFrALkEpCFKcwl/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbz0Ux0vEp9J-FpphoVF64lriW-N2GfIn-HGEABrvEcTU-zcV8nk9F65QoR6ScsN-PCq/exec";
 
 let itensBD = []; // Onde ficam os itens carregados da planilha (ID + nome)
 
