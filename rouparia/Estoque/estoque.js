@@ -2,42 +2,38 @@
 // CONFIGURAÇÕES
 // =============================
 const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvpPG9-1mNVgErsPa79TqB2koPrRIfU0Gd17hiojJ2gjdRAJgQtU3u8bLXx_E-NTS7mlrqxvTvAv7H/pub?output=csv";
-const webAppUrl = "https://script.google.com/macros/s/AKfycbyuvUtqXIJvC1Z5k5H-V1CL3tfmCdK0pnODqlyTOb7Px25Fm_zHF-_khWXnADijJ-V9/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbw2yL2P7SuUg1yIg41y3GPrvd6gvm8VOgqqUCSqNemH4WxNyYcrkX3bhI-KZrTVBlWW/exec";
 
-let itensBD = [];
+let itensBD = []; // Onde ficam os itens carregados da planilha (ID + nome)
 
 
 // =============================
 // 1) Carregar lista de itens via CSV
 // =============================
 async function carregarItens() {
-    try {
-        const response = await fetch(sheetCSVUrl);
-        const csvText = await response.text();
+    const response = await fetch(sheetCSVUrl);
+    const csvText = await response.text();
 
-        const linhas = csvText.split("\n").map(l => l.trim());
-        const resultado = [];
+    const linhas = csvText.split("\n").map(l => l.trim());
+    const resultado = [];
 
-        for (let i = 1; i < linhas.length; i++) {
-            const col = linhas[i].split(",");
+    // Ignora a primeira linha (cabeçalho)
+    for (let i = 1; i < linhas.length; i++) {
+        const col = linhas[i].split(",");
 
-            if (col.length >= 4) {
-                resultado.push({
-                    id: col[0],
-                    item: col[1],
-                    categoria: col[2],
-                    local: col[3]
-                });
-            }
+        if (col.length >= 4) {
+            resultado.push({
+                id: col[0],
+                item: col[1],
+                categoria: col[2],
+                local: col[3]
+            });
         }
-
-        itensBD = resultado;
-        atualizarSelectsDeItens();
-        console.log("✅ Itens carregados:", itensBD.length);
-    } catch (erro) {
-        console.error("❌ Erro ao carregar itens:", erro);
-        alert("Erro ao carregar a lista de itens. Verifique a conexão.");
     }
+
+    itensBD = resultado;
+
+    atualizarSelectsDeItens();
 }
 
 
@@ -47,6 +43,7 @@ async function carregarItens() {
 function atualizarSelectsDeItens() {
     const selects = document.querySelectorAll(".item");
 
+    // Ordenar itens alfabeticamente
     const itensOrdenados = [...itensBD].sort((a, b) =>
         a.item.localeCompare(b.item, "pt-BR")
     );
@@ -57,7 +54,7 @@ function atualizarSelectsDeItens() {
         itensOrdenados.forEach(obj => {
             const option = document.createElement("option");
             option.value = obj.item;
-            option.textContent = obj.item;
+            option.textContent = `${obj.item}`;
             option.dataset.id = obj.id;
             select.appendChild(option);
         });
@@ -74,6 +71,7 @@ document.getElementById("addItemBtn").addEventListener("click", () => {
 
     const novo = modelo.cloneNode(true);
 
+    // Limpar campos
     novo.querySelector(".item").value = "";
     novo.querySelector(".quantidade").value = "";
     novo.querySelector(".acao").value = "";
@@ -81,14 +79,11 @@ document.getElementById("addItemBtn").addEventListener("click", () => {
 
     container.appendChild(novo);
 
+    // Atualiza apenas o novo select
     const novoSelect = novo.querySelector(".item");
     novoSelect.innerHTML = `<option value="">Selecione o item:</option>`;
 
-    const itensOrdenados = [...itensBD].sort((a, b) =>
-        a.item.localeCompare(b.item, "pt-BR")
-    );
-
-    itensOrdenados.forEach(obj => {
+    itensBD.forEach(obj => {
         const option = document.createElement("option");
         option.value = obj.item;
         option.textContent = obj.item;
@@ -108,7 +103,7 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
     const itensSecoes = document.querySelectorAll(".item-section");
 
     if (!responsavel) {
-        alert("⚠️ Informe o responsável.");
+        alert("Informe o responsável.");
         return;
     }
 
@@ -122,52 +117,32 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
         const selectItem = secao.querySelector(".item");
         const itemNome = selectItem.value;
         const itemID = selectItem.options[selectItem.selectedIndex]?.dataset?.id || "";
-        const quantidade = secao.querySelector(".quantidade").value;
-        const acao = secao.querySelector(".acao").value;
-        const local = secao.querySelector(".local").value;
 
-        if (itemNome && quantidade && acao) {
-            registros.push({
-                data: data,
-                horario: horario,
-                id: itemID,
-                item: itemNome,
-                tipo: acao,
-                quantidade: quantidade,
-                responsavel: responsavel,
-                local: local,
-                observacao: ""
-            });
-        }
+        registros.push({
+            data: data,
+            horario: horario,
+            id: itemID,
+            item: itemNome,
+            tipo: secao.querySelector(".acao").value,
+            quantidade: secao.querySelector(".quantidade").value,
+            responsavel: responsavel,
+            observacao: ""
+        });
     });
 
-    if (registros.length === 0) {
-        alert("⚠️ Preencha pelo menos um item completo.");
-        return;
-    }
+    // Envia ao WebApp
+    const resposta = await fetch(webAppUrl, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(registros)
+    });
 
-    console.log("📤 Enviando dados:", registros);
+    // Resetar formulário
+    resetarFormulario();
 
-    try {
-        // Criar FormData para compatibilidade com no-cors
-        const formData = new FormData();
-        formData.append('dados', JSON.stringify(registros));
-
-        await fetch(webAppUrl, {
-            method: "POST",
-            mode: "no-cors",
-            body: formData  // Não incluir headers, deixar o navegador definir automaticamente
-        });
-
-        console.log("✅ Requisição enviada com sucesso!");
-        resetarFormulario();
-        alert("✅ Movimento registrado com sucesso!");
-
-    } catch (erro) {
-        console.error("❌ Erro ao enviar:", erro);
-        alert("❌ Erro ao enviar dados. Tente novamente.");
-    }
+    alert("Movimento registrado com sucesso!");
 });
+
 
 // =============================
 // 5) Resetar formulário
@@ -178,6 +153,7 @@ function resetarFormulario() {
     const container = document.getElementById("itensContainer");
     const primeiro = document.querySelector(".item-section");
 
+    // Mantém apenas o primeiro
     container.innerHTML = "";
     container.appendChild(primeiro);
 
