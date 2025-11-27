@@ -153,7 +153,7 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
         // Usar no-cors - não conseguimos ler a resposta, mas os dados são enviados!
         await fetch(webAppUrl, {
             method: "POST",
-            mode: "no-cors",
+            //mode: "no-cors",
             headers: {
                 "Content-Type": "application/json"
             },
