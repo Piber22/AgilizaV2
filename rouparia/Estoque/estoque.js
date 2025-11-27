@@ -154,7 +154,7 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
         await fetch(webAppUrl, {
             method: "POST",
             mode: "no-cors",
-            body: JSON.stringify(registros)
+            body: formData
         });
 
         console.log("✅ Requisição enviada com sucesso!");
