@@ -2,7 +2,7 @@
 // CONFIGURAÇÕES
 // =============================
 const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvpPG9-1mNVgErsPa79TqB2koPrRIfU0Gd17hiojJ2gjdRAJgQtU3u8bLXx_E-NTS7mlrqxvTvAv7H/pub?output=csv";
-const webAppUrl = "https://script.google.com/macros/s/AKfycbyhGveoG-NA3LUzoUXtIyUWmkBzCGVIBXRdqUU4SnpEb5i6brbWVGUcZ6VDSsc3PbnM/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbzGlIERS3MVndwIpL1nwR9VaNGCgLRQBG4SxF3nh_zXP0pgFVEaGedHDuUOysoBQye7/exec";
 
 let itensBD = [];
 
