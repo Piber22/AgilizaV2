@@ -2,7 +2,7 @@
 // CONFIGURAÇÕES
 // =============================
 const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvpPG9-1mNVgErsPa79TqB2koPrRIfU0Gd17hiojJ2gjdRAJgQtU3u8bLXx_E-NTS7mlrqxvTvAv7H/pub?output=csv";
-const webAppUrl = "https://script.google.com/macros/s/AKfycbz491eTL1WQQZz-7dGk22y75FFxqjtrYYdCo8knoOyT-2qmDdP7neDeWV30OKSvc2MQ/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbwBEGLrK28IES2RTfkXo-1CqPnmgO9xanXDS4s8QvHl-zPcEqEfe-XAWpNBXTHZX3T8/exec";
 
 let itensBD = []; // Onde ficam os itens carregados da planilha (ID + nome)
 
@@ -43,10 +43,11 @@ async function carregarItens() {
 function atualizarSelectsDeItens() {
     const selects = document.querySelectorAll(".item");
 
-    // Ordenar itens alfabeticamente
+    // -------- ADIÇÃO: ORDENAR ALFABETICAMENTE --------
     const itensOrdenados = [...itensBD].sort((a, b) =>
         a.item.localeCompare(b.item, "pt-BR")
     );
+    // -------------------------------------------------
 
     selects.forEach(select => {
         select.innerHTML = `<option value="">Selecione o item:</option>`;
@@ -83,7 +84,12 @@ document.getElementById("addItemBtn").addEventListener("click", () => {
     const novoSelect = novo.querySelector(".item");
     novoSelect.innerHTML = `<option value="">Selecione o item:</option>`;
 
-    itensBD.forEach(obj => {
+    // Ordena os itens alfabeticamente, igual no restante do sistema
+    const itensOrdenados = [...itensBD].sort((a, b) =>
+        a.item.localeCompare(b.item, "pt-BR")
+    );
+
+    itensOrdenados.forEach(obj => {
         const option = document.createElement("option");
         option.value = obj.item;
         option.textContent = obj.item;
@@ -137,7 +143,7 @@ document.getElementById("formMovimentos").addEventListener("submit", async (e) =
         body: JSON.stringify(registros)
     });
 
-    // Resetar formulário
+    // Reseta formulário mantendo apenas 1 item
     resetarFormulario();
 
     alert("Movimento registrado com sucesso!");
