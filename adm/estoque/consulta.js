@@ -36,7 +36,7 @@ async function carregarEstoque() {
                     categoria: colunas[3],
                     quantidade: parseInt(colunas[2]) || 0
                 });
-                categorias.add(colunas[2]);
+                categorias.add(colunas[3]);
             }
         }
 
