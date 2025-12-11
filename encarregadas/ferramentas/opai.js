@@ -6,7 +6,7 @@ function criarCamposOPAI(container) {
     "Graciela":   { re: "037120", funcao: "Encarregada" },
     "Giovana":    { re: "054651", funcao: "Encarregada" },
     "Jessica":    { re: "049971", funcao: "Líder" },        // SEM ACENTO
-    "Jacqueline": { re: "123456", funcao: "Líder" },
+    "Alisson": { re: "062229", funcao: "ASG" },
     "Daiane":     { re: "062074", funcao: "Encarregada" },
     "Adrisson":   { re: "056367", funcao: "Planejador" }   // SEM ACENTO
   };
