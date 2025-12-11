@@ -3,7 +3,7 @@
 // =============================
 
 // URL da aba de ESTOQUE (com os itens e quantidades atuais)
-const estoqueCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMs4JxlOx5o6W5cUGRmytAANh8B5HKO6yhvbLuYinisnZeU01mNM5DBAnopBGg9FYXMg0HXKMnNvek/pub?output=csv";
+const estoqueCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMs4JxlOx5o6W5cUGRmytAANh8B5HKO6yhvbLuYinisnZeU01mNM5DBAnopBGg9FYXMg0HXKMnNvek/pub?gid=430462492&output=csv";
 
 // URL da aba de MOVIMENTAÇÕES (com o histórico de entradas e saídas)
 // Substitua SHEET_GID pelo gid da aba de movimentações
