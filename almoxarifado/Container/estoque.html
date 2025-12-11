@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efetivo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="estoque.css">
+</head>
+<body>
+
+<main>
+
+    <!-- Cabeçalho -->
+    <header class="header">
+        <a href="../rouparia.html" class="logo-link">
+            <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+        </a>
+        <h1>Estoque</h1>
+    </header>
+
+    <form id="formMovimentos">
+
+        <!-- Responsável -->
+        <section id="info">
+            <label>
+                Responsável:
+                <input type="text" id="responsavel" required placeholder="Nome:">
+            </label>
+        </section>
+
+        <!-- Container onde os itens serão adicionados -->
+        <div id="itensContainer">
+
+            <!-- Primeiro item (modelo) -->
+            <section class="item-section">
+                <label>Item:
+                    <select class="item" required>
+                        <option value="">Carregando itens...</option>
+                    </select>
+               </label>
+
+                <label>Quantidade:
+                    <input type="number" class="quantidade" required min="1" placeholder="Quantidade:">
+                </label>
+
+                <label>Ação:
+                    <select class="acao" required>
+                        <option value="">Selecione:</option>
+                        <option value="Entrada">Entrada</option>
+                        <option value="Saída">Saída</option>
+                    </select>
+                </label>
+            </section>
+
+        </div>
+
+        <!-- Botões -->
+        <section style="text-align:center; box-shadow:none; background:none;">
+            <button type="button" id="addItemBtn"
+                style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#444; color:white;">
+                + Adicionar item
+            </button>
+
+            <button type="submit"
+                style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#FF460A; color:white; margin-left:10px;">
+                Salvar
+            </button>
+        </section>
+
+    </form>
+
+</main>
+
+<footer class="footer">
+    <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+</footer>
+
+<script src="estoque.js"></script>
+</body>
+</html>
