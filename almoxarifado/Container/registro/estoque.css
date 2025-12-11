@@ -1,0 +1,129 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #201F20;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 40px;
+}
+
+main {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 0px;
+}
+
+select {
+    width: 50%; /* Alinha o input/select Ã  direita */
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 2px solid #5b5b5b;
+    background-color: #201F20;
+    color: #fff;
+    font-size: 14px;
+}
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+/* CABEÃ‡ALHO */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* CabeÃ§alho ocupa toda a largura */
+    padding: 10px 20px;
+    background-color: #201F20;
+    position: relative;
+    margin-bottom: 0px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.logo-link {
+    position: absolute;
+    left: 20px; /* MantÃ©m a logo alinhada Ã  esquerda */
+}
+
+.logo {
+    width: 40px;
+    height: auto;
+}
+
+.header h1 {
+    text-align: center;
+    font-size: 1.8em;
+    margin: 0;
+}
+
+/* SEÃ‡Ã•ES */
+h2, h3 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+section {
+    background-color: #201F20;
+    padding: 25px 30px;
+    margin: 10px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+
+label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* MantÃ©m texto centralizado verticalmente */
+    margin-bottom: 8px;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="date"] {
+    width: 40%;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 2px solid #5b5b5b;
+    background-color: #201F20;
+    color: #fff;
+    font-size: 14px;
+}
+
+
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #777;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    section {
+        margin: 10px 20px;
+        padding: 25px 25px;
+    }
+
+    .header h1 {
+        font-size: 1.2em;
+    }
+    h2, h3 {
+        font-size: 1.2em;
+    }
+
+    .logo {
+        width: 30px;
+    }
+
+    .logo-link {
+        left: 30px;
+    }
+}
