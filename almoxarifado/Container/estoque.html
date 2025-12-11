@@ -3,79 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Efetivo</title>
+    <title>Consulta Estoque</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="estoque.css">
+    <link rel="stylesheet" href="consulta.css">
 </head>
 <body>
 
 <main>
-
-    <!-- Cabeçalho -->
     <header class="header">
         <a href="../rouparia.html" class="logo-link">
             <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
         </a>
-        <h1>Estoque</h1>
+        <h1>Consulta de Estoque</h1>
     </header>
 
-    <form id="formMovimentos">
-
-        <!-- Responsável -->
-        <section id="info">
-            <label>
-                Responsável:
-                <input type="text" id="responsavel" required placeholder="Nome:">
-            </label>
-        </section>
-
-        <!-- Container onde os itens serão adicionados -->
-        <div id="itensContainer">
-
-            <!-- Primeiro item (modelo) -->
-            <section class="item-section">
-                <label>Item:
-                    <select class="item" required>
-                        <option value="">Carregando itens...</option>
-                    </select>
-               </label>
-
-                <label>Quantidade:
-                    <input type="number" class="quantidade" required min="1" placeholder="Quantidade:">
-                </label>
-
-                <label>Ação:
-                    <select class="acao" required>
-                        <option value="">Selecione:</option>
-                        <option value="Entrada">Entrada</option>
-                        <option value="Saída">Saída</option>
-                    </select>
-                </label>
-            </section>
-
+    <section>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="trocarAba('estoque')">Estoque Atual</button>
+            <button class="tab-btn" onclick="trocarAba('movimentacoes')">Movimentações</button>
         </div>
 
-        <!-- Botões -->
-        <section style="text-align:center; box-shadow:none; background:none;">
-            <button type="button" id="addItemBtn"
-                style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#444; color:white;">
-                + Adicionar item
-            </button>
+        <!-- ABA ESTOQUE ATUAL -->
+        <div id="estoque" class="tab-content active">
+            <h3>Itens em Estoque</h3>
 
-            <button type="submit"
-                style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#FF460A; color:white; margin-left:10px;">
-                Salvar
-            </button>
-        </section>
+            <div class="filtros">
+                <input type="text" id="filtroEstoque" placeholder="Buscar item...">
+                <select id="filtroCategoria">
+                    <option value="">Todas as categorias</option>
+                </select>
+                <button onclick="filtrarEstoque()">Filtrar</button>
+            </div>
 
-    </form>
+            <div class="tabela-container">
+                <table id="tabelaEstoque">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Item</th>
+                            <th>Categoria</th>
+                            <th>Quantidade</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="loading">Carregando dados...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
+        <!-- ABA MOVIMENTAÇÕES -->
+        <div id="movimentacoes" class="tab-content">
+            <h3>Histórico de Movimentações</h3>
+
+            <div class="filtros">
+                <input type="text" id="filtroMovItem" placeholder="Buscar item...">
+                <input type="date" id="filtroDataInicio">
+                <input type="date" id="filtroDataFim">
+                <select id="filtroTipo">
+                    <option value="">Todos os tipos</option>
+                    <option value="Entrada">Entrada</option>
+                    <option value="Saída">Saída</option>
+                </select>
+                <button onclick="filtrarMovimentacoes()">Filtrar</button>
+            </div>
+
+            <div class="tabela-container">
+                <table id="tabelaMovimentacoes">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Horário</th>
+                            <th>Item</th>
+                            <th>Tipo</th>
+                            <th>Quantidade</th>
+                            <th>Responsável</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" class="loading">Carregando dados...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 </main>
 
 <footer class="footer">
     <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
 </footer>
 
-<script src="estoque.js"></script>
+<script src="consulta.js"></script>
 </body>
 </html>
