@@ -1,8 +1,8 @@
 // =============================
 // CONFIGURAÇÕES
 // =============================
-const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvpPG9-1mNVgErsPa79TqB2koPrRIfU0Gd17hiojJ2gjdRAJgQtU3u8bLXx_E-NTS7mlrqxvTvAv7H/pub?output=csv";
-const webAppUrl = "https://script.google.com/macros/s/AKfycbyxK--7-hHhAoVhVtG1XQuYDssz1_RW5bYBemszVz672BGeZXmLFfadonuUAskHQmOo/exec";
+const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMs4JxlOx5o6W5cUGRmytAANh8B5HKO6yhvbLuYinisnZeU01mNM5DBAnopBGg9FYXMg0HXKMnNvek/pub?output=csv";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbyGzc3Kil-KjehVni14jcm8LKGQNCv7m_RH6i2BvF1hw_7YaKXfV2qTltTVNHGrIasS/exec";
 
 let itensBD = []; // Onde ficam os itens carregados da planilha (ID + nome)
 
