@@ -33,8 +33,8 @@ async function carregarEstoque() {
                 dadosEstoque.push({
                     id: colunas[0],
                     item: colunas[1],
-                    categoria: colunas[2],
-                    quantidade: parseInt(colunas[3]) || 0
+                    categoria: colunas[3],
+                    quantidade: parseInt(colunas[2]) || 0
                 });
                 categorias.add(colunas[2]);
             }

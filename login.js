@@ -30,7 +30,7 @@ btnGestao.addEventListener('click', () => {
 
   const senha = prompt("Digite a senha para acessar Gestão:");
 
-  if(senha === "1") { // aqui você define a senha desejada
+  if(senha === "adm") { // aqui você define a senha desejada
     window.location.href = "adm/gestao.html";
   } else if (senha !== null) { // se não cancelar
     loginError.textContent = "Senha incorreta! Acesso negado.";
