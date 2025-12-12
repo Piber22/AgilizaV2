@@ -68,7 +68,7 @@ selectResponsavel.addEventListener("change", function() {
             intervaloContainer.appendChild(intervalo12);
 
             // Intervalo 13:00 (Azul)
-            const intervalo13 = criarCheckboxIntervalo(nome, '13:00', 'azul', '13:00');
+            const intervalo13 = criarCheckboxIntervalo(nome, '13:00', 'azul');
             intervaloContainer.appendChild(intervalo13);
 
             div.appendChild(intervaloContainer);
