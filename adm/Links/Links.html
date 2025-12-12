@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planilhas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #201F20;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 40px;
+        }
+
+        main {
+            width: 100%;
+            max-width: 1400px;
+            margin-top: 0px;
+            padding: 0 20px;
+        }
+
+        /* CABEÇALHO */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px 20px;
+            background-color: #201F20;
+            position: relative;
+            margin-bottom: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .logo-link {
+            position: absolute;
+            left: 20px;
+        }
+
+        .logo {
+            width: 40px;
+            height: auto;
+        }
+
+        .header h1 {
+            text-align: center;
+            font-size: 1.8em;
+            margin: 0;
+        }
+
+        /* GRID DE CATEGORIAS */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* CARDS DE CATEGORIA */
+        .category-card {
+            background-color: #201F20;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.6);
+        }
+
+        .category-title {
+            text-align: center;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            color: #E94B22;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #E94B22;
+        }
+
+        /* BOTÕES */
+        .btn-planilha {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            padding: 12px;
+            background-color: #201F20;
+            border: 2px solid #E94B22;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            margin-bottom: 12px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-planilha:hover {
+            background-color: #E94B22;
+        }
+
+        .btn-planilha:active {
+            transform: scale(0.97);
+        }
+
+        .btn-planilha:last-child {
+            margin-bottom: 0;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .footer strong {
+            color: #E94B22;
+        }
+
+        /* Mensagem de feedback */
+        .feedback {
+            text-align: center;
+            padding: 12px;
+            margin: 10px auto;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            display: none;
+        }
+
+        .feedback.success {
+            color: #4CAF50;
+            background-color: rgba(76, 175, 80, 0.2);
+            border: 2px solid #4CAF50;
+        }
+
+        .feedback.error {
+            background-color: rgba(244, 67, 54, 0.2);
+            border: 2px solid #f44336;
+            color: #f44336;
+        }
+
+        .feedback.info {
+            background-color: rgba(233, 75, 34, 0.2);
+            border: 2px solid #E94B22;
+            color: #E94B22;
+        }
+
+        /* RESPONSIVO */
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.2em;
+            }
+
+            .category-title {
+                font-size: 1.2em;
+            }
+
+            .logo {
+                width: 30px;
+            }
+
+            .logo-link {
+                left: 10px;
+            }
+
+            main {
+                padding: 0 10px;
+            }
+
+            .category-card {
+                padding: 20px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../gestao.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Planilhas</h1>
+        </header>
+
+        <!-- Mensagem de feedback -->
+        <div id="feedback" class="feedback"></div>
+
+        <!-- Grid de Categorias -->
+        <div class="grid-container">
+            <!-- ROUPARIA -->
+            <div class="category-card">
+                <h2 class="category-title">Rouparia</h2>
+                <button class="btn-planilha" data-url="https://docs.google.com/spreadsheets/d/1mhCTgy9J_x3iTWDga8L_4oRlITfRE52eBvfUUlrX1jY/edit?gid=0#gid=0">Recebimento de Enxoval</button>
+                <button class="btn-planilha" data-url="https://docs.google.com/spreadsheets/d/17DORC9s2wnNNDz1KTGF0WTdY2Y3OxR5euZXc7Db00P0/edit?gid=0#gid=0">Troca de Plantão</button>
+                <button class="btn-planilha" data-url="https://docs.google.com/spreadsheets/d/1wFQ0oOSqiaJQmxniVEsz5kS2owd4eh075Dfc3k9v5mM/edit?gid=0#gid=0">Estoque</button>
+            </div>
+
+            <!-- ENCARREGADAS -->
+            <div class="category-card">
+                <h2 class="category-title">Encarregadas</h2>
+                <button class="btn-planilha" data-url="https://docs.google.com/spreadsheets/d/1TeT-a1bvwb4ecNxm7-Z3Uj0QyJz9ioEEYccK4p-Va5s/edit?gid=0#gid=0">Dimensionamento</button>
+                <button class="btn-planilha" data-url="https://docs.google.com/spreadsheets/d/10vcXfdqRPJY2jBsroEmO7ZL4C3jXg2PlyZbd2ZXRl4A/edit?gid=0#gid=0">Efetivo</button>
+                <button class="btn-planilha" data-url="https://docs.google.com/spreadsheets/d/1F8zfhlVs7yOCVuLvrjleVyOL1gOdF64lSgHoR-MtArI/edit">Passagem de Plantão</button>
+                <button class="btn-planilha" data-url="https://docs.google.com/spreadsheets/d/1Dj2B4OMvbs4qnUAtGi64VeT4or3hMe5xcmgeYpb4G8M/edit?gid=2015636690#gid=2015636690">Cronograma</button>
+                <button class="btn-planilha" data-url="https://drive.google.com/drive/folders/16RJj-IeNetCB0LU_Y2t4o17awU9DRiEx">Ferramentas</button>
+            </div>
+
+            <!-- ALMOXARIFADO -->
+            <div class="category-card">
+                <h2 class="category-title">Almoxarifado</h2>
+                <button class="btn-planilha" data-url="https://docs.google.com/spreadsheets/d/1RrpxFF__BsDh9P3Dm_ZxxSqQvFIWr6ad6FEUzg6Rwek/edit?gid=0#gid=0">Pedido de Insumos</button>
+                <button class="btn-planilha" data-url="https://docs.google.com/spreadsheets/d/15ZHi1psusjE8YLflaYl-rH_XJqv8lPotB1H1sZ7KghQ/edit?gid=0#gid=0">Entrega de Insumos</button>
+                <button class="btn-planilha" data-url="https://docs.google.com/spreadsheets/d/1Ksnva2dMB0rJCqn3LOszbyqnsBHJZH7RUMyuwvi-JNE/edit?gid=0#gid=0">Container</button>
+            </div>
+
+            <!-- GESTÃO -->
+            <div class="category-card">
+                <h2 class="category-title">Gestão</h2>
+                <button class="btn-planilha" data-url="">Consulta de Dados</button>
+                <button class="btn-planilha" data-url="https://docs.google.com/spreadsheets/d/1Ksnva2dMB0rJCqn3LOszbyqnsBHJZH7RUMyuwvi-JNE/edit?gid=0#gid=0">Estoque</button>
+                <button class="btn-planilha" data-url="https://docs.google.com/spreadsheets/d/1VyraMLZRrognK7aIFRTnpv-41Aqzwy6Ru_OZsHlerrs/edit?gid=0#gid=0">Checklist de Qualidade</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        console.log("✅ Hub de Planilhas carregado!");
+
+        // Função para mostrar feedback
+        function mostrarFeedback(mensagem, tipo) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = mensagem;
+            feedback.className = `feedback ${tipo}`;
+            feedback.style.display = 'block';
+
+            setTimeout(() => {
+                feedback.style.display = 'none';
+            }, 4000);
+        }
+
+        // Adicionar event listeners a todos os botões
+        document.addEventListener('DOMContentLoaded', function() {
+            const botoes = document.querySelectorAll('.btn-planilha');
+
+            botoes.forEach(botao => {
+                botao.addEventListener('click', function() {
+                    const url = this.getAttribute('data-url');
+
+                    if (url && url.trim() !== '') {
+                        // Abre a planilha em uma nova aba
+                        window.open(url, '_blank');
+                    } else {
+                        // Mostra mensagem se URL não foi configurada
+                        mostrarFeedback('⚠️ URL da planilha não configurada. Adicione a URL no atributo data-url do botão.', 'info');
+                    }
+                });
+            });
+
+            console.log('📋 Total de botões configurados:', botoes.length);
+        });
+    </script>
+</body>
+</html>
