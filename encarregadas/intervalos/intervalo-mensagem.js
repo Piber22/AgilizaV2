@@ -1,5 +1,8 @@
 console.log("✅ intervalo-mensagem.js carregado!");
 
+// Seletor do responsável
+const selectResponsavel = document.getElementById("selectResponsavel");
+
 // Gera a mensagem final
 document.getElementById("gerarBtn").addEventListener("click", function() {
     let dataInput = document.getElementById("dataIntervalo").value;
@@ -30,7 +33,6 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     const intervalo12 = [];
     const intervalo13 = [];
 
-
     todosCheckboxes.forEach(checkbox => {
         const nomeColaborador = checkbox.getAttribute('data-colaborador');
         const horario = checkbox.getAttribute('data-horario');
@@ -39,14 +41,13 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
             intervalo12.push(nomeColaborador);
         } else if (horario === '13:00') {
             intervalo13.push(nomeColaborador);
+        }
+    }); // <-- FECHAMENTO CORRETO
 
-    });
-
-    // --- NOVO: Exibir o Resumo na Tela (VISÍVEL APENAS PARA O ORGANIZADOR) ---
+    // --- NOVO: Exibir Resumo na Tela ---
     const resumoSection = document.getElementById("resumo");
     const resumoContainer = document.getElementById("resumo-container");
 
-    // Função auxiliar para criar um item de resumo
     function criarItemResumo(titulo, count, corClasse) {
         return `
             <div class="resumo-item ${corClasse}">
@@ -59,40 +60,30 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     resumoContainer.innerHTML = `
         ${criarItemResumo('12:00', intervalo12.length, 'verde')}
         ${criarItemResumo('13:00', intervalo13.length, 'azul')}
-
     `;
-    // Remove a classe 'oculto' para tornar a seção visível
+
     resumoSection.classList.remove("oculto");
 
-    // Ordena cada grupo alfabeticamente para a mensagem
+    // Ordena grupos
     intervalo12.sort((a, b) => a.localeCompare(b, 'pt-BR'));
     intervalo13.sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
-
-    // Monta a mensagem para o WhatsApp (exclui a contagem)
+    // Monta a mensagem final
     let msg = `🍽️ CONTROLE DE INTERVALO ${responsavel.toUpperCase()} 🍽️\n`;
     msg += `📆 ${dataStr} 📆\n\n`;
 
-    // Adiciona intervalo 12:00
     if (intervalo12.length > 0) {
         msg += `🟢 INTERVALO 12:00 🟢\n`;
-        intervalo12.forEach(nome => {
-            msg += `${nome}\n`;
-        });
+        intervalo12.forEach(nome => msg += `${nome}\n`);
         msg += '\n';
     }
 
-    // Adiciona intervalo 13:00
     if (intervalo13.length > 0) {
         msg += `🔵 INTERVALO 13:00 🔵\n`;
-        intervalo13.forEach(nome => {
-            msg += `${nome}\n`;
-        });
+        intervalo13.forEach(nome => msg += `${nome}\n`);
         msg += '\n';
     }
 
-
-    // Se ninguém foi marcado em nada
     if (intervalo12.length === 0 && intervalo13.length === 0) {
         msg += `⚠️ Nenhum colaborador selecionado.\n`;
     }
@@ -101,7 +92,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     console.log("✅ Mensagem gerada com sucesso!");
 });
 
-// Copia a mensagem para a área de transferência e abre o WhatsApp
+// Copia a mensagem e abre o WhatsApp
 document.getElementById("copiarBtn").addEventListener("click", function() {
     const textarea = document.getElementById("resultado");
     if (textarea.value.trim() === "") {
@@ -112,11 +103,7 @@ document.getElementById("copiarBtn").addEventListener("click", function() {
     navigator.clipboard.writeText(textarea.value)
         .then(() => {
             console.log("📋 Mensagem copiada para área de transferência");
-
-            // Apenas abre o WhatsApp
-            const whatsappAppURL = "whatsapp://";
-            window.location.href = whatsappAppURL;
-
+            window.location.href = "whatsapp://";
             console.log("📱 Abrindo WhatsApp");
         })
         .catch(err => {
