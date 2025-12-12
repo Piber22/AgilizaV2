@@ -102,7 +102,7 @@ document.getElementById("copiarBtn").addEventListener("click", function() {
     navigator.clipboard.writeText(textarea.value)
         .then(() => {
             console.log("📋 Mensagem copiada para área de transferência");
-            window.location.href = "whatsapp://";
+            window.location.href = "https://wa.me/";
             console.log("📱 Abrindo WhatsApp");
         })
         .catch(err => {
