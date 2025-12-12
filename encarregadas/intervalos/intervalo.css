@@ -214,6 +214,10 @@ textarea {
     border: 2px solid #2196F3;
 }
 
+.checkbox-visual.vermelho {
+    border: 2px solid #F44336;
+}
+
 .checkbox-visual.checked {
     color: white;
     font-size: 16px;
@@ -228,15 +232,8 @@ textarea {
     background-color: #2196F3;
 }
 
-/* Adicionar ao seu CSS */
-.checkbox-visual.vermelho {
-    border-color: #F44336; /* Vermelho */
-    color: #F44336;
-}
-
 .checkbox-visual.vermelho.checked {
     background-color: #F44336;
-    color: white;
 }
 
 /* Legenda */
