@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Limpar formulário após 2 segundos
             setTimeout(() => {
-                document.getElementById('data').value = `${ano}-${mes}-${dia}`;
+                document.getElementById('dataHora').value = `${ano}-${mes}-${dia}`;
                 document.getElementById('validade').value = '';
                 document.getElementById('local').value = '';
                 document.getElementById('entreguePor').value = '';
