@@ -29,7 +29,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     // Agrupa colaboradores por horário/status
     const intervalo12 = [];
     const intervalo13 = [];
-    const faltas = []; // Novo array para faltas
+    const faltas = [];
 
     todosCheckboxes.forEach(checkbox => {
         const nomeColaborador = checkbox.getAttribute('data-colaborador');
@@ -53,7 +53,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     let msg = `🍽️ CONTROLE DE INTERVALO ${responsavel.toUpperCase()} 🍽️\n`;
     msg += `📆 ${dataStr} 📆\n\n`;
 
-    // Adiciona intervalo 12:00
+    // Intervalo 12:00
     if (intervalo12.length > 0) {
         msg += `🟢 INTERVALO 12:00 🟢\n`;
         intervalo12.forEach(nome => {
@@ -62,7 +62,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         msg += '\n';
     }
 
-    // Adiciona intervalo 13:00
+    // Intervalo 13:00
     if (intervalo13.length > 0) {
         msg += `🔵 INTERVALO 13:00 🔵\n`;
         intervalo13.forEach(nome => {
@@ -71,7 +71,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         msg += '\n';
     }
 
-    // Se ninguém foi marcado em nada
+    // Caso não tenha nada marcado
     if (intervalo12.length === 0 && intervalo13.length === 0 && faltas.length === 0) {
         msg += `⚠️ Nenhum colaborador selecionado.\n`;
     }
@@ -80,9 +80,11 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     console.log("✅ Mensagem gerada com sucesso!");
 });
 
-// Copia a mensagem para a área de transferência e abre o WhatsApp
+
+// Copia a mensagem e abre o WhatsApp
 document.getElementById("copiarBtn").addEventListener("click", function() {
     const textarea = document.getElementById("resultado");
+
     if (textarea.value.trim() === "") {
         alert("Não há mensagem para copiar!");
         return;
@@ -92,14 +94,11 @@ document.getElementById("copiarBtn").addEventListener("click", function() {
         .then(() => {
             console.log("📋 Mensagem copiada para área de transferência");
 
-            // Extrai o código do convite do link
-            const inviteCode = "IAbXun9LRzc61P6bm1coD8";
-
-            // Tenta abrir no app do WhatsApp
-            const whatsappAppURL = `whatsapp://chat?code=${inviteCode}`;
+            // Apenas abre o WhatsApp
+            const whatsappAppURL = "whatsapp://";
             window.location.href = whatsappAppURL;
 
-            console.log("📱 Abrindo grupo do WhatsApp");
+            console.log("📱 Abrindo WhatsApp");
         })
         .catch(err => {
             console.error("❌ Erro ao copiar: ", err);
