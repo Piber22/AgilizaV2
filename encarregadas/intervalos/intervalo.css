@@ -263,10 +263,11 @@ textarea {
     display: none;
 }
 
-/* RESPONSIVO AJUSTADO */
+
+/* RESPONSIVO COMPLETO E CONSOLIDADO */
 @media (max-width: 768px) {
     section {
-        margin: 10px 15px; /* Reduzi um pouco a margem lateral */
+        margin: 10px 15px;
         padding: 20px 15px;
     }
 
@@ -282,20 +283,36 @@ textarea {
         width: 30px;
     }
 
-    /* Ajuste para Labels de entrada (Data/Responsável) */
-    label span, input, select {
-        width: 100%;
-        margin-bottom: 5px;
+    .logo-link {
+        left: 20px; /* Ajustado para melhor alinhamento no mobile */
     }
 
+    /* --- AJUSTE: Responsável e Data lado a lado --- */
     label {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
     }
 
-    /* --- AJUSTE DOS NOMES E CAIXAS --- */
+    label span {
+        width: 40%;
+        margin-bottom: 0;
+        font-size: 14px;
+        text-align: left;
+    }
+
+    input[type="date"],
+    select {
+        width: 60%;
+        margin-bottom: 0;
+        padding: 8px;
+    }
+
+    /* --- AJUSTE: Nome e Checkboxes na mesma linha --- */
     .colaborador-item {
-        flex-direction: row; /* Mantém lado a lado */
+        flex-direction: row;
         justify-content: space-between;
         align-items: center;
         gap: 8px;
@@ -303,28 +320,32 @@ textarea {
     }
 
     .colaborador-nome {
-        width: auto; /* Remove largura total */
-        flex: 1;    /* Ocupa o espaço restante */
+        width: auto;
+        flex: 1;
         margin-bottom: 0;
         font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .intervalo-container {
-        width: auto; /* Remove largura total */
+        width: auto;
         justify-content: flex-end;
-        gap: 12px; /* Espaço entre as 3 caixinhas */
+        gap: 10px; /* Espaço entre as 3 caixinhas (Verde, Azul, Vermelha) */
     }
 
-    /* --- AJUSTE DA LEGENDA --- */
+    /* --- AJUSTE: Legenda horizontal --- */
     .legenda-intervalo {
-        flex-direction: row; /* Mantém lado a lado */
-        flex-wrap: wrap;    /* Permite quebra apenas se realmente não couber */
+        flex-direction: row;
+        flex-wrap: wrap; /* Permite quebra apenas se o dispositivo for muito pequeno */
         justify-content: center;
         gap: 12px;
         padding: 10px 5px;
     }
 
     .legenda-item {
-        font-size: 12px; /* Diminui um pouco a fonte para garantir espaço */
+        font-size: 12px;
     }
+
 }
