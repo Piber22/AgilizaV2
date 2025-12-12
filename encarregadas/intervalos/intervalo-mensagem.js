@@ -1,7 +1,6 @@
 console.log("✅ intervalo-mensagem.js carregado!");
 
-// Seletor do responsável
-const selectResponsavel = document.getElementById("selectResponsavel");
+
 
 // Gera a mensagem final
 document.getElementById("gerarBtn").addEventListener("click", function() {
