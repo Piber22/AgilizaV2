@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insumos</title>
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- CSS específico -->
+    <link rel="stylesheet" href="insumos.css">
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../almoxarifado.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Insumos</h1>
+        </header>
+
+        <!-- Formulário -->
+        <section id="formulario">
+            <!--<h2>Informações de Recebimento</h2>-->
+            <label>
+                <span>Data:</span>
+                <input type="date" id="data">
+            </label>
+            <label>
+                <span>Validade:</span>
+                <input type="month" id="validade">
+            </label>
+            <label>
+                <span>Local:</span>
+                <input type="text" id="local" placeholder="Digite o local">
+            </label>
+            <label>
+                <span>Entregue por:</span>
+                <input type="text" id="entreguePor" placeholder="Nome">
+            </label>
+            <label>
+                <span>Recebido por:</span>
+                <input type="text" id="recebidoPor" placeholder="Nome">
+            </label>
+            <label>
+                <span>Insumo:</span>
+                <select id="tipoInsumo">
+                    <option value="" disabled selected>Selecione o item:</option>
+                    <option value="Alcool">Álcool</option>
+                    <option value="Sabonete">Sabonete</option>
+                    <option value="Gojo">Gojo</option>
+                    <option value="Bactericida">Bactericida</option>
+                </select>
+            </label>
+        </section>
+
+
+        <!-- Botão de envio -->
+        <button id="enviarBtn" class="login-option">Enviar Dados</button>
+        <!-- Mensagem de feedback -->
+        <div id="feedback" class="feedback"></div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="insumos.js"></script>
+</body>
+</html>
