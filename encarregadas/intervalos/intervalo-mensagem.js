@@ -67,12 +67,6 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         msg += '\n';
     }
 
-    // Adiciona totais
-    msg += `📊 RESUMO:\n`;
-    msg += `• Intervalo 12:00: ${intervalo12.length} colaborador(es)\n`;
-    msg += `• Intervalo 13:00: ${intervalo13.length} colaborador(es)\n`;
-    msg += `• Total: ${intervalo12.length + intervalo13.length} colaborador(es)`;
-
     document.getElementById("resultado").value = msg;
     console.log("✅ Mensagem gerada com sucesso!");
 });

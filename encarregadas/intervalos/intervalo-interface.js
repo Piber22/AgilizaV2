@@ -24,8 +24,8 @@ selectResponsavel.addEventListener("change", function() {
         legenda.className = "legenda-intervalo";
 
         const legendaItens = [
-            { texto: 'Intervalo 12:00', cor: '#4CAF50' },
-            { texto: 'Intervalo 13:00', cor: '#2196F3' }
+            { texto: '12:00', cor: '#4CAF50' },
+            { texto: '13:00', cor: '#2196F3' }
         ];
 
         legendaItens.forEach(({ texto, cor }) => {
@@ -64,7 +64,7 @@ selectResponsavel.addEventListener("change", function() {
             intervaloContainer.className = "intervalo-container";
 
             // Intervalo 12:00 (Verde)
-            const intervalo12 = criarCheckboxIntervalo(nome, '12:00', 'verde', '12:00');
+            const intervalo12 = criarCheckboxIntervalo(nome, '12:00', 'verde');
             intervaloContainer.appendChild(intervalo12);
 
             // Intervalo 13:00 (Azul)
