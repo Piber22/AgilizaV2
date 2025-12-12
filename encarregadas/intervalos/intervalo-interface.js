@@ -19,13 +19,14 @@ selectResponsavel.addEventListener("change", function() {
         h2.textContent = "Controle de Intervalos";
         colaboradoresSection.appendChild(h2);
 
-        // Adiciona legenda
+        // --- ATUALIZAÇÃO DA LEGENDA ---
         const legenda = document.createElement("div");
         legenda.className = "legenda-intervalo";
 
         const legendaItens = [
-            { texto: '12:00', cor: '#4CAF50' },
-            { texto: '13:00', cor: '#2196F3' }
+            { texto: '12:00', cor: '#4CAF50' }, // Verde
+            { texto: '13:00', cor: '#2196F3' }, // Azul
+            { texto: 'Falta', cor: '#F44336' }  // Vermelho (NOVO)
         ];
 
         legendaItens.forEach(({ texto, cor }) => {
@@ -49,7 +50,7 @@ selectResponsavel.addEventListener("change", function() {
         // Ordena a lista antes de exibir
         const listaOrdenada = [...lista].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
-        listaOrdenada.forEach((nome, index) => {
+        listaOrdenada.forEach((nome) => {
             const div = document.createElement("div");
             div.className = "colaborador-item";
 
@@ -71,6 +72,10 @@ selectResponsavel.addEventListener("change", function() {
             const intervalo13 = criarCheckboxIntervalo(nome, '13:00', 'azul');
             intervaloContainer.appendChild(intervalo13);
 
+            // --- NOVA COLUNA: Falta (Vermelho) ---
+            const intervaloFalta = criarCheckboxIntervalo(nome, 'Falta', 'vermelho');
+            intervaloContainer.appendChild(intervaloFalta);
+
             div.appendChild(intervaloContainer);
             colaboradoresSection.appendChild(div);
         });
@@ -83,20 +88,22 @@ selectResponsavel.addEventListener("change", function() {
 });
 
 // Função para criar checkbox de intervalo
-function criarCheckboxIntervalo(nomeColaborador, horario, cor, label) {
+function criarCheckboxIntervalo(nomeColaborador, horario, cor, label = "") {
     const group = document.createElement("div");
     group.className = "intervalo-group";
 
-    const labelElement = document.createElement("div");
-    labelElement.className = "intervalo-label";
-    labelElement.textContent = label;
-    group.appendChild(labelElement);
+    if (label) {
+        const labelElement = document.createElement("div");
+        labelElement.className = "intervalo-label";
+        labelElement.textContent = label;
+        group.appendChild(labelElement);
+    }
 
     const wrapper = document.createElement("div");
     wrapper.className = "checkbox-wrapper";
 
     const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
+    checkbox.type = "checkbox"; // Mantemos checkbox para facilitar a estilização existente
     checkbox.className = "checkbox-intervalo";
     checkbox.setAttribute("data-colaborador", nomeColaborador);
     checkbox.setAttribute("data-horario", horario);
@@ -107,7 +114,21 @@ function criarCheckboxIntervalo(nomeColaborador, horario, cor, label) {
 
     // Evento de mudança no checkbox
     checkbox.addEventListener("change", function() {
+        // --- LÓGICA DE EXCLUSIVIDADE ---
         if (this.checked) {
+            // Se este foi marcado, desmarcar os outros DO MESMO COLABORADOR
+            // Subimos até o container pai e buscamos os outros inputs
+            const container = group.parentElement; // intervalo-container
+            const irmaos = container.querySelectorAll('.checkbox-intervalo');
+
+            irmaos.forEach(outroCheckbox => {
+                if (outroCheckbox !== this && outroCheckbox.checked) {
+                    outroCheckbox.checked = false;
+                    // Dispara o evento change manualmente para atualizar o visual do outro
+                    outroCheckbox.dispatchEvent(new Event('change'));
+                }
+            });
+
             checkboxVisual.classList.add("checked");
             checkboxVisual.textContent = '✓';
         } else {

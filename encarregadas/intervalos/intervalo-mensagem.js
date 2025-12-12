@@ -26,9 +26,10 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     // Coleta todos os checkboxes marcados
     const todosCheckboxes = document.querySelectorAll('.checkbox-intervalo:checked');
 
-    // Agrupa colaboradores por horário
+    // Agrupa colaboradores por horário/status
     const intervalo12 = [];
     const intervalo13 = [];
+    const faltas = []; // Novo array para faltas
 
     todosCheckboxes.forEach(checkbox => {
         const nomeColaborador = checkbox.getAttribute('data-colaborador');
@@ -38,12 +39,15 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
             intervalo12.push(nomeColaborador);
         } else if (horario === '13:00') {
             intervalo13.push(nomeColaborador);
+        } else if (horario === 'Falta') {
+            faltas.push(nomeColaborador);
         }
     });
 
     // Ordena cada grupo alfabeticamente
     intervalo12.sort((a, b) => a.localeCompare(b, 'pt-BR'));
     intervalo13.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    faltas.sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
     // Monta a mensagem
     let msg = `🍽️ CONTROLE DE INTERVALO ${responsavel.toUpperCase()} 🍽️\n`;
@@ -65,6 +69,20 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
             msg += `${nome}\n`;
         });
         msg += '\n';
+    }
+
+    // Adiciona Faltas
+    if (faltas.length > 0) {
+        msg += `🔴 FALTA 🔴\n`;
+        faltas.forEach(nome => {
+            msg += `${nome}\n`;
+        });
+        msg += '\n';
+    }
+
+    // Se ninguém foi marcado em nada
+    if (intervalo12.length === 0 && intervalo13.length === 0 && faltas.length === 0) {
+        msg += `⚠️ Nenhum colaborador selecionado.\n`;
     }
 
     document.getElementById("resultado").value = msg;
