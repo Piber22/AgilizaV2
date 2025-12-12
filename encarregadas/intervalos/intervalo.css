@@ -268,7 +268,7 @@ textarea {
     display: flex;
     justify-content: space-around;
     padding: 10px;
-    background-color: #2a2a2a;
+    background-color: #201F20;
     border-radius: 8px;
 }
 
@@ -292,9 +292,9 @@ textarea {
 }
 
 /* Cores de fundo semi-transparentes para os contadores */
-.resumo-item.verde { border: 2px solid #4CAF50; }
-.resumo-item.azul { border: 2px solid #2196F3; }
-.resumo-item.vermelho { border: 2px solid #F44336; }
+.resumo-item.verde { background-color: #201F20; border: 2px solid #4CAF50; }
+.resumo-item.azul { background-color: #201F20; border: 2px solid #2196F3; }
+.resumo-item.vermelho { background-color: #201F20; border: 2px solid #F44336; }
 
 /* RESPONSIVO COMPLETO E CONSOLIDADO */
 @media (max-width: 768px) {
