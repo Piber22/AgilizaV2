@@ -29,7 +29,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     // Agrupa colaboradores por horário/status (incluindo faltas)
     const intervalo12 = [];
     const intervalo13 = [];
-    const faltas = []; // Array para faltas
+
 
     todosCheckboxes.forEach(checkbox => {
         const nomeColaborador = checkbox.getAttribute('data-colaborador');
@@ -39,9 +39,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
             intervalo12.push(nomeColaborador);
         } else if (horario === '13:00') {
             intervalo13.push(nomeColaborador);
-        } else if (horario === 'Falta') {
-            faltas.push(nomeColaborador);
-        }
+
     });
 
     // --- NOVO: Exibir o Resumo na Tela (VISÍVEL APENAS PARA O ORGANIZADOR) ---
@@ -61,7 +59,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     resumoContainer.innerHTML = `
         ${criarItemResumo('12:00', intervalo12.length, 'verde')}
         ${criarItemResumo('13:00', intervalo13.length, 'azul')}
-        ${criarItemResumo('Faltas', faltas.length, 'vermelho')}
+
     `;
     // Remove a classe 'oculto' para tornar a seção visível
     resumoSection.classList.remove("oculto");
@@ -69,7 +67,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     // Ordena cada grupo alfabeticamente para a mensagem
     intervalo12.sort((a, b) => a.localeCompare(b, 'pt-BR'));
     intervalo13.sort((a, b) => a.localeCompare(b, 'pt-BR'));
-    faltas.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
 
     // Monta a mensagem para o WhatsApp (exclui a contagem)
     let msg = `🍽️ CONTROLE DE INTERVALO ${responsavel.toUpperCase()} 🍽️\n`;
