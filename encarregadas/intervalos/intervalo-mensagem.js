@@ -68,7 +68,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     intervalo13.sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
     // Monta a mensagem final
-    let msg = `🍽️ CONTROLE DE INTERVALO ${responsavel.toUpperCase()} 🍽️\n`;
+    let msg = `🍽️ INTERVALOS 🍽️\n`;
     msg += `📆 ${dataStr} 📆\n\n`;
 
     if (intervalo12.length > 0) {
