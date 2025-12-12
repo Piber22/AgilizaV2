@@ -71,15 +71,6 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         msg += '\n';
     }
 
-    // Adiciona Faltas
-    if (faltas.length > 0) {
-        msg += `🔴 FALTA 🔴\n`;
-        faltas.forEach(nome => {
-            msg += `${nome}\n`;
-        });
-        msg += '\n';
-    }
-
     // Se ninguém foi marcado em nada
     if (intervalo12.length === 0 && intervalo13.length === 0 && faltas.length === 0) {
         msg += `⚠️ Nenhum colaborador selecionado.\n`;
