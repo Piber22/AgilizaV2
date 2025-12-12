@@ -1,7 +1,7 @@
 console.log("✅ Recebimento.js carregado!");
 
 // URL do seu Apps Script (ALTERE PARA A SUA URL SE NECESSÁRIO)
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwWfpXxY9wflJmC3aq5NRyO8TrcicmxuYUDP9Io-iEU1EtOSXzXq0Apnijm_o-WZkr3xQ/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyzQbf4PBECRcwVF3uCfav1lIWDpLzSWFixf_w7xOr-Ye4HkaiyRdiaKibORtVKaeyOuQ/exec';
 
 // Variável global para armazenar os dados
 let dadosRecebimento = null;
