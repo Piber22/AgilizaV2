@@ -27,7 +27,6 @@ selectResponsavel.addEventListener("change", function() {
         const legendaItens = [
             { texto: '12:00', cor: '#4CAF50' }, // Verde
             { texto: '13:00', cor: '#2196F3' }, // Azul
-            { texto: 'Falta', cor: '#F44336' }  // Vermelho (NOVO)
         ];
 
         legendaItens.forEach(({ texto, cor }) => {
@@ -73,9 +72,6 @@ selectResponsavel.addEventListener("change", function() {
             const intervalo13 = criarCheckboxIntervalo(nome, '13:00', 'azul');
             intervaloContainer.appendChild(intervalo13);
 
-            // --- NOVA COLUNA: Falta (Vermelho) ---
-            const intervaloFalta = criarCheckboxIntervalo(nome, 'Falta', 'vermelho');
-            intervaloContainer.appendChild(intervaloFalta);
 
             div.appendChild(intervaloContainer);
             colaboradoresSection.appendChild(div);

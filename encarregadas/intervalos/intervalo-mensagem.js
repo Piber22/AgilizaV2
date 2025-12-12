@@ -93,7 +93,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
 
 
     // Se ninguém foi marcado em nada
-    if (intervalo12.length === 0 && intervalo13.length === 0 && faltas.length === 0) {
+    if (intervalo12.length === 0 && intervalo13.length === 0) {
         msg += `⚠️ Nenhum colaborador selecionado.\n`;
     }
 
