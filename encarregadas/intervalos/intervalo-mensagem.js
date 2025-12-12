@@ -26,10 +26,10 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     // Coleta todos os checkboxes marcados
     const todosCheckboxes = document.querySelectorAll('.checkbox-intervalo:checked');
 
-    // Agrupa colaboradores por horário/status
+    // Agrupa colaboradores por horário/status (incluindo faltas)
     const intervalo12 = [];
     const intervalo13 = [];
-    const faltas = [];
+    const faltas = []; // Array para faltas
 
     todosCheckboxes.forEach(checkbox => {
         const nomeColaborador = checkbox.getAttribute('data-colaborador');
@@ -44,16 +44,38 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         }
     });
 
-    // Ordena cada grupo alfabeticamente
+    // --- NOVO: Exibir o Resumo na Tela (VISÍVEL APENAS PARA O ORGANIZADOR) ---
+    const resumoSection = document.getElementById("resumo");
+    const resumoContainer = document.getElementById("resumo-container");
+
+    // Função auxiliar para criar um item de resumo
+    function criarItemResumo(titulo, count, corClasse) {
+        return `
+            <div class="resumo-item ${corClasse}">
+                <p>${count}</p>
+                <span>${titulo}</span>
+            </div>
+        `;
+    }
+
+    resumoContainer.innerHTML = `
+        ${criarItemResumo('12:00', intervalo12.length, 'verde')}
+        ${criarItemResumo('13:00', intervalo13.length, 'azul')}
+        ${criarItemResumo('Faltas', faltas.length, 'vermelho')}
+    `;
+    // Remove a classe 'oculto' para tornar a seção visível
+    resumoSection.classList.remove("oculto");
+
+    // Ordena cada grupo alfabeticamente para a mensagem
     intervalo12.sort((a, b) => a.localeCompare(b, 'pt-BR'));
     intervalo13.sort((a, b) => a.localeCompare(b, 'pt-BR'));
     faltas.sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
-    // Monta a mensagem
+    // Monta a mensagem para o WhatsApp (exclui a contagem)
     let msg = `🍽️ CONTROLE DE INTERVALO ${responsavel.toUpperCase()} 🍽️\n`;
     msg += `📆 ${dataStr} 📆\n\n`;
 
-    // Intervalo 12:00
+    // Adiciona intervalo 12:00
     if (intervalo12.length > 0) {
         msg += `🟢 INTERVALO 12:00 🟢\n`;
         intervalo12.forEach(nome => {
@@ -62,7 +84,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         msg += '\n';
     }
 
-    // Intervalo 13:00
+    // Adiciona intervalo 13:00
     if (intervalo13.length > 0) {
         msg += `🔵 INTERVALO 13:00 🔵\n`;
         intervalo13.forEach(nome => {
@@ -71,7 +93,8 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         msg += '\n';
     }
 
-    // Caso não tenha nada marcado
+
+    // Se ninguém foi marcado em nada
     if (intervalo12.length === 0 && intervalo13.length === 0 && faltas.length === 0) {
         msg += `⚠️ Nenhum colaborador selecionado.\n`;
     }
@@ -80,11 +103,9 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     console.log("✅ Mensagem gerada com sucesso!");
 });
 
-
-// Copia a mensagem e abre o WhatsApp
+// Copia a mensagem para a área de transferência e abre o WhatsApp
 document.getElementById("copiarBtn").addEventListener("click", function() {
     const textarea = document.getElementById("resultado");
-
     if (textarea.value.trim() === "") {
         alert("Não há mensagem para copiar!");
         return;

@@ -9,6 +9,7 @@ selectResponsavel.addEventListener("change", function() {
     const selecionado = selectResponsavel.value;
     console.log(`👤 Responsável selecionado: ${selecionado}`);
 
+    // 'equipes' é carregado em intervalo-carregar.js
     const lista = equipes[selecionado] || [];
     console.log(`📋 Colaboradores encontrados: ${lista.length}`);
 
@@ -103,7 +104,7 @@ function criarCheckboxIntervalo(nomeColaborador, horario, cor, label = "") {
     wrapper.className = "checkbox-wrapper";
 
     const checkbox = document.createElement("input");
-    checkbox.type = "checkbox"; // Mantemos checkbox para facilitar a estilização existente
+    checkbox.type = "checkbox";
     checkbox.className = "checkbox-intervalo";
     checkbox.setAttribute("data-colaborador", nomeColaborador);
     checkbox.setAttribute("data-horario", horario);
@@ -117,7 +118,6 @@ function criarCheckboxIntervalo(nomeColaborador, horario, cor, label = "") {
         // --- LÓGICA DE EXCLUSIVIDADE ---
         if (this.checked) {
             // Se este foi marcado, desmarcar os outros DO MESMO COLABORADOR
-            // Subimos até o container pai e buscamos os outros inputs
             const container = group.parentElement; // intervalo-container
             const irmaos = container.querySelectorAll('.checkbox-intervalo');
 
