@@ -263,11 +263,11 @@ textarea {
     display: none;
 }
 
-/* RESPONSIVO */
+/* RESPONSIVO AJUSTADO */
 @media (max-width: 768px) {
     section {
-        margin: 10px 20px;
-        padding: 25px 25px;
+        margin: 10px 15px; /* Reduzi um pouco a margem lateral */
+        padding: 20px 15px;
     }
 
     .header h1 {
@@ -282,13 +282,10 @@ textarea {
         width: 30px;
     }
 
-    .logo-link {
-        left: 30px;
-    }
-
+    /* Ajuste para Labels de entrada (Data/Responsável) */
     label span, input, select {
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
     }
 
     label {
@@ -296,23 +293,38 @@ textarea {
         align-items: flex-start;
     }
 
+    /* --- AJUSTE DOS NOMES E CAIXAS --- */
     .colaborador-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
+        flex-direction: row; /* Mantém lado a lado */
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        padding: 10px;
     }
 
     .colaborador-nome {
-        width: 100%;
+        width: auto; /* Remove largura total */
+        flex: 1;    /* Ocupa o espaço restante */
+        margin-bottom: 0;
+        font-size: 14px;
     }
 
     .intervalo-container {
-        width: 100%;
-        justify-content: space-around;
+        width: auto; /* Remove largura total */
+        justify-content: flex-end;
+        gap: 12px; /* Espaço entre as 3 caixinhas */
     }
 
+    /* --- AJUSTE DA LEGENDA --- */
     .legenda-intervalo {
-        flex-direction: column;
-        gap: 10px;
+        flex-direction: row; /* Mantém lado a lado */
+        flex-wrap: wrap;    /* Permite quebra apenas se realmente não couber */
+        justify-content: center;
+        gap: 12px;
+        padding: 10px 5px;
+    }
+
+    .legenda-item {
+        font-size: 12px; /* Diminui um pouco a fonte para garantir espaço */
     }
 }
