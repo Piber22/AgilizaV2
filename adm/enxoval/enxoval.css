@@ -1,0 +1,279 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #201F20;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 40px;
+}
+
+main {
+    width: 100%;
+    max-width: 900px;
+    margin-top: 0px;
+}
+
+/* CABEÇALHO */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #201F20;
+    position: relative;
+    margin-bottom: 0px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.logo-link {
+    position: absolute;
+    left: 20px;
+}
+
+.logo {
+    width: 40px;
+    height: auto;
+}
+
+.header h1 {
+    text-align: center;
+    font-size: 1.8em;
+    margin: 0;
+}
+
+/* SEÇÕES */
+h2, h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+section {
+    background-color: #201F20;
+    padding: 25px 30px;
+    margin: 10px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+
+/* Labels lado a lado */
+label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+label span {
+    width: 45%;
+    text-align: left;
+}
+
+input[type="date"] {
+    width: 50%;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 2px solid #5b5b5b;
+    background-color: #201F20;
+    color: #fff;
+    font-size: 14px;
+}
+
+/* BOTÕES */
+.login-option {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px;
+    background-color: #201F20;
+    border: 2px solid #E94B22;
+    box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 90%;
+    margin: 15px auto;
+}
+
+.login-option:hover {
+    background-color: #E94B22;
+}
+
+.login-option:active {
+    transform: scale(0.97);
+}
+
+/* TABELAS */
+#dados {
+    overflow-x: auto;
+}
+
+#tabelaMops, #tabelaPanos {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+    background-color: #201F20;
+}
+
+th {
+    color: white;
+    font-weight: 600;
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 2px solid #c83c1a;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    border: 1px solid #ffffff;
+}
+
+td {
+    font-size: 12px;
+    border: 1px solid #ffffff;
+    padding: 10px;
+    color: #fff;
+    vertical-align: center;
+    text-align: center;
+}
+
+tr:nth-child(odd) {
+    background-color: #201F20;
+}
+
+tr:hover {
+    background-color: #3a3a3a !important;
+    transition: background-color 0.2s ease;
+}
+
+/* Botão de imagem */
+.btn-imagem {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.2s ease;
+}
+
+.btn-imagem:hover {
+    transform: scale(1.1);
+}
+
+.btn-imagem svg {
+    width: 24px;
+    height: 24px;
+    fill: #E94B22;
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.9);
+}
+
+.modal-content {
+    margin: 5% auto;
+    display: block;
+    max-width: 90%;
+    max-height: 80%;
+    text-align: center;
+}
+
+.modal-content img {
+    width: auto;
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 8px;
+}
+
+#legendaImagem {
+    color: #fff;
+    padding: 15px;
+    font-size: 16px;
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #E94B22;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #777;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    section {
+        margin: 10px 20px;
+        padding: 20px 15px;
+    }
+
+    .header h1 {
+        font-size: 1.2em;
+    }
+
+    h2, h3 {
+        font-size: 1.2em;
+    }
+
+    .logo {
+        width: 30px;
+    }
+
+    .logo-link {
+        left: 15px;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    th, td {
+        padding: 8px 6px;
+    }
+
+    th {
+        font-size: 11px;
+    }
+
+    .btn-imagem svg {
+        width: 20px;
+        height: 20px;
+    }
+}

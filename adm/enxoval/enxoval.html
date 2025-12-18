@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Enxoval</title>
+
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="enxoval.css">
+
+    <!-- PapaParse – para ler CSV do Google Sheets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../encarregadas.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Controle de Enxoval</h1>
+        </header>
+
+        <!-- Filtros -->
+        <section id="filtros">
+            <h2>Filtros</h2>
+            <label>
+                <span>Data Inicial:</span>
+                <input type="date" id="dataInicial">
+            </label>
+            <label>
+                <span>Data Final:</span>
+                <input type="date" id="dataFinal">
+            </label>
+            <button id="aplicarFiltro" class="login-option">Aplicar Filtro</button>
+        </section>
+
+        <!-- Tabelas de Dados -->
+        <section id="dados">
+            <h2>MOPS</h2>
+            <div id="tabelaMops">
+                <p>Carregando dados...</p>
+            </div>
+
+            <h2 style="margin-top: 30px;">PANOS</h2>
+            <div id="tabelaPanos">
+                <p>Carregando dados...</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal para exibir imagens -->
+    <div id="modalImagem" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="imagemModal" src="" alt="Imagem do registro">
+            <p id="legendaImagem"></p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="sheets-api.js"></script>
+    <script src="drive-api.js"></script>
+    <script src="enxoval.js"></script>
+</body>
+</html>
