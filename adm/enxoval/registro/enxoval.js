@@ -7,12 +7,15 @@ let fotoLimpo = null;
 document.addEventListener('DOMContentLoaded', () => {
     // Definir data atual como padrão
     const hoje = new Date();
-    const dataFormatada = hoje.toISOString().split('T')[0];
-    document.getElementById("dataRegistro").value = dataFormatada;
+    document.getElementById("dataRegistro").value = hoje.toISOString().split('T')[0];
 
-    // Configurar botões e inputs de foto - ENXOVAL SUJO
+    // ===== SUJO =====
     document.getElementById("cameraSujo").addEventListener("click", () => {
-        document.getElementById("inputCameraSujo").click();
+        if (isMobile()) {
+            document.getElementById("inputCameraSujo").click();
+        } else {
+            alert("📷 A câmera só pode ser usada em celular.");
+        }
     });
 
     document.getElementById("galeraSujo").addEventListener("click", () => {
@@ -27,9 +30,13 @@ document.addEventListener('DOMContentLoaded', () => {
         handleFotoSelecionada(e, "sujo");
     });
 
-    // Configurar botões e inputs de foto - ENXOVAL LIMPO
+    // ===== LIMPO =====
     document.getElementById("cameraLimpo").addEventListener("click", () => {
-        document.getElementById("inputCameraLimpo").click();
+        if (isMobile()) {
+            document.getElementById("inputCameraLimpo").click();
+        } else {
+            alert("📷 A câmera só pode ser usada em celular.");
+        }
     });
 
     document.getElementById("galeraLimpo").addEventListener("click", () => {
@@ -47,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Botão salvar
     document.getElementById("salvarBtn").addEventListener("click", salvarRegistro);
 });
+
 
 // Função para processar foto selecionada
 function handleFotoSelecionada(event, tipo) {

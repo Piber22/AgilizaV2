@@ -1,7 +1,7 @@
 console.log("✅ Script de envio para Google Drive carregado!");
 
 // URL do seu Apps Script (você precisará criar um novo script no Google Apps Script)
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwBnyBhXjNytpL03NTNpwzoYdDNsfR0rQJbzeRPMmFlCe6Jfmk334hQw4C3yUyVKHD2GQ/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyt82Bf9fp0Rs91i85Aox7-n-AAerdz-Vps04_MmKGSL-4QQLVl2udh68vy4HUiB9RcLQ/exec';
 
 // ID da pasta do Google Drive
 const FOLDER_ID = '1tgGS1R9A7AUYM7Vxo0eYmtU_Vo7S3Rcv';
@@ -81,78 +81,3 @@ async function enviarParaDrive(dados, fotoSujo, fotoLimpo) {
     }
 }
 
-/*
-========================================
-INSTRUÇÕES PARA CONFIGURAR O APPS SCRIPT
-========================================
-
-1. Acesse: https://script.google.com/
-2. Crie um novo projeto
-3. Cole o código abaixo:
-
-function doPost(e) {
-  try {
-    // Parse dos dados recebidos
-    var dados = JSON.parse(e.postData.contents);
-
-    // ID da pasta (você já forneceu)
-    var folderId = dados.folderId;
-    var folder = DriveApp.getFolderById(folderId);
-
-    // Processar cada foto
-    var resultados = [];
-
-    dados.fotos.forEach(function(foto) {
-      // Decodificar Base64
-      var blob = Utilities.newBlob(
-        Utilities.base64Decode(foto.conteudo),
-        foto.mimeType,
-        foto.nome
-      );
-
-      // Verificar se arquivo já existe e deletá-lo
-      var arquivosExistentes = folder.getFilesByName(foto.nome);
-      while (arquivosExistentes.hasNext()) {
-        arquivosExistentes.next().setTrashed(true);
-      }
-
-      // Criar novo arquivo
-      var arquivo = folder.createFile(blob);
-
-      resultados.push({
-        nome: foto.nome,
-        id: arquivo.getId(),
-        url: arquivo.getUrl()
-      });
-    });
-
-    // Retornar sucesso
-    return ContentService.createTextOutput(
-      JSON.stringify({
-        status: 'sucesso',
-        arquivos: resultados,
-        dados: dados.dados
-      })
-    ).setMimeType(ContentService.MimeType.JSON);
-
-  } catch (erro) {
-    return ContentService.createTextOutput(
-      JSON.stringify({
-        status: 'erro',
-        mensagem: erro.toString()
-      })
-    ).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-4. Clique em "Implantar" > "Nova implantação"
-5. Selecione "Aplicativo da Web"
-6. Configure:
-   - Executar como: Sua conta
-   - Quem tem acesso: Qualquer pessoa
-7. Clique em "Implantar"
-8. Copie a URL do Web App
-9. Cole a URL no início deste arquivo na variável URL_APPS_SCRIPT
-
-IMPORTANTE: Você precisará autorizar o script a acessar seu Google Drive na primeira vez.
-*/
