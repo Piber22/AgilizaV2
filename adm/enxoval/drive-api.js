@@ -1,144 +1,178 @@
 /**
  * drive-api.js
- * Comunicação com Google Drive para carregar imagens
+ * Comunicação com Google Drive via Apps Script
  */
 
 console.log("Módulo drive-api.js carregado");
 
-// Configuração da pasta do Google Drive onde estão as imagens
-// Substitua pelo ID da sua pasta compartilhada do Drive
-const DRIVE_FOLDER_ID = "https://drive.google.com/drive/folders/1tgGS1R9A7AUYM7Vxo0eYmtU_Vo7S3Rcv?usp=sharing";
+// URL do Google Apps Script implantado
+// IMPORTANTE: Substitua pela URL do seu Apps Script após a implantação
+const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyTFev7oxjYVApJY5ZI-BxQ_pgS-A_7hgdxJ5lb8u3XVW0qKAEeH0fp5CZTkx0qgQ8S/exec';
+
+// Cache de imagens em memória
+let cacheImagens = new Map();
+let cacheCarregado = false;
 
 /**
- * Gera URL de visualização direta de imagem do Google Drive
- * @param {string} fileId - ID do arquivo no Google Drive
- * @returns {string} URL para visualização da imagem
- */
-function gerarURLImagemDrive(fileId) {
-    if (!fileId) {
-        return '';
-    }
-
-    // URL de visualização direta de arquivos do Google Drive
-    return `https://drive.google.com/uc?export=view&id=${fileId}`;
-}
-
-/**
- * Busca ID do arquivo de imagem baseado no nome/data
- * Esta é uma função auxiliar que pode ser adaptada conforme a nomenclatura das suas imagens
+ * Constrói o nome do arquivo baseado nos parâmetros
+ * Padrão: TIPO_DD-MM-YYYY_SITUACAO
  *
- * Exemplo de nomenclatura:
- * - MOPS_01-12-2025_SUJO.jpg
- * - PANOS_01-12-2025_LIMPO.jpg
- *
- * @param {string} tipo - "MOPS" ou "PANOS"
- * @param {string} data - Data no formato dd/mm/yyyy
- * @param {string} situacao - "SUJO" ou "LIMPO"
- * @returns {string} ID do arquivo (você precisará mapear isso)
- */
-function buscarIDImagemDrive(tipo, data, situacao) {
-    // Esta é uma implementação de exemplo
-    // Você precisará adaptar baseado em como suas imagens estão organizadas
-
-    // Opção 1: Manter um mapeamento em memória
-    // const mapeamentoImagens = {
-    //     'MOPS_01/12/2025_Sujo': 'ID_ARQUIVO_1',
-    //     'PANOS_02/12/2025_Limpo': 'ID_ARQUIVO_2',
-    //     // ... etc
-    // };
-
-    // Opção 2: Construir ID baseado em padrão
-    // Se suas imagens seguem um padrão de nomenclatura consistente
-
-    const chave = `${tipo}_${data}_${situacao}`;
-
-    // Por enquanto, retorna uma string vazia
-    // Você precisará implementar a lógica real baseada em como organiza as imagens
-    console.log(`Buscando imagem: ${chave}`);
-
-    return ''; // Retornar o ID real do arquivo
-}
-
-/**
- * Carrega informações das imagens da pasta do Drive
- * Esta função requer autenticação com Google Drive API
- *
- * Para implementação completa, você precisará:
- * 1. Criar um projeto no Google Cloud Console
- * 2. Ativar a Google Drive API
- * 3. Criar credenciais OAuth 2.0
- * 4. Implementar o fluxo de autenticação
- */
-async function carregarImagensDrive() {
-    console.log("Função carregarImagensDrive() - Implementação necessária");
-
-    // Esta é uma implementação placeholder
-    // Para implementar completamente, você precisará:
-
-    /*
-    // 1. Incluir a biblioteca do Google API Client
-    // <script src="https://apis.google.com/js/api.js"></script>
-
-    // 2. Inicializar e autenticar
-    gapi.load('client:auth2', async () => {
-        await gapi.client.init({
-            apiKey: 'SUA_API_KEY',
-            clientId: 'SEU_CLIENT_ID',
-            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
-            scope: 'https://www.googleapis.com/auth/drive.readonly'
-        });
-
-        // 3. Listar arquivos da pasta
-        const response = await gapi.client.drive.files.list({
-            q: `'${DRIVE_FOLDER_ID}' in parents`,
-            fields: 'files(id, name, mimeType)',
-            pageSize: 1000
-        });
-
-        return response.result.files;
-    });
-    */
-
-    return [];
-}
-
-/**
- * Alternativa simples: URLs diretas compartilhadas
- * Se você compartilhar as imagens publicamente, pode usar URLs diretas
- *
- * Para fazer isso:
- * 1. Faça o compartilhamento público de cada imagem
- * 2. Pegue o ID do arquivo da URL de compartilhamento
- * 3. Use a função gerarURLImagemDrive() para criar a URL de visualização
- */
-
-/**
- * Mapeamento manual de imagens (solução temporária simples)
- * Adicione aqui o mapeamento das suas imagens
- */
-const MAPEAMENTO_IMAGENS = {
-    // Exemplo de estrutura:
-    // 'MOPS_01/12/2025_Sujo': 'ID_DA_IMAGEM_NO_DRIVE',
-    // 'MOPS_01/12/2025_Limpo': 'ID_DA_IMAGEM_NO_DRIVE',
-    // 'PANOS_01/12/2025_Sujo': 'ID_DA_IMAGEM_NO_DRIVE',
-    // 'PANOS_01/12/2025_Limpo': 'ID_DA_IMAGEM_NO_DRIVE',
-};
-
-/**
- * Obtém URL da imagem do mapeamento
  * @param {string} tipo - "MOPS" ou "PANOS"
  * @param {string} data - Data no formato dd/mm/yyyy
  * @param {string} situacao - "Sujo" ou "Limpo"
- * @returns {string} URL da imagem ou string vazia
+ * @returns {string} Nome do arquivo esperado
  */
-function obterURLImagem(tipo, data, situacao) {
-    const chave = `${tipo}_${data}_${situacao}`;
-    const fileId = MAPEAMENTO_IMAGENS[chave];
+function construirNomeArquivo(tipo, data, situacao) {
+    // Converte data de dd/mm/yyyy para dd-mm-yyyy
+    const dataFormatada = data.replace(/\//g, '-');
 
-    if (fileId) {
-        return gerarURLImagemDrive(fileId);
+    // Padroniza a situação (primeira letra maiúscula)
+    const situacaoFormatada = situacao.toUpperCase();
+
+    // Constrói o nome do arquivo
+    return `${tipo}_${dataFormatada}_${situacaoFormatada}`;
+}
+
+/**
+ * Carrega todas as imagens da pasta do Drive e armazena em cache
+ * @returns {Promise<boolean>} True se carregou com sucesso
+ */
+async function carregarCacheImagens() {
+    if (cacheCarregado) {
+        return true;
     }
 
-    console.warn(`Imagem não encontrada para: ${chave}`);
+    try {
+        console.log("Carregando cache de imagens do Drive...");
+
+        const response = await fetch(`${GAS_API_URL}?action=list`);
+
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success && data.imagens) {
+            // Armazena no cache usando o nome do arquivo como chave
+            data.imagens.forEach(img => {
+                // Remove a extensão para facilitar a busca
+                const nomeSemExtensao = img.nome.replace(/\.[^/.]+$/, '');
+                cacheImagens.set(nomeSemExtensao.toLowerCase(), img.viewUrl);
+
+                // Também armazena com o nome completo
+                cacheImagens.set(img.nome.toLowerCase(), img.viewUrl);
+            });
+
+            cacheCarregado = true;
+            console.log(`Cache carregado: ${data.imagens.length} imagens`);
+            return true;
+        }
+
+        return false;
+
+    } catch (error) {
+        console.error("Erro ao carregar cache de imagens:", error);
+        return false;
+    }
+}
+
+/**
+ * Obtém URL da imagem (primeiro tenta do cache, depois busca na API)
+ * @param {string} tipo - "MOPS" ou "PANOS"
+ * @param {string} data - Data no formato dd/mm/yyyy
+ * @param {string} situacao - "Sujo" ou "Limpo"
+ * @returns {Promise<string>} URL da imagem ou string vazia
+ */
+async function obterURLImagem(tipo, data, situacao) {
+    // Garante que o cache está carregado
+    if (!cacheCarregado) {
+        await carregarCacheImagens();
+    }
+
+    // Constrói o nome do arquivo esperado
+    const nomeArquivo = construirNomeArquivo(tipo, data, situacao);
+
+    console.log(`Buscando imagem: ${nomeArquivo}`);
+
+    // Busca no cache (case-insensitive)
+    const urlCache = cacheImagens.get(nomeArquivo.toLowerCase());
+
+    if (urlCache) {
+        console.log(`✓ Imagem encontrada no cache: ${nomeArquivo}`);
+        return urlCache;
+    }
+
+    // Se não encontrou no cache, tenta buscar diretamente na API
+    try {
+        const response = await fetch(`${GAS_API_URL}?action=url&nome=${encodeURIComponent(nomeArquivo)}`);
+
+        if (!response.ok) {
+            console.warn(`✗ Imagem não encontrada: ${nomeArquivo}`);
+            return '';
+        }
+
+        const data = await response.json();
+
+        if (data.success && data.url) {
+            console.log(`✓ Imagem encontrada na API: ${nomeArquivo}`);
+            // Adiciona ao cache para próximas buscas
+            cacheImagens.set(nomeArquivo.toLowerCase(), data.url);
+            return data.url;
+        }
+
+    } catch (error) {
+        console.error(`Erro ao buscar imagem ${nomeArquivo}:`, error);
+    }
+
+    console.warn(`✗ Imagem não encontrada: ${nomeArquivo}`);
     return '';
 }
+
+/**
+ * Lista todas as imagens disponíveis (útil para debug)
+ * @returns {Promise<Array>} Array com informações das imagens
+ */
+async function listarTodasImagens() {
+    try {
+        const response = await fetch(`${GAS_API_URL}?action=list`);
+        const data = await response.json();
+
+        if (data.success) {
+            console.log("Imagens disponíveis:", data.imagens);
+            return data.imagens;
+        }
+
+        return [];
+
+    } catch (error) {
+        console.error("Erro ao listar imagens:", error);
+        return [];
+    }
+}
+
+/**
+ * Recarrega o cache de imagens (útil após adicionar novas imagens)
+ * @returns {Promise<boolean>} True se recarregou com sucesso
+ */
+async function recarregarCache() {
+    cacheCarregado = false;
+    cacheImagens.clear();
+    return await carregarCacheImagens();
+}
+
+// Carrega o cache automaticamente quando a página inicia
+if (typeof window !== 'undefined') {
+    window.addEventListener('DOMContentLoaded', () => {
+        carregarCacheImagens();
+    });
+}
+
+// Expõe funções úteis para debug no console
+window.debugDrive = {
+    listarImagens: listarTodasImagens,
+    recarregarCache: recarregarCache,
+    verCache: () => {
+        console.log('Cache atual:', Array.from(cacheImagens.entries()));
+    }
+};

@@ -239,17 +239,45 @@ function agruparPorData(dados, tipo) {
  * @param {string} data - Data no formato dd/mm/yyyy
  * @param {string} situacao - "Sujo" ou "Limpo"
  */
-function abrirImagem(tipo, data, situacao) {
-    const urlImagem = obterURLImagem(tipo, data, situacao);
-
-    if (!urlImagem) {
-        alert(`Imagem não encontrada para ${tipo} - ${data} - ${situacao}`);
-        return;
-    }
-
-    imagemModal.src = urlImagem;
-    legendaImagem.textContent = `${tipo} - ${data} - ${situacao}`;
+async function abrirImagem(tipo, data, situacao) {
+    // Mostra loading
+    imagemModal.src = '';
+    legendaImagem.textContent = 'Carregando imagem...';
     modal.style.display = "block";
+
+    try {
+        const urlImagem = await obterURLImagem(tipo, data, situacao);
+
+        if (!urlImagem) {
+            legendaImagem.textContent = `Imagem não encontrada para ${tipo} - ${data} - ${situacao}`;
+            imagemModal.alt = 'Imagem não encontrada';
+
+            // Fecha o modal após 2 segundos
+            setTimeout(() => {
+                fecharModal();
+            }, 2000);
+
+            return;
+        }
+
+        imagemModal.src = urlImagem;
+        legendaImagem.textContent = `${tipo} - ${data} - ${situacao}`;
+
+        // Trata erro de carregamento da imagem
+        imagemModal.onerror = () => {
+            legendaImagem.textContent = `Erro ao carregar imagem: ${tipo} - ${data} - ${situacao}`;
+            setTimeout(() => {
+                fecharModal();
+            }, 2000);
+        };
+
+    } catch (error) {
+        console.error('Erro ao abrir imagem:', error);
+        legendaImagem.textContent = `Erro: ${error.message}`;
+        setTimeout(() => {
+            fecharModal();
+        }, 2000);
+    }
 }
 
 /**
@@ -258,6 +286,7 @@ function abrirImagem(tipo, data, situacao) {
 function fecharModal() {
     modal.style.display = "none";
     imagemModal.src = "";
+    imagemModal.onerror = null;
 }
 
 // Expor funções globalmente para os botões inline
