@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Enxoval</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="enxoval.css">
+</head>
+<body>
+    <main>
+        <header class="header">
+            <a href="../encarregadas.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Controle de Enxoval</h1>
+        </header>
+
+        <section id="info">
+            <h2>Identificação</h2>
+            <label>
+                <span>Data:</span>
+                <input type="date" id="dataRegistro">
+            </label>
+        </section>
+
+        <section id="sujo">
+            <h2>Enxoval Sujo</h2>
+            <label>
+                <span>Mops sujos:</span>
+                <input type="number" id="mopsSujos" min="0" value="0">
+            </label>
+            <label>
+                <span>Panos sujos:</span>
+                <input type="number" id="panosSujos" min="0" value="0">
+            </label>
+
+            <div class="foto-container">
+                <h3>Foto do enxoval sujo</h3>
+                <div class="preview-area" id="previewSujo">
+                    <span class="preview-text">Nenhuma foto selecionada</span>
+                </div>
+                <div class="botoes-foto">
+                    <button class="btn-foto" id="cameraSujo">📷 Tirar Foto</button>
+                    <button class="btn-foto" id="galeraSujo">🖼️ Escolher do Dispositivo</button>
+                </div>
+                <input type="file" id="inputFotoSujo" accept="image/*" style="display: none;">
+                <input type="file" id="inputCameraSujo" accept="image/*" capture="environment" style="display: none;">
+            </div>
+        </section>
+
+        <section id="limpo">
+            <h2>Enxoval Limpo</h2>
+            <label>
+                <span>Mops limpos:</span>
+                <input type="number" id="mopsLimpos" min="0" value="0">
+            </label>
+            <label>
+                <span>Panos limpos:</span>
+                <input type="number" id="panosLimpos" min="0" value="0">
+            </label>
+
+            <div class="foto-container">
+                <h3>Foto do enxoval limpo</h3>
+                <div class="preview-area" id="previewLimpo">
+                    <span class="preview-text">Nenhuma foto selecionada</span>
+                </div>
+                <div class="botoes-foto">
+                    <button class="btn-foto" id="cameraLimpo">📷 Tirar Foto</button>
+                    <button class="btn-foto" id="galeraLimpo">🖼️ Escolher do Dispositivo</button>
+                </div>
+                <input type="file" id="inputFotoLimpo" accept="image/*" style="display: none;">
+                <input type="file" id="inputCameraLimpo" accept="image/*" capture="environment" style="display: none;">
+            </div>
+        </section>
+
+        <button id="salvarBtn" class="login-option">💾 Salvar Registro</button>
+
+        <div id="mensagemStatus" class="mensagem-status"></div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="enxoval.js"></script>
+    <script src="drive.js"></script>
+</body>
+</html>
