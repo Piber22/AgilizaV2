@@ -1,7 +1,7 @@
 console.log("✅ Script de envio para Google Drive carregado!");
 
 // URL do seu Apps Script (você precisará criar um novo script no Google Apps Script)
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwKu-uG9M9rWKgzzH_twKMqFso6YIy0GwjS_5AvHNtHhYS1IObBeKK20NoXgYlimr2YpA/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwjf5ai0TuE5kUjGScr9ETaSNzOoVpkK4rwYuC4b_ooeZE-M1nZ3uuExJ_zNfg6zeDTZQ/exec';
 
 // ID da pasta do Google Drive
 const FOLDER_ID = '1tgGS1R9A7AUYM7Vxo0eYmtU_Vo7S3Rcv';
