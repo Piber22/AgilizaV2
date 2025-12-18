@@ -1,5 +1,10 @@
 console.log("✅ enxoval.js carregado!");
 
+// ✅ FUNÇÃO ADICIONADA (única correção)
+function isMobile() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
 // Variáveis globais para armazenar as fotos
 let fotoSujo = null;
 let fotoLimpo = null;
@@ -55,33 +60,27 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById("salvarBtn").addEventListener("click", salvarRegistro);
 });
 
-
 // Função para processar foto selecionada
 function handleFotoSelecionada(event, tipo) {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Verificar se é uma imagem
     if (!file.type.startsWith('image/')) {
         mostrarMensagem("Por favor, selecione apenas arquivos de imagem.", "erro");
         return;
     }
 
-    // Ler arquivo e criar preview
     const reader = new FileReader();
     reader.onload = (e) => {
         const previewId = tipo === "sujo" ? "previewSujo" : "previewLimpo";
         const previewArea = document.getElementById(previewId);
 
-        // Limpar preview anterior
         previewArea.innerHTML = '';
 
-        // Criar elemento de imagem
         const img = document.createElement('img');
         img.src = e.target.result;
         previewArea.appendChild(img);
 
-        // Armazenar a foto na variável global
         if (tipo === "sujo") {
             fotoSujo = file;
         } else {
@@ -99,7 +98,6 @@ function mostrarMensagem(texto, tipo) {
     mensagemDiv.textContent = texto;
     mensagemDiv.className = `mensagem-status ${tipo}`;
 
-    // Remover mensagem após 5 segundos
     setTimeout(() => {
         mensagemDiv.style.display = 'none';
     }, 5000);
@@ -131,18 +129,13 @@ function validarDados() {
 async function salvarRegistro() {
     console.log("📝 Iniciando salvamento do registro...");
 
-    // Validar dados
-    if (!validarDados()) {
-        return;
-    }
+    if (!validarDados()) return;
 
-    // Desabilitar botão durante o salvamento
     const btnSalvar = document.getElementById("salvarBtn");
     btnSalvar.disabled = true;
     btnSalvar.textContent = "⏳ Salvando...";
 
     try {
-        // Coletar dados do formulário
         const dataInput = document.getElementById("dataRegistro").value;
         const parts = dataInput.split("-");
         const dataFormatada = `${parts[2]}/${parts[1]}/${parts[0]}`;
@@ -155,9 +148,6 @@ async function salvarRegistro() {
             panosLimpos: document.getElementById("panosLimpos").value || "0"
         };
 
-        console.log("📊 Dados coletados:", dados);
-
-        // Enviar fotos para o Google Drive
         const resultado = await enviarParaDrive(dados, fotoSujo, fotoLimpo);
 
         if (resultado) {
@@ -171,7 +161,6 @@ async function salvarRegistro() {
         console.error("❌ Erro ao salvar registro:", erro);
         mostrarMensagem("❌ Erro ao salvar o registro. Tente novamente.", "erro");
     } finally {
-        // Reabilitar botão
         btnSalvar.disabled = false;
         btnSalvar.textContent = "💾 Salvar Registro";
     }
@@ -179,23 +168,19 @@ async function salvarRegistro() {
 
 // Função para limpar formulário após salvamento
 function limparFormulario() {
-    // Resetar inputs numéricos
     document.getElementById("mopsSujos").value = "0";
     document.getElementById("panosSujos").value = "0";
     document.getElementById("mopsLimpos").value = "0";
     document.getElementById("panosLimpos").value = "0";
 
-    // Limpar previews de fotos
     document.getElementById("previewSujo").innerHTML = '<span class="preview-text">Nenhuma foto selecionada</span>';
     document.getElementById("previewLimpo").innerHTML = '<span class="preview-text">Nenhuma foto selecionada</span>';
 
-    // Resetar inputs de arquivo
     document.getElementById("inputFotoSujo").value = "";
     document.getElementById("inputCameraSujo").value = "";
     document.getElementById("inputFotoLimpo").value = "";
     document.getElementById("inputCameraLimpo").value = "";
 
-    // Limpar variáveis globais
     fotoSujo = null;
     fotoLimpo = null;
 
