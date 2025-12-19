@@ -41,7 +41,7 @@ function criarCamposOPAI(container) {
   placeholderEquipe.disabled = true;
   placeholderEquipe.selected = true;
   selectEquipe.appendChild(placeholderEquipe);
-  ["Graciela", "Giovana", "Jéssica", "Jacqueline"].forEach(nome => {
+  ["Graciela", "Giovana", "Jéssica", "Alisson"].forEach(nome => {
     const opcao = document.createElement("option");
     opcao.value = nome;
     opcao.textContent = nome;
