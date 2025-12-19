@@ -79,6 +79,29 @@
         <div id="mensagemStatus" class="mensagem-status"></div>
     </main>
 
+    <!-- Modal de Confirmação -->
+    <div id="modalConfirmacao" class="modal-overlay">
+        <div class="modal-content">
+            <h3>⚠️ Alerta</h3>
+            <p>Alguns dados não foram preenchidos:</p>
+            <ul id="listaDadosFaltantes"></ul>
+            <p><strong>Deseja prosseguir com o envio?</strong></p>
+            <div class="modal-botoes">
+                <button id="btnConfirmarSim" class="btn-modal btn-sim">✅ Sim</button>
+                <button id="btnConfirmarNao" class="btn-modal btn-nao">❌ Não</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Enviando dados...</p>
+            <p class="loading-subtitle">Por favor, aguarde</p>
+        </div>
+    </div>
+
     <footer class="footer">
         <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
     </footer>

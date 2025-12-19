@@ -217,6 +217,140 @@ input[type="date"] {
     color: #90caf9;
 }
 
+/* Modal de Confirmação */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #2a2a2a;
+    border: 2px solid #E94B22;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 90%;
+    width: 400px;
+    box-shadow: 0 0 20px rgba(233, 75, 34, 0.5);
+}
+
+.modal-content h3 {
+    color: #E94B22;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.modal-content p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.modal-content ul {
+    margin: 15px 0;
+    padding-left: 25px;
+}
+
+.modal-content li {
+    margin: 8px 0;
+    color: #ffb74d;
+}
+
+.modal-botoes {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn-modal {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-sim {
+    background-color: #4caf50;
+    color: white;
+}
+
+.btn-sim:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-nao {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-nao:hover {
+    background-color: #da190b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+}
+
+.btn-modal:active {
+    transform: scale(0.97);
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #5b5b5b;
+    border-top: 6px solid #E94B22;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-content p {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin: 10px 0;
+}
+
+.loading-subtitle {
+    font-size: 14px;
+    color: #999;
+    font-weight: 400;
+}
+
 .footer {
     text-align: center;
     margin-top: 20px;
@@ -252,6 +386,19 @@ input[type="date"] {
     }
 
     .btn-foto {
+        width: 100%;
+    }
+
+    .modal-content {
+        width: 85%;
+        padding: 25px 20px;
+    }
+
+    .modal-botoes {
+        flex-direction: column;
+    }
+
+    .btn-modal {
         width: 100%;
     }
 }

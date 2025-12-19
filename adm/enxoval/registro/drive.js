@@ -25,40 +25,51 @@ function fileToBase64(file) {
 /**
  * Função para enviar fotos para o Google Drive
  * @param {Object} dados - Dados do registro (data, mops, panos, etc)
- * @param {File} fotoSujo - Arquivo da foto do enxoval sujo
- * @param {File} fotoLimpo - Arquivo da foto do enxoval limpo
+ * @param {File} fotoSujo - Arquivo da foto do enxoval sujo (pode ser null)
+ * @param {File} fotoLimpo - Arquivo da foto do enxoval limpo (pode ser null)
  */
 async function enviarParaDrive(dados, fotoSujo, fotoLimpo) {
     try {
-        console.log("📤 Enviando fotos para o Google Drive...");
+        console.log("📤 Enviando dados para o Google Drive...");
 
-        // Converter fotos para Base64
-        const fotoSujoBase64 = await fileToBase64(fotoSujo);
-        const fotoLimpoBase64 = await fileToBase64(fotoLimpo);
+        const fotos = [];
 
-        // Preparar nomes dos arquivos
-        const nomeArquivoSujo = `MP_SUJO_${dados.data.replace(/\//g, '-')}.jpg`;
-        const nomeArquivoLimpo = `MP_LIMPO_${dados.data.replace(/\//g, '-')}.jpg`;
+        // Converter foto sujo para Base64 (se existir)
+        if (fotoSujo) {
+            const fotoSujoBase64 = await fileToBase64(fotoSujo);
+            const nomeArquivoSujo = `MP_SUJO_${dados.data.replace(/\//g, '-')}.jpg`;
 
-        console.log("📁 Nomes dos arquivos:");
-        console.log("   Sujo:", nomeArquivoSujo);
-        console.log("   Limpo:", nomeArquivoLimpo);
+            fotos.push({
+                nome: nomeArquivoSujo,
+                conteudo: fotoSujoBase64,
+                mimeType: fotoSujo.type
+            });
+
+            console.log("📷 Foto sujo:", nomeArquivoSujo);
+        } else {
+            console.log("⚠️ Sem foto do enxoval sujo");
+        }
+
+        // Converter foto limpo para Base64 (se existir)
+        if (fotoLimpo) {
+            const fotoLimpoBase64 = await fileToBase64(fotoLimpo);
+            const nomeArquivoLimpo = `MP_LIMPO_${dados.data.replace(/\//g, '-')}.jpg`;
+
+            fotos.push({
+                nome: nomeArquivoLimpo,
+                conteudo: fotoLimpoBase64,
+                mimeType: fotoLimpo.type
+            });
+
+            console.log("📷 Foto limpo:", nomeArquivoLimpo);
+        } else {
+            console.log("⚠️ Sem foto do enxoval limpo");
+        }
 
         // Preparar payload
         const payload = {
             folderId: FOLDER_ID,
-            fotos: [
-                {
-                    nome: nomeArquivoSujo,
-                    conteudo: fotoSujoBase64,
-                    mimeType: fotoSujo.type
-                },
-                {
-                    nome: nomeArquivoLimpo,
-                    conteudo: fotoLimpoBase64,
-                    mimeType: fotoLimpo.type
-                }
-            ],
+            fotos: fotos,
             dados: dados
         };
 
@@ -72,7 +83,7 @@ async function enviarParaDrive(dados, fotoSujo, fotoLimpo) {
             body: JSON.stringify(payload)
         });
 
-        console.log("✅ Fotos enviadas para o Google Drive!");
+        console.log("✅ Dados enviados para o Google Drive!");
         return true;
 
     } catch (erro) {
@@ -80,4 +91,3 @@ async function enviarParaDrive(dados, fotoSujo, fotoLimpo) {
         return false;
     }
 }
-

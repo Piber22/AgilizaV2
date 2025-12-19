@@ -58,6 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Botão salvar
     document.getElementById("salvarBtn").addEventListener("click", salvarRegistro);
+
+    // Botões do modal de confirmação
+    document.getElementById("btnConfirmarSim").addEventListener("click", confirmarEnvio);
+    document.getElementById("btnConfirmarNao").addEventListener("click", fecharModal);
 });
 
 // Função para processar foto selecionada
@@ -103,37 +107,82 @@ function mostrarMensagem(texto, tipo) {
     }, 5000);
 }
 
-// Função para validar dados
-function validarDados() {
+// Função para verificar dados faltantes
+function verificarDadosFaltantes() {
+    const dadosFaltantes = [];
+
     const data = document.getElementById("dataRegistro").value;
+    if (!data) dadosFaltantes.push("Data");
 
-    if (!data) {
-        mostrarMensagem("Por favor, selecione uma data.", "erro");
-        return false;
-    }
+    if (!fotoSujo) dadosFaltantes.push("Foto do enxoval sujo");
+    if (!fotoLimpo) dadosFaltantes.push("Foto do enxoval limpo");
 
-    if (!fotoSujo) {
-        mostrarMensagem("Por favor, adicione uma foto do enxoval sujo.", "erro");
-        return false;
-    }
+    const mopsSujos = document.getElementById("mopsSujos").value;
+    const panosSujos = document.getElementById("panosSujos").value;
+    const mopsLimpos = document.getElementById("mopsLimpos").value;
+    const panosLimpos = document.getElementById("panosLimpos").value;
 
-    if (!fotoLimpo) {
-        mostrarMensagem("Por favor, adicione uma foto do enxoval limpo.", "erro");
-        return false;
-    }
+    if (!mopsSujos || mopsSujos === "0") dadosFaltantes.push("Mops sujos");
+    if (!panosSujos || panosSujos === "0") dadosFaltantes.push("Panos sujos");
+    if (!mopsLimpos || mopsLimpos === "0") dadosFaltantes.push("Mops limpos");
+    if (!panosLimpos || panosLimpos === "0") dadosFaltantes.push("Panos limpos");
 
-    return true;
+    return dadosFaltantes;
 }
 
-// Função para salvar registro
+// Função para mostrar modal de confirmação
+function mostrarModalConfirmacao(dadosFaltantes) {
+    const modal = document.getElementById("modalConfirmacao");
+    const listaDados = document.getElementById("listaDadosFaltantes");
+
+    listaDados.innerHTML = dadosFaltantes.map(dado => `<li>${dado}</li>`).join('');
+    modal.style.display = "flex";
+}
+
+// Função para fechar modal
+function fecharModal() {
+    const modal = document.getElementById("modalConfirmacao");
+    modal.style.display = "none";
+}
+
+// Função para mostrar loading
+function mostrarLoading() {
+    const loading = document.getElementById("loadingOverlay");
+    loading.style.display = "flex";
+}
+
+// Função para esconder loading
+function esconderLoading() {
+    const loading = document.getElementById("loadingOverlay");
+    loading.style.display = "none";
+}
+
+// Função para salvar registro (verificação inicial)
 async function salvarRegistro() {
-    console.log("📝 Iniciando salvamento do registro...");
+    console.log("🔍 Iniciando verificação do registro...");
 
-    if (!validarDados()) return;
+    const dadosFaltantes = verificarDadosFaltantes();
 
-    const btnSalvar = document.getElementById("salvarBtn");
-    btnSalvar.disabled = true;
-    btnSalvar.textContent = "⏳ Salvando...";
+    // Se há dados faltantes, mostra o modal de confirmação
+    if (dadosFaltantes.length > 0) {
+        mostrarModalConfirmacao(dadosFaltantes);
+    } else {
+        // Se tudo está preenchido, envia direto
+        await enviarDados();
+    }
+}
+
+// Função confirmada para enviar dados
+async function confirmarEnvio() {
+    fecharModal();
+    await enviarDados();
+}
+
+// Função para enviar dados
+async function enviarDados() {
+    console.log("📤 Iniciando envio do registro...");
+
+    mostrarLoading();
 
     try {
         const dataInput = document.getElementById("dataRegistro").value;
@@ -150,6 +199,8 @@ async function salvarRegistro() {
 
         const resultado = await enviarParaDrive(dados, fotoSujo, fotoLimpo);
 
+        esconderLoading();
+
         if (resultado) {
             mostrarMensagem("✅ Registro salvo com sucesso no Google Drive!", "sucesso");
             limparFormulario();
@@ -159,10 +210,8 @@ async function salvarRegistro() {
 
     } catch (erro) {
         console.error("❌ Erro ao salvar registro:", erro);
+        esconderLoading();
         mostrarMensagem("❌ Erro ao salvar o registro. Tente novamente.", "erro");
-    } finally {
-        btnSalvar.disabled = false;
-        btnSalvar.textContent = "💾 Salvar Registro";
     }
 }
 
