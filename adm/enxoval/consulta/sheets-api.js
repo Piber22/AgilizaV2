@@ -6,6 +6,7 @@
 console.log("Módulo sheets-api.js carregado");
 
 // URL do CSV publicado do Google Sheets
+// IMPORTANTE: Substitua pela URL correta da sua planilha publicada
 const URL_CSV_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAKvNyRlIrJWLPN5tjaDUFvMhC5_abfdGHvQNcFU9CPcPWwv6Wp9AcsImz1-_8E5enZP0miDfOdR_G/pub?output=csv";
 
 /**
@@ -37,14 +38,21 @@ function parseCSVManual(text) {
 async function buscarDadosSheets() {
     try {
         console.log("Buscando dados do Google Sheets...");
+        console.log("URL:", URL_CSV_SHEETS);
 
-        const response = await fetch(URL_CSV_SHEETS);
+        const response = await fetch(URL_CSV_SHEETS, {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache'
+        });
 
         if (!response.ok) {
-            throw new Error(`Erro HTTP: ${response.status}`);
+            throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
         }
 
         const text = await response.text();
+        console.log("CSV recebido, tamanho:", text.length, "caracteres");
+
         const dados = parseCSVManual(text);
 
         console.log(`${dados.length} registros carregados do Sheets`);
@@ -57,7 +65,9 @@ async function buscarDadosSheets() {
         return dados;
 
     } catch (error) {
-        console.error("Erro ao buscar dados do Sheets:", error);
+        console.error("Erro detalhado ao buscar dados do Sheets:", error);
+        console.error("Tipo do erro:", error.name);
+        console.error("Mensagem:", error.message);
         throw error;
     }
 }
