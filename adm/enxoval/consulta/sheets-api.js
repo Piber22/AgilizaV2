@@ -6,11 +6,10 @@
 console.log("Módulo sheets-api.js carregado");
 
 // URL do CSV publicado do Google Sheets
-// IMPORTANTE: Adicione o GID da aba específica se necessário
 const URL_CSV_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAKvNyRlIrJWLPN5tjaDUFvMhC5_abfdGHvQNcFU9CPcPWwv6Wp9AcsImz1-_8E5enZP0miDfOdR_G/pub?output=csv";
 
 /**
- * Parse CSV manual (mesmo método do sheet.js que funciona)
+ * Parse CSV manual
  * @param {string} text - Texto CSV
  * @returns {Array} Array de objetos
  */
@@ -32,8 +31,7 @@ function parseCSVManual(text) {
 }
 
 /**
- * Função para buscar dados do Google Sheets usando fetch
- * Mesmo método do sheet.js que funciona
+ * Função para buscar dados do Google Sheets
  * @returns {Promise<Array>} Array com os dados da planilha
  */
 async function buscarDadosSheets() {
@@ -96,7 +94,7 @@ function filtrarPorData(dados, dataInicial, dataFinal) {
     }
 
     return dados.filter(registro => {
-        const dataRegistro = converterDataParaObj(registro.DATA);
+        const dataRegistro = converterDataParaObj(registro['Data Coleta']);
 
         if (!dataRegistro) {
             return false;
@@ -112,4 +110,25 @@ function filtrarPorData(dados, dataInicial, dataFinal) {
 
         return true;
     });
+}
+
+/**
+ * Converte URL do Google Drive para formato de visualização direta
+ * @param {string} url - URL do Google Drive
+ * @returns {string} URL convertida para visualização
+ */
+function converterURLDrive(url) {
+    if (!url || url === 'Sem foto') {
+        return null;
+    }
+
+    // Extrair o ID do arquivo da URL
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+        const fileId = match[1];
+        // Retorna URL de visualização direta
+        return `https://drive.google.com/uc?export=view&id=${fileId}`;
+    }
+
+    return null;
 }

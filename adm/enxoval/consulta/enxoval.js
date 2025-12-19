@@ -111,21 +111,67 @@ function exibirDados() {
     const dadosFiltrados = filtrarPorData(todosOsDados, dataInicial, dataFinal);
     console.log("Registros após filtro:", dadosFiltrados.length);
 
-    // Separar MOPS e PANOS
-    const dadosMops = dadosFiltrados.filter(item => item.MOPS && item.MOPS.trim() !== '');
-    const dadosPanos = dadosFiltrados.filter(item => item.PANOS && item.PANOS.trim() !== '');
-
-    console.log("Registros MOPS:", dadosMops.length);
-    console.log("Registros PANOS:", dadosPanos.length);
+    // Processar dados para as tabelas
+    const dadosProcessados = processarDados(dadosFiltrados);
 
     // Renderizar tabelas
-    renderizarTabela(dadosMops, tabelaMopsDiv, 'MOPS');
-    renderizarTabela(dadosPanos, tabelaPanosDiv, 'PANOS');
+    renderizarTabela(dadosProcessados, tabelaMopsDiv, 'MOPS');
+    renderizarTabela(dadosProcessados, tabelaPanosDiv, 'PANOS');
+}
+
+/**
+ * Processa os dados do Sheets para o formato necessário
+ * @param {Array} dados - Dados brutos do Sheets
+ * @returns {Array} Dados processados agrupados por data
+ */
+function processarDados(dados) {
+    const mapa = new Map();
+
+    dados.forEach(item => {
+        const data = item['Data Coleta'];
+        if (!data) return;
+
+        if (!mapa.has(data)) {
+            mapa.set(data, {
+                data: data,
+                mopsSujo: 0,
+                mopsLimpo: 0,
+                panosSujo: 0,
+                panosLimpo: 0,
+                linkFotoSujo: null,
+                linkFotoLimpo: null
+            });
+        }
+
+        const registro = mapa.get(data);
+
+        // Adicionar quantidades
+        registro.mopsSujo += parseInt(item['Mops Sujos']) || 0;
+        registro.mopsLimpo += parseInt(item['Mops Limpos']) || 0;
+        registro.panosSujo += parseInt(item['Panos Sujos']) || 0;
+        registro.panosLimpo += parseInt(item['Panos Limpos']) || 0;
+
+        // Adicionar links de fotos (pega o primeiro link válido)
+        if (!registro.linkFotoSujo && item['Link Foto Sujo'] && item['Link Foto Sujo'] !== 'Sem foto') {
+            registro.linkFotoSujo = converterURLDrive(item['Link Foto Sujo']);
+        }
+        if (!registro.linkFotoLimpo && item['Link Foto Limpo'] && item['Link Foto Limpo'] !== 'Sem foto') {
+            registro.linkFotoLimpo = converterURLDrive(item['Link Foto Limpo']);
+        }
+    });
+
+    // Ordenar por data (mais recente primeiro)
+    return Array.from(mapa.values()).sort((a, b) => {
+        const dataA = converterDataParaObj(a.data);
+        const dataB = converterDataParaObj(b.data);
+        if (!dataA || !dataB) return 0;
+        return dataB - dataA;
+    });
 }
 
 /**
  * Renderiza uma tabela de dados
- * @param {Array} dados - Array de registros
+ * @param {Array} dados - Array de registros processados
  * @param {HTMLElement} container - Container onde a tabela será renderizada
  * @param {string} tipo - "MOPS" ou "PANOS"
  */
@@ -134,6 +180,9 @@ function renderizarTabela(dados, container, tipo) {
         container.innerHTML = "<p>Nenhum registro encontrado para o período selecionado.</p>";
         return;
     }
+
+    const propriedadeSujo = tipo === 'MOPS' ? 'mopsSujo' : 'panosSujo';
+    const propriedadeLimpo = tipo === 'MOPS' ? 'mopsLimpo' : 'panosLimpo';
 
     let html = `
         <div class="table-wrapper">
@@ -149,25 +198,25 @@ function renderizarTabela(dados, container, tipo) {
                 <tbody>
     `;
 
-    // Agrupar por data e situação
-    const registrosPorData = agruparPorData(dados, tipo);
+    dados.forEach(registro => {
+        const qtdSujo = registro[propriedadeSujo];
+        const qtdLimpo = registro[propriedadeLimpo];
 
-    registrosPorData.forEach(registro => {
         html += `
             <tr>
                 <td>${registro.data}</td>
-                <td>${registro.sujo}</td>
-                <td>${registro.limpo}</td>
+                <td>${qtdSujo > 0 ? qtdSujo : '-'}</td>
+                <td>${qtdLimpo > 0 ? qtdLimpo : '-'}</td>
                 <td>
-                    ${registro.temSujo ? `
-                        <button class="btn-imagem" onclick="abrirImagem('${tipo}', '${registro.data}', 'Sujo')" title="Ver imagem - Sujo">
+                    ${registro.linkFotoSujo ? `
+                        <button class="btn-imagem" onclick="abrirImagem('${registro.linkFotoSujo}', '${tipo} - ${registro.data} - Sujo')" title="Ver imagem - Sujo">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
                             </svg>
                         </button>
                     ` : '<span style="color: #777;">-</span>'}
-                    ${registro.temLimpo ? `
-                        <button class="btn-imagem" onclick="abrirImagem('${tipo}', '${registro.data}', 'Limpo')" title="Ver imagem - Limpo" style="margin-left: 10px;">
+                    ${registro.linkFotoLimpo ? `
+                        <button class="btn-imagem" onclick="abrirImagem('${registro.linkFotoLimpo}', '${tipo} - ${registro.data} - Limpo')" title="Ver imagem - Limpo" style="margin-left: 10px;">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
                             </svg>
@@ -188,96 +237,37 @@ function renderizarTabela(dados, container, tipo) {
 }
 
 /**
- * Agrupa registros por data
- * @param {Array} dados - Array de registros
- * @param {string} tipo - "MOPS" ou "PANOS"
- * @returns {Array} Array de registros agrupados
- */
-function agruparPorData(dados, tipo) {
-    const mapa = new Map();
-
-    dados.forEach(item => {
-        const data = item.DATA;
-        // Tenta diferentes variações do nome da coluna SITUAÇÃO
-        const situacao = (item['SITUAÇÃO'] || item['SITUACAO'] || item['SITUAÃƒÂ‡ÃƒÂƒO'] || '').toString().trim();
-        const quantidade = parseInt(item[tipo]) || 0;
-
-        if (!mapa.has(data)) {
-            mapa.set(data, {
-                data: data,
-                sujo: '-',
-                limpo: '-',
-                temSujo: false,
-                temLimpo: false
-            });
-        }
-
-        const registro = mapa.get(data);
-
-        const situacaoLower = situacao.toLowerCase();
-        if (situacaoLower === 'sujo') {
-            registro.sujo = quantidade;
-            registro.temSujo = quantidade > 0;
-        } else if (situacaoLower === 'limpo') {
-            registro.limpo = quantidade;
-            registro.temLimpo = quantidade > 0;
-        }
-    });
-
-    // Ordenar por data (mais recente primeiro)
-    return Array.from(mapa.values()).sort((a, b) => {
-        const dataA = converterDataParaObj(a.data);
-        const dataB = converterDataParaObj(b.data);
-        if (!dataA || !dataB) return 0;
-        return dataB - dataA;
-    });
-}
-
-/**
  * Abre o modal com a imagem
- * @param {string} tipo - "MOPS" ou "PANOS"
- * @param {string} data - Data no formato dd/mm/yyyy
- * @param {string} situacao - "Sujo" ou "Limpo"
+ * @param {string} urlImagem - URL da imagem do Google Drive
+ * @param {string} legenda - Legenda da imagem
  */
-async function abrirImagem(tipo, data, situacao) {
+function abrirImagem(urlImagem, legenda) {
+    if (!urlImagem) {
+        alert('Imagem não disponível');
+        return;
+    }
+
     // Mostra loading
     imagemModal.src = '';
     legendaImagem.textContent = 'Carregando imagem...';
     modal.style.display = "block";
 
-    try {
-        const urlImagem = await obterURLImagem(tipo, data, situacao);
+    // Carrega a imagem
+    imagemModal.src = urlImagem;
+    legendaImagem.textContent = legenda;
 
-        if (!urlImagem) {
-            legendaImagem.textContent = `Imagem não encontrada para ${tipo} - ${data} - ${situacao}`;
-            imagemModal.alt = 'Imagem não encontrada';
-
-            // Fecha o modal após 2 segundos
-            setTimeout(() => {
-                fecharModal();
-            }, 2000);
-
-            return;
-        }
-
-        imagemModal.src = urlImagem;
-        legendaImagem.textContent = `${tipo} - ${data} - ${situacao}`;
-
-        // Trata erro de carregamento da imagem
-        imagemModal.onerror = () => {
-            legendaImagem.textContent = `Erro ao carregar imagem: ${tipo} - ${data} - ${situacao}`;
-            setTimeout(() => {
-                fecharModal();
-            }, 2000);
-        };
-
-    } catch (error) {
-        console.error('Erro ao abrir imagem:', error);
-        legendaImagem.textContent = `Erro: ${error.message}`;
+    // Trata erro de carregamento da imagem
+    imagemModal.onerror = () => {
+        legendaImagem.textContent = `Erro ao carregar imagem: ${legenda}`;
         setTimeout(() => {
             fecharModal();
         }, 2000);
-    }
+    };
+
+    // Quando a imagem carregar com sucesso
+    imagemModal.onload = () => {
+        legendaImagem.textContent = legenda;
+    };
 }
 
 /**
@@ -287,6 +277,7 @@ function fecharModal() {
     modal.style.display = "none";
     imagemModal.src = "";
     imagemModal.onerror = null;
+    imagemModal.onload = null;
 }
 
 // Expor funções globalmente para os botões inline
