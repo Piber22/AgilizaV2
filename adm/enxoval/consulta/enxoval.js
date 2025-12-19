@@ -206,6 +206,15 @@ function renderizarTabela(dados, container, tipo) {
         const qtdSujo = registro[propriedadeSujo];
         const qtdLimpo = registro[propriedadeLimpo];
 
+        // Criar objeto com todas as quantidades para passar ao abrir a imagem
+        const quantidades = {
+            mopsSujo: registro.mopsSujo,
+            mopsLimpo: registro.mopsLimpo,
+            panosSujo: registro.panosSujo,
+            panosLimpo: registro.panosLimpo
+        };
+        const quantidadesJSON = JSON.stringify(quantidades).replace(/"/g, '&quot;');
+
         html += `
             <tr>
                 <td>${registro.data}</td>
@@ -213,14 +222,14 @@ function renderizarTabela(dados, container, tipo) {
                 <td>${qtdLimpo > 0 ? qtdLimpo : '-'}</td>
                 <td>
                     ${registro.linkFotoSujo ? `
-                        <button class="btn-imagem" onclick="abrirImagem('${registro.linkFotoSujo}', '${tipo} - ${registro.data} - Sujo')" title="Ver imagem - Sujo">
+                        <button class="btn-imagem" onclick='abrirImagem("${registro.linkFotoSujo}", "${registro.data}", "Sujo", ${quantidadesJSON})' title="Ver imagem - Sujo">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
                             </svg>
                         </button>
                     ` : '<span style="color: #777;">-</span>'}
                     ${registro.linkFotoLimpo ? `
-                        <button class="btn-imagem" onclick="abrirImagem('${registro.linkFotoLimpo}', '${tipo} - ${registro.data} - Limpo')" title="Ver imagem - Limpo" style="margin-left: 10px;">
+                        <button class="btn-imagem" onclick='abrirImagem("${registro.linkFotoLimpo}", "${registro.data}", "Limpo", ${quantidadesJSON})' title="Ver imagem - Limpo" style="margin-left: 10px;">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
                             </svg>
@@ -243,11 +252,14 @@ function renderizarTabela(dados, container, tipo) {
 /**
  * Abre o modal com a imagem
  * @param {string} urlImagem - URL da imagem do Google Drive
- * @param {string} legenda - Legenda da imagem
+ * @param {string} data - Data do registro
+ * @param {string} situacao - "Sujo" ou "Limpo"
+ * @param {Object} quantidades - Objeto com as quantidades de mops e panos
  */
-function abrirImagem(urlImagem, legenda) {
+function abrirImagem(urlImagem, data, situacao, quantidades) {
     console.log("Abrindo imagem:", urlImagem);
-    console.log("Legenda:", legenda);
+    console.log("Data:", data, "Situação:", situacao);
+    console.log("Quantidades:", quantidades);
 
     if (!urlImagem) {
         alert('Imagem não disponível');
@@ -257,15 +269,27 @@ function abrirImagem(urlImagem, legenda) {
     // Mostra modal e loading
     modal.style.display = "block";
     imagemModal.src = '';
-    legendaImagem.textContent = 'Carregando imagem...';
+    legendaImagem.innerHTML = 'Carregando imagem...';
 
     // Carrega a imagem
     imagemModal.src = urlImagem;
 
+    // Monta a legenda com as quantidades
+    const tipoSituacao = situacao.toLowerCase();
+    let textoLegenda = `<strong>${data} - Enxoval ${situacao}</strong><br><br>`;
+
+    if (tipoSituacao === 'sujo') {
+        textoLegenda += `Mops sujos: ${quantidades.mopsSujo}<br>`;
+        textoLegenda += `Panos sujos: ${quantidades.panosSujo}`;
+    } else {
+        textoLegenda += `Mops limpos: ${quantidades.mopsLimpo}<br>`;
+        textoLegenda += `Panos limpos: ${quantidades.panosLimpo}`;
+    }
+
     // Trata erro de carregamento da imagem
     imagemModal.onerror = () => {
         console.error("Erro ao carregar imagem:", urlImagem);
-        legendaImagem.textContent = `Erro ao carregar imagem`;
+        legendaImagem.innerHTML = `Erro ao carregar imagem`;
 
         // Tenta URL alternativa
         const fileId = urlImagem.match(/id=([a-zA-Z0-9_-]+)/);
@@ -276,7 +300,7 @@ function abrirImagem(urlImagem, legenda) {
 
             imagemModal.onerror = () => {
                 console.error("URL alternativa também falhou");
-                legendaImagem.textContent = `Erro: Não foi possível carregar a imagem. Verifique se o arquivo está compartilhado publicamente.`;
+                legendaImagem.innerHTML = `Erro: Não foi possível carregar a imagem. Verifique se o arquivo está compartilhado publicamente.`;
                 setTimeout(() => {
                     fecharModal();
                 }, 3000);
@@ -291,7 +315,7 @@ function abrirImagem(urlImagem, legenda) {
     // Quando a imagem carregar com sucesso
     imagemModal.onload = () => {
         console.log("Imagem carregada com sucesso!");
-        legendaImagem.textContent = legenda;
+        legendaImagem.innerHTML = textoLegenda;
     };
 }
 
