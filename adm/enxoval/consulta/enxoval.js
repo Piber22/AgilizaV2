@@ -153,10 +153,14 @@ function processarDados(dados) {
 
         // Adicionar links de fotos (pega o primeiro link válido)
         if (!registro.linkFotoSujo && item['Link Foto Sujo'] && item['Link Foto Sujo'] !== 'Sem foto') {
-            registro.linkFotoSujo = converterURLDrive(item['Link Foto Sujo']);
+            const urlConvertida = converterURLDrive(item['Link Foto Sujo']);
+            console.log("URL Foto Sujo convertida:", urlConvertida);
+            registro.linkFotoSujo = urlConvertida;
         }
         if (!registro.linkFotoLimpo && item['Link Foto Limpo'] && item['Link Foto Limpo'] !== 'Sem foto') {
-            registro.linkFotoLimpo = converterURLDrive(item['Link Foto Limpo']);
+            const urlConvertida = converterURLDrive(item['Link Foto Limpo']);
+            console.log("URL Foto Limpo convertida:", urlConvertida);
+            registro.linkFotoLimpo = urlConvertida;
         }
     });
 
@@ -242,30 +246,51 @@ function renderizarTabela(dados, container, tipo) {
  * @param {string} legenda - Legenda da imagem
  */
 function abrirImagem(urlImagem, legenda) {
+    console.log("Abrindo imagem:", urlImagem);
+    console.log("Legenda:", legenda);
+
     if (!urlImagem) {
         alert('Imagem não disponível');
         return;
     }
 
-    // Mostra loading
+    // Mostra modal e loading
+    modal.style.display = "block";
     imagemModal.src = '';
     legendaImagem.textContent = 'Carregando imagem...';
-    modal.style.display = "block";
 
     // Carrega a imagem
     imagemModal.src = urlImagem;
-    legendaImagem.textContent = legenda;
 
     // Trata erro de carregamento da imagem
     imagemModal.onerror = () => {
-        legendaImagem.textContent = `Erro ao carregar imagem: ${legenda}`;
-        setTimeout(() => {
-            fecharModal();
-        }, 2000);
+        console.error("Erro ao carregar imagem:", urlImagem);
+        legendaImagem.textContent = `Erro ao carregar imagem`;
+
+        // Tenta URL alternativa
+        const fileId = urlImagem.match(/id=([a-zA-Z0-9_-]+)/);
+        if (fileId && fileId[1]) {
+            console.log("Tentando URL alternativa...");
+            const urlAlternativa = `https://drive.google.com/uc?export=view&id=${fileId[1]}`;
+            imagemModal.src = urlAlternativa;
+
+            imagemModal.onerror = () => {
+                console.error("URL alternativa também falhou");
+                legendaImagem.textContent = `Erro: Não foi possível carregar a imagem. Verifique se o arquivo está compartilhado publicamente.`;
+                setTimeout(() => {
+                    fecharModal();
+                }, 3000);
+            };
+        } else {
+            setTimeout(() => {
+                fecharModal();
+            }, 2000);
+        }
     };
 
     // Quando a imagem carregar com sucesso
     imagemModal.onload = () => {
+        console.log("Imagem carregada com sucesso!");
         legendaImagem.textContent = legenda;
     };
 }

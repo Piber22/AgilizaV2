@@ -128,7 +128,7 @@ function filtrarPorData(dados, dataInicial, dataFinal) {
  * @returns {string} URL convertida para visualização
  */
 function converterURLDrive(url) {
-    if (!url || url === 'Sem foto') {
+    if (!url || url === 'Sem foto' || url.trim() === '') {
         return null;
     }
 
@@ -136,9 +136,11 @@ function converterURLDrive(url) {
     const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
     if (match && match[1]) {
         const fileId = match[1];
-        // Retorna URL de visualização direta
-        return `https://drive.google.com/uc?export=view&id=${fileId}`;
+        console.log("ID do arquivo extraído:", fileId);
+        // Retorna URL de visualização direta com thumbnail para funcionar melhor
+        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
     }
 
+    console.warn("Não foi possível extrair ID da URL:", url);
     return null;
 }
