@@ -12,26 +12,36 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
     padding-bottom: 40px;
 }
 
 main {
     width: 100%;
-    max-width: 600px;
-    margin-top: 20px;
+    max-width: 900px;
+    margin-top: 0px;
 }
 
+/* CABEÇALHO */
 .header {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 20px;
+    padding: 10px 20px;
     background-color: #201F20;
-    margin-bottom: 30px;
+    position: relative;
+    margin-bottom: 0px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    border-radius: 10px;
+}
+
+.logo-link {
+    position: absolute;
+    left: 20px;
+}
+
+.logo {
+    width: 40px;
+    height: auto;
 }
 
 .header h1 {
@@ -40,40 +50,40 @@ main {
     margin: 0;
 }
 
+/* SEÇÕES */
+h2, h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
 section {
     background-color: #201F20;
     padding: 25px 30px;
-    margin: 20px auto;
+    margin: 10px auto;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.6);
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 22px;
-    color: #E94B22;
-}
-
+/* Labels lado a lado */
 label {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 8px;
 }
 
 label span {
-    width: 40%;
+    width: 45%;
     text-align: left;
-    font-size: 16px;
 }
 
 input[type="date"] {
-    width: 55%;
-    padding: 12px 15px;
+    width: 50%;
+    padding: 8px 10px;
     border-radius: 6px;
     border: 2px solid #5b5b5b;
-    background-color: #2a2a2a;
+    background-color: #201F20;
     color: #fff;
     font-size: 14px;
     transition: border-color 0.3s ease;
@@ -84,10 +94,12 @@ input[type="date"]:focus {
     border-color: #E94B22;
 }
 
+/* BOTÕES */
 .btn {
     display: block;
-    width: 100%;
-    padding: 14px;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px;
     background-color: #201F20;
     border: 2px solid #E94B22;
     box-shadow: 0 0 10px rgba(0,0,0,0.8);
@@ -96,17 +108,19 @@ input[type="date"]:focus {
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 90%;
+    margin: 15px auto;
 }
 
 .btn:hover {
     background-color: #E94B22;
     transform: translateY(-2px);
-    /*box-shadow: 0 4px 15px rgba(233, 75, 34, 0.4);*/
+    box-shadow: 0 4px 15px rgba(233, 75, 34, 0.4);
 }
 
 .btn:active {
-    transform: translateY(0);
+    transform: scale(0.97);
 }
 
 .btn:disabled {
@@ -115,6 +129,7 @@ input[type="date"]:focus {
     transform: none;
 }
 
+/* ÁREA DE RESULTADO */
 #resultadoArea {
     margin-top: 25px;
     display: none;
@@ -147,6 +162,7 @@ input[type="date"]:focus {
     border-color: #45a049;
 }
 
+/* STATUS */
 .status {
     text-align: center;
     padding: 10px;
@@ -173,20 +189,35 @@ input[type="date"]:focus {
     color: #6495ED;
 }
 
+/* FOOTER */
 .footer {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 20px;
     font-size: 14px;
     color: #777;
 }
 
+/* RESPONSIVO */
 @media (max-width: 768px) {
-    .header h1 {
-        font-size: 1.4em;
+    section {
+        margin: 10px 20px;
+        padding: 20px 15px;
     }
 
-    section {
-        padding: 20px 15px;
+    .header h1 {
+        font-size: 1.2em;
+    }
+
+    h2, h3 {
+        font-size: 1.2em;
+    }
+
+    .logo {
+        width: 30px;
+    }
+
+    .logo-link {
+        left: 15px;
     }
 
     label {
@@ -200,6 +231,10 @@ input[type="date"]:focus {
     }
 
     input[type="date"] {
+        width: 100%;
+    }
+
+    .btn {
         width: 100%;
     }
 }
