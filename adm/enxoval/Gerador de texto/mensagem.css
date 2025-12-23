@@ -102,7 +102,7 @@ input[type="date"]:focus {
 .btn:hover {
     background-color: #E94B22;
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(233, 75, 34, 0.4);
+    /*box-shadow: 0 4px 15px rgba(233, 75, 34, 0.4);*/
 }
 
 .btn:active {
@@ -135,15 +135,15 @@ input[type="date"]:focus {
 
 .btn-copiar {
     background-color: #2a2a2a;
-    border-color: #4CAF50;
+    border-color: #E84B24;
 }
 
 .btn-copiar:hover {
-    background-color: #4CAF50;
+    background-color: #E84B24;
 }
 
 .btn-copiar.copiado {
-    background-color: #4CAF50;
+    background-color: #E84B24;
     border-color: #45a049;
 }
 
