@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Mensagem - Enxoval</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #201F20;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            padding-bottom: 40px;
+        }
+
+        main {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 20px;
+            background-color: #201F20;
+            margin-bottom: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            border-radius: 10px;
+        }
+
+        .header h1 {
+            text-align: center;
+            font-size: 1.8em;
+            margin: 0;
+        }
+
+        section {
+            background-color: #201F20;
+            padding: 25px 30px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.6);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 22px;
+            color: #E94B22;
+        }
+
+        label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        label span {
+            width: 40%;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        input[type="date"] {
+            width: 55%;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border: 2px solid #5b5b5b;
+            background-color: #2a2a2a;
+            color: #fff;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #E94B22;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #201F20;
+            border: 2px solid #E94B22;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #E94B22;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(233, 75, 34, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #resultadoArea {
+            margin-top: 20px;
+            display: none;
+        }
+
+        #mensagemGerada {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #E94B22;
+            font-size: 15px;
+            line-height: 1.8;
+            white-space: pre-line;
+            color: #fff;
+            min-height: 100px;
+            margin-bottom: 15px;
+        }
+
+        .btn-copiar {
+            background-color: #2a2a2a;
+            border-color: #4CAF50;
+        }
+
+        .btn-copiar:hover {
+            background-color: #4CAF50;
+        }
+
+        .btn-copiar.copiado {
+            background-color: #4CAF50;
+            border-color: #45a049;
+        }
+
+        .status {
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .status.erro {
+            background-color: rgba(233, 75, 34, 0.2);
+            border: 1px solid #E94B22;
+            color: #ff6b6b;
+        }
+
+        .status.sucesso {
+            background-color: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+            color: #4CAF50;
+        }
+
+        .status.info {
+            background-color: rgba(100, 149, 237, 0.2);
+            border: 1px solid #6495ED;
+            color: #6495ED;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.4em;
+            }
+
+            section {
+                padding: 20px 15px;
+            }
+
+            label {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            label span {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+
+            input[type="date"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <header class="header">
+            <h1>📋 Gerador de Mensagem - Enxoval</h1>
+        </header>
+
+        <section>
+            <h2>Selecione a Data</h2>
+            <label>
+                <span>Data do Registro:</span>
+                <input type="date" id="dataSelecionada">
+            </label>
+            <button id="btnGerar" class="btn">Gerar Mensagem</button>
+            <div id="statusMsg"></div>
+        </section>
+
+        <section id="resultadoArea">
+            <h2>Mensagem Gerada</h2>
+            <div id="mensagemGerada"></div>
+            <button id="btnCopiar" class="btn btn-copiar">📋 Copiar Mensagem</button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // URL do CSV publicado
+        const URL_CSV_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAKvNyRlIrJWLPN5tjaDUFvMhC5_abfdGHvQNcFU9CPcPWwv6Wp9AcsImz1-_8E5enZP0miDfOdR_G/pub?output=csv";
+
+        // Elementos DOM
+        const dataSelecionada = document.getElementById('dataSelecionada');
+        const btnGerar = document.getElementById('btnGerar');
+        const btnCopiar = document.getElementById('btnCopiar');
+        const resultadoArea = document.getElementById('resultadoArea');
+        const mensagemGerada = document.getElementById('mensagemGerada');
+        const statusMsg = document.getElementById('statusMsg');
+
+        // Dados carregados
+        let todosOsDados = [];
+
+        // Definir data padrão como hoje
+        const hoje = new Date();
+        dataSelecionada.value = hoje.toISOString().split('T')[0];
+
+        // Carregar dados ao iniciar
+        carregarDados();
+
+        // Eventos
+        btnGerar.addEventListener('click', gerarMensagem);
+        btnCopiar.addEventListener('click', copiarMensagem);
+
+        /**
+         * Parse CSV manual
+         */
+        function parseCSVManual(text) {
+            const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l);
+            if (lines.length === 0) return [];
+
+            const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
+            const data = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, '').trim());
+                if (values.length < headers.length) continue;
+                const row = {};
+                headers.forEach((h, idx) => row[h] = values[idx]);
+                data.push(row);
+            }
+            return data;
+        }
+
+        /**
+         * Carrega dados do Google Sheets
+         */
+        async function carregarDados() {
+            try {
+                mostrarStatus('Carregando dados...', 'info');
+
+                const response = await fetch(URL_CSV_SHEETS, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+
+                const text = await response.text();
+                todosOsDados = parseCSVManual(text);
+
+                console.log(`${todosOsDados.length} registros carregados`);
+                mostrarStatus('Dados carregados com sucesso!', 'sucesso');
+
+                setTimeout(() => {
+                    statusMsg.innerHTML = '';
+                }, 2000);
+
+            } catch (error) {
+                console.error("Erro ao carregar dados:", error);
+                mostrarStatus('Erro ao carregar dados. Verifique a conexão.', 'erro');
+            }
+        }
+
+        /**
+         * Converte data de dd/mm/yyyy para objeto Date
+         */
+        function converterDataParaObj(dataStr) {
+            if (!dataStr || dataStr.length < 10) return null;
+            const partes = dataStr.split('/');
+            if (partes.length !== 3) return null;
+            const [dia, mes, ano] = partes;
+            return new Date(parseInt(ano), parseInt(mes) - 1, parseInt(dia));
+        }
+
+        /**
+         * Converte Date para dd/mm/yyyy
+         */
+        function formatarData(date) {
+            const dia = String(date.getDate()).padStart(2, '0');
+            const mes = String(date.getMonth() + 1).padStart(2, '0');
+            const ano = date.getFullYear();
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        /**
+         * Gera a mensagem com base na data selecionada
+         */
+        function gerarMensagem() {
+            if (!dataSelecionada.value) {
+                mostrarStatus('Por favor, selecione uma data.', 'erro');
+                return;
+            }
+
+            if (todosOsDados.length === 0) {
+                mostrarStatus('Dados ainda não foram carregados. Aguarde...', 'erro');
+                return;
+            }
+
+            // Converter data selecionada para formato dd/mm/yyyy
+            const dataSel = new Date(dataSelecionada.value + 'T00:00:00');
+            const dataFormatada = formatarData(dataSel);
+
+            console.log("Buscando dados para:", dataFormatada);
+
+            // Filtrar registros da data selecionada
+            const registrosDoDia = todosOsDados.filter(registro => {
+                return registro['Data Coleta'] === dataFormatada;
+            });
+
+            if (registrosDoDia.length === 0) {
+                mostrarStatus('Nenhum registro encontrado para esta data.', 'erro');
+                resultadoArea.style.display = 'none';
+                return;
+            }
+
+            // Somar quantidades do dia
+            let mopsSujo = 0;
+            let mopsLimpo = 0;
+            let panosSujo = 0;
+            let panosLimpo = 0;
+
+            registrosDoDia.forEach(registro => {
+                mopsSujo += parseInt(registro['Mops Sujos']) || 0;
+                mopsLimpo += parseInt(registro['Mops Limpos']) || 0;
+                panosSujo += parseInt(registro['Panos Sujos']) || 0;
+                panosLimpo += parseInt(registro['Panos Limpos']) || 0;
+            });
+
+            // Gerar mensagem
+            const mensagem = `Registro ${dataFormatada}:
+Mops sujos: ${mopsSujo} / Mops limpos: ${mopsLimpo}
+Panos sujos: ${panosSujo} / Panos limpos: ${panosLimpo}`;
+
+            mensagemGerada.textContent = mensagem;
+            resultadoArea.style.display = 'block';
+            mostrarStatus('Mensagem gerada com sucesso!', 'sucesso');
+
+            // Scroll suave até o resultado
+            setTimeout(() => {
+                resultadoArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        /**
+         * Copia a mensagem para a área de transferência
+         */
+        async function copiarMensagem() {
+            const texto = mensagemGerada.textContent;
+
+            try {
+                await navigator.clipboard.writeText(texto);
+                btnCopiar.textContent = '✓ Copiado!';
+                btnCopiar.classList.add('copiado');
+
+                setTimeout(() => {
+                    btnCopiar.textContent = '📋 Copiar Mensagem';
+                    btnCopiar.classList.remove('copiado');
+                }, 2000);
+            } catch (err) {
+                console.error('Erro ao copiar:', err);
+                mostrarStatus('Erro ao copiar. Tente selecionar e copiar manualmente.', 'erro');
+            }
+        }
+
+        /**
+         * Mostra mensagem de status
+         */
+        function mostrarStatus(mensagem, tipo) {
+            statusMsg.innerHTML = `<div class="status ${tipo}">${mensagem}</div>`;
+        }
+    </script>
+</body>
+</html>
