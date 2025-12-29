@@ -1,6 +1,9 @@
 function criarCamposAP(container) {
   container.innerHTML = "";
 
+  // Flag de controle de envio
+  let isEnviandoAP = false;
+
   // ===== Campos =====
   const labelData = document.createElement("label");
   labelData.textContent = "Data:";
@@ -179,8 +182,8 @@ function criarCamposAP(container) {
                               selectResponsavel.value.trim() !== "" &&
                               selectResponsavel.value !== "Todos";
 
-    // Botão só fica habilitado se AMBOS forem verdadeiros
-    const podeEnviar = todosPreenchidos && responsavelValido;
+    // Botão só fica habilitado se AMBOS forem verdadeiros E não estiver enviando
+    const podeEnviar = todosPreenchidos && responsavelValido && !isEnviandoAP;
 
     botaoEnviar.disabled = !podeEnviar;
     botaoEnviar.style.opacity = podeEnviar ? "1" : "0.6";
@@ -218,47 +221,46 @@ function criarCamposAP(container) {
 
   // ===== Envio =====
   botaoEnviar.addEventListener("click", async () => {
-    const dadosRecebimento = coletarDadosFormulario();
+    // Proteção contra duplo clique
+    if (isEnviandoAP) return;
+    isEnviandoAP = true;
 
+    const dadosRecebimento = coletarDadosFormulario();
     const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzFQKBdjIUJkb04Hre7XGhNOFQln5cJjfDTL1IEcjCbbT0aMMDaQmwA5ayCBjLcfQuWGg/exec';
 
-    async function enviarParaPlanilha(dados) {
-      try {
-        await fetch(URL_APPS_SCRIPT, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(dados)
-        });
-        return true;
-      } catch (erro) {
-        console.error("❌ Erro:", erro);
-        return false;
-      }
-    }
+    // Mostra o loading
+    LoadingManager.show(botaoEnviar, "Enviando AP...");
 
-    const enviadoComSucesso = await enviarParaPlanilha(dadosRecebimento);
+    try {
+      await fetch(URL_APPS_SCRIPT, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dadosRecebimento)
+      });
 
-    if (enviadoComSucesso) {
-      // Cria o container da mensagem
-      const mensagem = document.createElement("div");
-      mensagem.textContent = "Salvo!";
-      mensagem.style.color = "#4CAF50";
-      mensagem.style.textAlign = "center";
-      mensagem.style.marginTop = "10px";
-      // Insere logo após o botão
-      botaoEnviar.parentNode.insertBefore(mensagem, botaoEnviar.nextSibling);
+      // Sucesso: mostra mensagem e limpa formulário
+      LoadingManager.hideWithSuccess("AP salvo com sucesso!", () => {
+        // Limpa os inputs
+        container.querySelectorAll("input, select").forEach(campo => campo.value = "");
 
-      // Limpa os inputs
-      container.querySelectorAll("input, select").forEach(campo => campo.value = "");
+        // Reset da flag
+        isEnviandoAP = false;
 
-      // Reset do botão
-      botaoEnviar.disabled = true;
-      botaoEnviar.style.opacity = "0.6";
-      botaoEnviar.style.cursor = "not-allowed";
+        // Revalida campos
+        validarCampos();
+      });
 
-      // Remove a mensagem após 2 segundos
-      setTimeout(() => mensagem.remove(), 2000);
+    } catch (erro) {
+      // Erro: mostra mensagem e reabilita botão
+      console.error("Erro ao enviar AP:", erro);
+      LoadingManager.hideWithError("Erro ao enviar. Verifique sua conexão.");
+
+      // Reset da flag
+      isEnviandoAP = false;
+
+      // Revalida campos
+      validarCampos();
     }
   });
 }

@@ -1,5 +1,5 @@
 // ================================================================
-// IPSMA.JS – VERSÃO 100% INDEPENDENTE E FUNCIONAL
+// IPSMA.JS — VERSÃO COM LOADING E PROTEÇÃO CONTRA DUPLO ENVIO
 // ================================================================
 
 // === MAPEAMENTO DE RESPONSÁVEIS (RE + FUNÇÃO) ===
@@ -26,6 +26,7 @@ function criarCamposIPSMA(container) {
   // ===== [1] DECLARAÇÃO DAS VARIÁVEIS NO ESCOPO DA FUNÇÃO =====
   let inputData, inputHoraInicio, inputHoraFim, inputLocal, inputElementos;
   let selectClassificacao, selectConforme, selectChecklist, inputAcoes;
+  let isEnviando = false; // Flag para controlar envio
 
   // ===== 1. Data =====
   const labelData = document.createElement("label");
@@ -158,7 +159,7 @@ function criarCamposIPSMA(container) {
     const selectResponsavel = document.getElementById("responsavel");
     const responsavelValido = selectResponsavel && selectResponsavel.value && selectResponsavel.value !== "Todos";
 
-    const podeEnviar = todosPreenchidos && responsavelValido;
+    const podeEnviar = todosPreenchidos && responsavelValido && !isEnviando;
     botaoEnviar.disabled = !podeEnviar;
     botaoEnviar.style.opacity = podeEnviar ? "1" : "0.6";
     botaoEnviar.style.cursor = podeEnviar ? "pointer" : "not-allowed";
@@ -194,8 +195,15 @@ function criarCamposIPSMA(container) {
 
   // ===== ENVIO =====
   botaoEnviar.addEventListener("click", async () => {
+    // Proteção contra duplo clique
+    if (isEnviando) return;
+    isEnviando = true;
+
     const dados = coletarDadosFormulario();
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbypJaPZVEuUHub4v3J-sXBYQzdMimdGR2XOLW1lyMMUbCd8Gb8P7ccYuX20ZVGMMb8zxw/exec'; // ← SUBSTITUA
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbypJaPZVEuUHub4v3J-sXBYQzdMimdGR2XOLW1lyMMUbCd8Gb8P7ccYuX20ZVGMMb8zxw/exec';
+
+    // Mostra o loading
+    LoadingManager.show(botaoEnviar, "Enviando IPSMA...");
 
     try {
       await fetch(URL_APPS_SCRIPT, {
@@ -205,24 +213,20 @@ function criarCamposIPSMA(container) {
         body: JSON.stringify(dados)
       });
 
-      // Feedback visual
-      const msg = document.createElement("div");
-      msg.textContent = "Salvo!";
-      msg.style.color = "#4CAF50";
-      msg.style.textAlign = "center";
-      msg.style.marginTop = "10px";
-      msg.style.fontWeight = "bold";
-      botaoEnviar.parentNode.insertBefore(msg, botaoEnviar.nextSibling);
+      // Sucesso: mostra mensagem e limpa formulário
+      LoadingManager.hideWithSuccess("IPSMA salvo com sucesso!", () => {
+        // Limpa formulário
+        container.querySelectorAll("input, select").forEach(c => c.value = "");
+        isEnviando = false;
+        validarCampos();
+      });
 
-      // Limpa formulário
-      container.querySelectorAll("input, select").forEach(c => c.value = "");
-      botaoEnviar.disabled = true;
-      botaoEnviar.style.opacity = "0.6";
-      botaoEnviar.style.cursor = "not-allowed";
-
-      setTimeout(() => msg.remove(), 2000);
     } catch (err) {
-      alert("Erro ao enviar. Verifique a conexão.");
+      // Erro: mostra mensagem e reabilita botão
+      console.error("Erro ao enviar IPSMA:", err);
+      LoadingManager.hideWithError("Erro ao enviar. Verifique sua conexão.");
+      isEnviando = false;
+      validarCampos();
     }
   });
 }

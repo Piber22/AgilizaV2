@@ -1,6 +1,9 @@
 function criarCamposOPAI(container) {
   container.innerHTML = "";
 
+  // Flag de controle de envio
+  let isEnviandoOPAI = false;
+
   // ===== Mapa de Responsáveis (CHAVES SEM ACENTO) =====
   const MAPA_RESPONSAVEIS = {
     "Graciela":   { re: "037120", funcao: "Encarregada" },
@@ -359,7 +362,7 @@ function criarCamposOPAI(container) {
                               selectResponsavel.value.trim() !== "" &&
                               selectResponsavel.value !== "Todos";
 
-    const podeEnviar = basePreenchida && condicionaisValidos && responsavelValido;
+    const podeEnviar = basePreenchida && condicionaisValidos && responsavelValido && !isEnviandoOPAI;
     botaoEnviar.disabled = !podeEnviar;
     botaoEnviar.style.opacity = podeEnviar ? "1" : "0.6";
     botaoEnviar.style.cursor = podeEnviar ? "pointer" : "not-allowed";
@@ -441,46 +444,50 @@ function criarCamposOPAI(container) {
 
   // ===== Envio =====
   botaoEnviar.addEventListener("click", async () => {
+    // Proteção contra duplo clique
+    if (isEnviandoOPAI) return;
+    isEnviandoOPAI = true;
+
     const dadosFormulario = coletarDadosFormulario();
-
-    console.log("Dados coletados:", dadosFormulario);
-    console.log("Dados em JSON:", JSON.stringify(dadosFormulario, null, 2));
-
     const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbynM8duq920qdEMGBpHZhM-3AZeyD4JcqNGpj12tlzvcSJu-TeGltHUM6oNmxcQBMVsuw/exec';
 
-    async function enviarParaPlanilha(dados) {
-      try {
-        console.log("Enviando para:", URL_APPS_SCRIPT);
-        console.log("Payload:", JSON.stringify(dados));
-        const response = await fetch(URL_APPS_SCRIPT, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(dados)
-        });
-        console.log("Resposta recebida:", response);
-        return true;
-      } catch (erro) {
-        console.error("Erro ao enviar:", erro);
-        return false;
-      }
-    }
+    console.log("Dados coletados:", dadosFormulario);
 
-    const enviadoComSucesso = await enviarParaPlanilha(dadosFormulario);
-    if (enviadoComSucesso) {
-      const mensagem = document.createElement("div");
-      mensagem.textContent = "Salvo!";
-      mensagem.style.color = "#4CAF50";
-      mensagem.style.textAlign = "center";
-      mensagem.style.marginTop = "10px";
-      botaoEnviar.parentNode.insertBefore(mensagem, botaoEnviar.nextSibling);
+    // Mostra o loading
+    LoadingManager.show(botaoEnviar, "Enviando OPAI...");
 
-      container.querySelectorAll("input, select").forEach(campo => campo.value = "");
-      divCondicional.innerHTML = "";
-      botaoEnviar.disabled = true;
-      botaoEnviar.style.opacity = "0.6";
-      botaoEnviar.style.cursor = "not-allowed";
-      setTimeout(() => mensagem.remove(), 2000);
+    try {
+      console.log("Enviando para:", URL_APPS_SCRIPT);
+      await fetch(URL_APPS_SCRIPT, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dadosFormulario)
+      });
+
+      // Sucesso: mostra mensagem e limpa formulário
+      LoadingManager.hideWithSuccess("OPAI salvo com sucesso!", () => {
+        // Limpa o formulário
+        container.querySelectorAll("input, select").forEach(campo => campo.value = "");
+        divCondicional.innerHTML = "";
+
+        // Reset da flag
+        isEnviandoOPAI = false;
+
+        // Revalida campos
+        validarCampos();
+      });
+
+    } catch (erro) {
+      // Erro: mostra mensagem e reabilita botão
+      console.error("Erro ao enviar OPAI:", erro);
+      LoadingManager.hideWithError("Erro ao enviar. Verifique sua conexão.");
+
+      // Reset da flag
+      isEnviandoOPAI = false;
+
+      // Revalida campos
+      validarCampos();
     }
   });
 }
