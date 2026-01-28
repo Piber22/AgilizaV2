@@ -117,8 +117,8 @@ document.getElementById("copiarBtn").addEventListener("click", function() {
             console.log("📋 Mensagem copiada para área de transferência");
 
             // Número do contato (formato internacional)
-            //const phoneNumber = "555180509274";
-            const phoneNumber = "555195832564";
+            const phoneNumber = "555180509274"; //piber
+            //const phoneNumber = "555195832564"; //daiane
 
 
             // URL para abrir conversa no app do WhatsApp
