@@ -6,7 +6,7 @@
     <title>Ferramentas</title>
 
     <!-- Fonte -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS -->
     <link rel="stylesheet" href="ferramentas.css">
@@ -26,51 +26,96 @@
 
         <!-- Informações -->
         <section id="info">
-
-    <!--<label>Data: <input type="date" id="dataRecebimento"></label>-->
-    <label id="respon">
-        <span>Responsável:</span>
-        <select id="responsavel" name="responsavel">
-    <option value="">Todos</option> <!-- Mudei para value vazio e texto "Todos" -->
-    <option value="Graciela">Graciela</option>
-    <option value="Giovana">Giovana</option>
-    <option value="Jéssica">Jéssica</option>
-    <option value="Alisson">Alisson</option>
-    <option value="Daiane">Daiane</option>
-    <option value="Adrisson">Ádrisson</option>
-    <option value="Franciele">Franciele</option>
-</select>
-    </label>
-</section>
-
-        <!--<section id="estatisticas" style="display: none;">
-            <h3>Acompanhamento</h3>
-            <p>Selecione filtros para ver as estatísticas</p>
-        </section>-->
-        <section id="status">
-        <!-- Consulta (será preenchida dinamicamente) -->
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-label">AP:</div>
-                <div class="stat-value">--/106</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">IPSMA:</div>
-                <div class="stat-value sucesso">--/10</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">OPAI:</div>
-                <div class="stat-value pendente">--/20</div>
-            </div>
-        </div>
+            <label id="respon">
+                <span>Responsável:</span>
+                <select id="responsavel" name="responsavel">
+                    <option value="">Todos</option>
+                    <option value="Graciela">Graciela</option>
+                    <option value="Giovana">Giovana</option>
+                    <option value="Jéssica">Jéssica</option>
+                    <option value="Alisson">Alisson</option>
+                    <option value="Daiane">Daiane</option>
+                    <option value="Adrisson">Ádrisson</option>
+                    <option value="Franciele">Franciele</option>
+                </select>
+            </label>
         </section>
-         <section id="ferramentas">
-             <button type="button" class="login-option" id="ap">AP</button>
-             <button type="button" class="login-option" id="ipsma">IPSMA</button>
+
+        <!-- Status com visualização melhorada -->
+        <section id="status">
+            <div class="stats-grid">
+                <!-- AP -->
+                <div class="stat-box pendente">
+                    <div class="status-indicator"></div>
+                    <div class="stat-label">AP:</div>
+                    <div class="stat-value">
+                        <div class="stat-numbers">
+                            <span class="stat-realizado">--</span>
+                            <span class="stat-separator">/</span>
+                            <span class="stat-meta">106</span>
+                        </div>
+                        <div class="stat-description">
+                            <span class="desc-realizado">Realizados</span>
+                            <span class="desc-meta">Meta</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- IPSMA -->
+                <div class="stat-box pendente">
+                    <div class="status-indicator"></div>
+                    <div class="stat-label">IPSMA:</div>
+                    <div class="stat-value">
+                        <div class="stat-numbers">
+                            <span class="stat-realizado">--</span>
+                            <span class="stat-separator">/</span>
+                            <span class="stat-meta">10</span>
+                        </div>
+                        <div class="stat-description">
+                            <span class="desc-realizado">Realizados</span>
+                            <span class="desc-meta">Meta</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- OPAI -->
+                <div class="stat-box pendente">
+                    <div class="status-indicator"></div>
+                    <div class="stat-label">OPAI:</div>
+                    <div class="stat-value">
+                        <div class="stat-numbers">
+                            <span class="stat-realizado">--</span>
+                            <span class="stat-separator">/</span>
+                            <span class="stat-meta">20</span>
+                        </div>
+                        <div class="stat-description">
+                            <span class="desc-realizado">Realizados</span>
+                            <span class="desc-meta">Meta</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ferramentas -->
+        <section id="ferramentas">
+            <button type="button" class="login-option" id="ap">AP</button>
+            <button type="button" class="login-option" id="ipsma">IPSMA</button>
             <button type="button" class="login-option" id="opai">OPAI</button>
         </section>
+
+        <!-- Forms dinâmicos -->
         <section id="Forms">
-             <!-- Aqui vem uma série de inputs dinamicos -->
+            <!-- Aqui vem uma série de inputs dinâmicos -->
         </section>
     </main>
 
@@ -84,7 +129,5 @@
     <script src="ipsma.js"></script>
     <script src="opai.js"></script>
     <script src="ferramentas.js"></script>
-
-
 </body>
 </html>

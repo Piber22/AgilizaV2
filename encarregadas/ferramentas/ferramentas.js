@@ -44,7 +44,32 @@ document.addEventListener("DOMContentLoaded", function () {
     const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOCdgTpKJg52io24jaXoqqCL2yXRyUeoK23-LbkNcZTBxzGuy8yxKTWXopmdqcP4bJboGeagpaHLPm/pub?output=csv";
 
     const selectResponsavel = document.getElementById("responsavel");
-    const statValues = document.querySelectorAll(".stat-box .stat-value");
+    const statBoxes = document.querySelectorAll(".stat-box");
+
+    // Função para criar o HTML atualizado de cada stat-box
+    function criarStatHTML(realizado, meta, label) {
+        const porcentagem = Math.min((realizado / meta) * 100, 100);
+        const isCompleto = realizado >= meta;
+
+        return `
+            <div class="status-indicator ${isCompleto ? 'completo' : ''}"></div>
+            <div class="stat-label">${label}</div>
+            <div class="stat-value">
+                <div class="stat-numbers">
+                    <span class="stat-realizado">${realizado}</span>
+                    <span class="stat-separator">/</span>
+                    <span class="stat-meta">${meta}</span>
+                </div>
+                <div class="stat-description">
+                    <span class="desc-realizado">Realizados</span>
+                    <span class="desc-meta">Meta</span>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill ${isCompleto ? 'completo' : ''}" style="width: ${porcentagem}%"></div>
+            </div>
+        `;
+    }
 
     // Função para atualizar as estatísticas
     function atualizarEstatisticas(responsavel) {
@@ -92,15 +117,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     metaOPAI = 4;
                 }
 
-                // Atualiza os valores na tela
-                statValues[0].textContent = `${ap}/${metaAP}`;
-                statValues[1].textContent = `${ipsma}/${metaIPSMA}`;
-                statValues[2].textContent = `${opai}/${metaOPAI}`;
+                // Atualiza os três boxes com o novo HTML
+                statBoxes[0].innerHTML = criarStatHTML(ap, metaAP, "AP:");
+                statBoxes[1].innerHTML = criarStatHTML(ipsma, metaIPSMA, "IPSMA:");
+                statBoxes[2].innerHTML = criarStatHTML(opai, metaOPAI, "OPAI:");
 
-                // Aplica classes de cor (verde se atingiu a meta, vermelho se não)
-                statValues[0].className = (ap >= metaAP) ? "stat-value sucesso" : "stat-value pendente";
-                statValues[1].className = (ipsma >= metaIPSMA) ? "stat-value sucesso" : "stat-value pendente";
-                statValues[2].className = (opai >= metaOPAI) ? "stat-value sucesso" : "stat-value pendente";
+                // Adiciona classes de status aos boxes
+                statBoxes[0].className = `stat-box ${ap >= metaAP ? 'completo' : 'pendente'}`;
+                statBoxes[1].className = `stat-box ${ipsma >= metaIPSMA ? 'completo' : 'pendente'}`;
+                statBoxes[2].className = `stat-box ${opai >= metaOPAI ? 'completo' : 'pendente'}`;
             },
             error: function (err) {
                 console.error("❌ Erro ao carregar planilha:", err);
