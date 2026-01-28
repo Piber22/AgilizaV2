@@ -2,24 +2,26 @@
 // IPSMA.JS — VERSÃO COM LOADING E PROTEÇÃO CONTRA DUPLO ENVIO
 // ================================================================
 
+// === MAPEAMENTO DE RESPONSÁVEIS (RE + FUNÇÃO) ===
+const MAPA_RESPONSAVEIS = {
+  "Graciela":   { re: "037120", funcao: "Encarregada" },
+  "Giovana":    { re: "054651", funcao: "Encarregada" },
+  "Jéssica":    { re: "049971", funcao: "Líder" },
+  "Alisson": { re: "062229", funcao: "ASG" },
+  "Daiane":     { re: "062074", funcao: "Encarregada" },
+  "Adrisson":   { re: "056367", funcao: "Planejador" },
+  "Franciele":    { re: "000000", funcao: "Líder" }
+};
+
+// Função para obter RE e Função
+function getDadosResponsavel(nome) {
+  return MAPA_RESPONSAVEIS[nome] || { re: "", funcao: "" };
+}
+
+// ================================================================
+
 function criarCamposIPSMA(container) {
   container.innerHTML = "";
-
-  // === MAPEAMENTO DE RESPONSÁVEIS (RE + FUNÇÃO) ===
-  const MAPA_RESPONSAVEIS = {
-    "Graciela":   { re: "037120", funcao: "Encarregada" },
-    "Giovana":    { re: "054651", funcao: "Encarregada" },
-    "Jéssica":    { re: "049971", funcao: "Líder" },
-    "Alisson": { re: "062229", funcao: "ASG" },
-    "Daiane":     { re: "062074", funcao: "Encarregada" },
-    "Adrisson":   { re: "056367", funcao: "Planejador" },
-    "Franciele":    { re: "000000", funcao: "Líder" }
-  };
-
-  // Função para obter RE e Função
-  function getDadosResponsavel(nome) {
-    return MAPA_RESPONSAVEIS[nome] || { re: "", funcao: "" };
-  }
 
   // ===== [1] DECLARAÇÃO DAS VARIÁVEIS NO ESCOPO DA FUNÇÃO =====
   let inputData, inputHoraInicio, inputHoraFim, inputLocal, inputElementos;
@@ -211,35 +213,20 @@ function criarCamposIPSMA(container) {
         body: JSON.stringify(dados)
       });
 
-      // Sucesso: atualiza estatísticas com múltiplas tentativas
-      const responsavelAtual = document.getElementById("responsavel")?.value || "";
+      // Sucesso: mostra mensagem e limpa formulário
+      LoadingManager.hideWithSuccess("IPSMA salvo com sucesso!", () => {
+        // Limpa formulário
+        container.querySelectorAll("input, select").forEach(c => c.value = "");
+        isEnviando = false;
+        validarCampos();
 
-      // Primeira atualização imediata
-      if (typeof atualizarEstatisticas === "function") {
-        atualizarEstatisticas(responsavelAtual);
-      }
-
-      // Delay para o Google Sheets processar
-      setTimeout(() => {
-        // Segunda atualização (durante loading)
-        if (typeof atualizarEstatisticas === "function") {
-          atualizarEstatisticas(responsavelAtual);
-        }
-
-        LoadingManager.hideWithSuccess("IPSMA salvo com sucesso!", () => {
-          // Limpa formulário
-          container.querySelectorAll("input, select").forEach(c => c.value = "");
-          isEnviando = false;
-          validarCampos();
-
-          // Terceira atualização (após sucesso, garantia final)
+        // ===== ATUALIZA AS ESTATÍSTICAS =====
+        if (typeof window.atualizarEstatisticasGlobal === "function") {
           setTimeout(() => {
-            if (typeof atualizarEstatisticas === "function") {
-              atualizarEstatisticas(responsavelAtual);
-            }
-          }, 500);
-        });
-      }, 1500);
+            window.atualizarEstatisticasGlobal();
+          }, 2000);
+        }
+      });
 
     } catch (err) {
       // Erro: mostra mensagem e reabilita botão

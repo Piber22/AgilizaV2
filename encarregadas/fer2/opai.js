@@ -465,40 +465,25 @@ function criarCamposOPAI(container) {
         body: JSON.stringify(dadosFormulario)
       });
 
-      // Sucesso: atualiza estatísticas com múltiplas tentativas
-      const responsavelAtual = document.getElementById("responsavel")?.value || "";
+      // Sucesso: mostra mensagem e limpa formulário
+      LoadingManager.hideWithSuccess("OPAI salvo com sucesso!", () => {
+        // Limpa o formulário
+        container.querySelectorAll("input, select").forEach(campo => campo.value = "");
+        divCondicional.innerHTML = "";
 
-      // Primeira atualização imediata
-      if (typeof atualizarEstatisticas === "function") {
-        atualizarEstatisticas(responsavelAtual);
-      }
+        // Reset da flag
+        isEnviandoOPAI = false;
 
-      // Delay maior para OPAI (formulário mais complexo)
-      setTimeout(() => {
-        // Segunda atualização (durante loading)
-        if (typeof atualizarEstatisticas === "function") {
-          atualizarEstatisticas(responsavelAtual);
-        }
+        // Revalida campos
+        validarCampos();
 
-        LoadingManager.hideWithSuccess("OPAI salvo com sucesso!", () => {
-          // Limpa o formulário
-          container.querySelectorAll("input, select").forEach(campo => campo.value = "");
-          divCondicional.innerHTML = "";
-
-          // Reset da flag
-          isEnviandoOPAI = false;
-
-          // Revalida campos
-          validarCampos();
-
-          // Terceira atualização (após sucesso, garantia final)
+        // ===== ATUALIZA AS ESTATÍSTICAS =====
+        if (typeof window.atualizarEstatisticasGlobal === "function") {
           setTimeout(() => {
-            if (typeof atualizarEstatisticas === "function") {
-              atualizarEstatisticas(responsavelAtual);
-            }
-          }, 500);
-        });
-      }, 2000);
+            window.atualizarEstatisticasGlobal();
+          }, 2000);
+        }
+      });
 
     } catch (erro) {
       // Erro: mostra mensagem e reabilita botão
