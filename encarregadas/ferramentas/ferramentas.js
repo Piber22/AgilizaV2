@@ -117,15 +117,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     metaOPAI = 4;
                 }
 
-                // Atualiza os três boxes com o novo HTML
-                statBoxes[0].innerHTML = criarStatHTML(ap, metaAP, "AP:");
-                statBoxes[1].innerHTML = criarStatHTML(ipsma, metaIPSMA, "IPSMA:");
-                statBoxes[2].innerHTML = criarStatHTML(opai, metaOPAI, "OPAI:");
+                // Atualiza os três boxes com o novo HTML (ordem: IPSMA, OPAI, AP)
+                statBoxes[0].innerHTML = criarStatHTML(ipsma, metaIPSMA, "IPSMA:");
+                statBoxes[1].innerHTML = criarStatHTML(opai, metaOPAI, "OPAI:");
+                statBoxes[2].innerHTML = criarStatHTML(ap, metaAP, "AP:");
 
-                // Adiciona classes de status aos boxes
-                statBoxes[0].className = `stat-box ${ap >= metaAP ? 'completo' : 'pendente'}`;
-                statBoxes[1].className = `stat-box ${ipsma >= metaIPSMA ? 'completo' : 'pendente'}`;
-                statBoxes[2].className = `stat-box ${opai >= metaOPAI ? 'completo' : 'pendente'}`;
+                // Adiciona classes de status aos boxes (ordem: IPSMA, OPAI, AP)
+                statBoxes[0].className = `stat-box ${ipsma >= metaIPSMA ? 'completo' : 'pendente'}`;
+                statBoxes[1].className = `stat-box ${opai >= metaOPAI ? 'completo' : 'pendente'}`;
+                statBoxes[2].className = `stat-box ${ap >= metaAP ? 'completo' : 'pendente'}`;
             },
             error: function (err) {
                 console.error("❌ Erro ao carregar planilha:", err);
