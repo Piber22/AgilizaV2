@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS -->
+    <!-- html2canvas para captura de imagem -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="ferramentas.css">
 
     <!-- PapaParse – para ler CSV do Google Sheets -->
@@ -112,6 +114,7 @@
             <button type="button" class="login-option" id="ap">AP</button>
             <button type="button" class="login-option" id="ipsma">IPSMA</button>
             <button type="button" class="login-option" id="opai">OPAI</button>
+            <button type="button" class="login-option" id="gerar-relatorio" style="background-color: #E94B22; border-color: #E94B22; margin-top: 20px; display: none;">Gerar Relatório</button>
         </section>
 
         <!-- Forms dinâmicos -->
@@ -128,6 +131,7 @@
     <script src="loading.js"></script>
     <script src="ap.js"></script>
     <script src="ipsma.js"></script>
+    <script src="relatorio-visual.js"></script>
     <script src="opai.js"></script>
     <script src="ferramentas.js"></script>
 </body>

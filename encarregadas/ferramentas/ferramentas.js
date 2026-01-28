@@ -5,6 +5,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     buttons.forEach((button) => {
         button.addEventListener("click", function () {
+            // Se for o botão de relatório, chama a função específica
+            if (button.id === "gerar-relatorio") {
+                gerarRelatorioVisual();
+                return;
+            }
+
             // Toggle: se já ativo, desativa e limpa
             if (button.classList.contains("active")) {
                 button.classList.remove("active");
@@ -139,5 +145,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // Atualiza quando o usuário mudar o select
     selectResponsavel.addEventListener("change", function () {
         atualizarEstatisticas(this.value);
+
+        // Controla a visibilidade do botão de relatório
+        const btnRelatorio = document.getElementById("gerar-relatorio");
+        if (this.value.toLowerCase() === "adrisson" || this.value.toLowerCase() === "ádrisson") {
+            btnRelatorio.style.display = "block";
+        } else {
+            btnRelatorio.style.display = "none";
+        }
     });
 });
