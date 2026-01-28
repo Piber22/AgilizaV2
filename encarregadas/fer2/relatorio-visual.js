@@ -111,7 +111,7 @@ function criarModalRelatorio(colaboradores) {
     `;
 
     const titulo = document.createElement("h1");
-    titulo.textContent = "Relatório de Metas - HSANA";
+    titulo.textContent = "Acompanhamento de ferramentas PDS";
     titulo.style.cssText = `
         color: #fff;
         font-size: 32px;
@@ -176,7 +176,7 @@ function criarModalRelatorio(colaboradores) {
 function criarCardColaborador(nome, ap, ipsma, opai, metaAP, metaIPSMA, metaOPAI) {
     const card = document.createElement("div");
     card.style.cssText = `
-        background: #2a2a2a;
+        background: #201F20;
         border: 2px solid #5b5b5b;
         border-radius: 12px;
         padding: 20px;
@@ -209,7 +209,7 @@ function criarCardColaborador(nome, ap, ipsma, opai, metaAP, metaIPSMA, metaOPAI
 
         const metricaDiv = document.createElement("div");
         metricaDiv.style.cssText = `
-            background: #1a1a1a;
+            background: #222323;
             border-radius: 8px;
             padding: 12px;
         `;
@@ -280,7 +280,7 @@ function criarCardColaborador(nome, ap, ipsma, opai, metaAP, metaIPSMA, metaOPAI
 function criarResumoTotal(colaboradores) {
     const resumoDiv = document.createElement("div");
     resumoDiv.style.cssText = `
-        background: #2a2a2a;
+        background: #201f20;
         border: 3px solid #E94B22;
         border-radius: 12px;
         padding: 30px;
@@ -322,7 +322,7 @@ function criarResumoTotal(colaboradores) {
 
         const box = document.createElement("div");
         box.style.cssText = `
-            background: #1a1a1a;
+            background: #222323;
             border: 2px solid ${isCompleto ? '#4CAF50' : '#5b5b5b'};
             border-radius: 10px;
             padding: 20px;

@@ -145,5 +145,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // Atualiza quando o usuário mudar o select
     selectResponsavel.addEventListener("change", function () {
         atualizarEstatisticas(this.value);
+
+        // Controla a visibilidade do botão de relatório
+        const btnRelatorio = document.getElementById("gerar-relatorio");
+        if (this.value.toLowerCase() === "adrisson" || this.value.toLowerCase() === "ádrisson") {
+            btnRelatorio.style.display = "block";
+        } else {
+            btnRelatorio.style.display = "none";
+        }
     });
 });
