@@ -211,23 +211,35 @@ function criarCamposIPSMA(container) {
         body: JSON.stringify(dados)
       });
 
-      // Sucesso: atualiza estatísticas durante o loading
+      // Sucesso: atualiza estatísticas com múltiplas tentativas
       const responsavelAtual = document.getElementById("responsavel")?.value || "";
 
-      // Atualiza as estatísticas antes de mostrar a mensagem de sucesso
+      // Primeira atualização imediata
       if (typeof atualizarEstatisticas === "function") {
         atualizarEstatisticas(responsavelAtual);
       }
 
-      // Pequeno delay para garantir que os dados foram atualizados
+      // Delay para o Google Sheets processar
       setTimeout(() => {
+        // Segunda atualização (durante loading)
+        if (typeof atualizarEstatisticas === "function") {
+          atualizarEstatisticas(responsavelAtual);
+        }
+
         LoadingManager.hideWithSuccess("IPSMA salvo com sucesso!", () => {
           // Limpa formulário
           container.querySelectorAll("input, select").forEach(c => c.value = "");
           isEnviando = false;
           validarCampos();
+
+          // Terceira atualização (após sucesso, garantia final)
+          setTimeout(() => {
+            if (typeof atualizarEstatisticas === "function") {
+              atualizarEstatisticas(responsavelAtual);
+            }
+          }, 500);
         });
-      }, 800);
+      }, 1500);
 
     } catch (err) {
       // Erro: mostra mensagem e reabilita botão

@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // === ATUALIZAÇÃO DINÂMICA DAS ESTATÍSTICAS ===
-    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOCdgTpKJg52io24jaXoqqCL2yXRyUeoK23-LbkNcZTBxzGuy8yxKTWXopmdqcP4bJboGeagpaHLPm/pub?output=csv";
+    const BASE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOCdgTpKJg52io24jaXoqqCL2yXRyUeoK23-LbkNcZTBxzGuy8yxKTWXopmdqcP4bJboGeagpaHLPm/pub?output=csv";
 
     const selectResponsavel = document.getElementById("responsavel");
     const statBoxes = document.querySelectorAll(".stat-box");
@@ -71,14 +71,23 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
-    // Função para atualizar as estatísticas (GLOBAL)
-    window.atualizarEstatisticas = function(responsavel) {
-        Papa.parse(url, {
+    // ===== SISTEMA DE ATUALIZAÇÃO COM CACHE-BUSTING =====
+    window.atualizarEstatisticas = function(responsavel, tentativa = 1) {
+        // CACHE-BUSTING: adiciona timestamp único à URL
+        const timestamp = new Date().getTime();
+        const urlComCacheBusting = `${BASE_URL}&nocache=${timestamp}`;
+
+        console.log(`🔄 [Tentativa ${tentativa}] Atualizando estatísticas para: ${responsavel || 'Todos'}`);
+
+        Papa.parse(urlComCacheBusting, {
             download: true,
             header: true,
+            // IMPORTANTE: desabilita cache do PapaParse
+            dynamicTyping: false,
+            skipEmptyLines: true,
             complete: function (results) {
                 const dados = results.data;
-                console.log("✅ Dados recebidos do Google Sheets:", dados);
+                console.log(`✅ [Tentativa ${tentativa}] Dados recebidos:`, dados.length, "linhas");
 
                 let ap = 0, ipsma = 0, opai = 0;
                 let metaAP, metaIPSMA, metaOPAI;
@@ -96,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     metaAP = 106;
                     metaIPSMA = 10;
                     metaOPAI = 20;
-                    console.log("📊 Total geral - AP:", ap, "IPSMA:", ipsma, "OPAI:", opai);
+                    console.log(`📊 [Tentativa ${tentativa}] Total geral - AP: ${ap}, IPSMA: ${ipsma}, OPAI: ${opai}`);
                 } else {
                     // COM FILTRO: busca apenas o responsável selecionado + meta individual
                     const registro = dados.find(r =>
@@ -104,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         (r.Responsável || r.Responsavel).trim().toLowerCase() === responsavel.trim().toLowerCase()
                     );
 
-                    console.log("🔍 Registro encontrado:", registro);
+                    console.log(`🔍 [Tentativa ${tentativa}] Registro encontrado:`, registro);
 
                     if (registro) {
                         ap = parseInt(registro.AP || 0);
@@ -126,9 +135,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 statBoxes[0].className = `stat-box ${ap >= metaAP ? 'completo' : 'pendente'}`;
                 statBoxes[1].className = `stat-box ${ipsma >= metaIPSMA ? 'completo' : 'pendente'}`;
                 statBoxes[2].className = `stat-box ${opai >= metaOPAI ? 'completo' : 'pendente'}`;
+
+                console.log(`✅ [Tentativa ${tentativa}] Estatísticas atualizadas com sucesso!`);
             },
             error: function (err) {
-                console.error("❌ Erro ao carregar planilha:", err);
+                console.error(`❌ [Tentativa ${tentativa}] Erro ao carregar planilha:`, err);
+
+                // RETRY: tenta novamente até 3 vezes
+                if (tentativa < 3) {
+                    console.log(`🔄 Tentando novamente em 1 segundo... (${tentativa + 1}/3)`);
+                    setTimeout(() => {
+                        window.atualizarEstatisticas(responsavel, tentativa + 1);
+                    }, 1000);
+                } else {
+                    console.error("❌ Falha após 3 tentativas. Verifique sua conexão.");
+                }
             }
         });
     }; // Fim da função global
