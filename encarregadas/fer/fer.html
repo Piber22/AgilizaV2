@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferramentas</title>
+
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="ferramentas.css">
+
+    <!-- PapaParse – para ler CSV do Google Sheets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../encarregadas.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Ferramentas</h1>
+        </header>
+
+        <!-- Informações -->
+        <section id="info">
+            <label id="respon">
+                <span>Responsável:</span>
+                <select id="responsavel" name="responsavel">
+                    <option value="">Todos</option>
+                    <option value="Graciela">Graciela</option>
+                    <option value="Giovana">Giovana</option>
+                    <option value="Jéssica">Jéssica</option>
+                    <option value="Alisson">Alisson</option>
+                    <option value="Daiane">Daiane</option>
+                    <option value="Adrisson">Ádrisson</option>
+                    <option value="Franciele">Franciele</option>
+                </select>
+            </label>
+        </section>
+
+        <!-- Status com visualização melhorada -->
+        <section id="status">
+            <div class="stats-grid">
+                <!-- AP -->
+                <div class="stat-box pendente">
+                    <div class="status-indicator"></div>
+                    <div class="stat-label">AP:</div>
+                    <div class="stat-value">
+                        <div class="stat-numbers">
+                            <span class="stat-realizado">--</span>
+                            <span class="stat-separator">/</span>
+                            <span class="stat-meta">106</span>
+                        </div>
+                        <div class="stat-description">
+                            <span class="desc-realizado">Realizados</span>
+                            <span class="desc-meta">Meta</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- IPSMA -->
+                <div class="stat-box pendente">
+                    <div class="status-indicator"></div>
+                    <div class="stat-label">IPSMA:</div>
+                    <div class="stat-value">
+                        <div class="stat-numbers">
+                            <span class="stat-realizado">--</span>
+                            <span class="stat-separator">/</span>
+                            <span class="stat-meta">10</span>
+                        </div>
+                        <div class="stat-description">
+                            <span class="desc-realizado">Realizados</span>
+                            <span class="desc-meta">Meta</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- OPAI -->
+                <div class="stat-box pendente">
+                    <div class="status-indicator"></div>
+                    <div class="stat-label">OPAI:</div>
+                    <div class="stat-value">
+                        <div class="stat-numbers">
+                            <span class="stat-realizado">--</span>
+                            <span class="stat-separator">/</span>
+                            <span class="stat-meta">20</span>
+                        </div>
+                        <div class="stat-description">
+                            <span class="desc-realizado">Realizados</span>
+                            <span class="desc-meta">Meta</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ferramentas -->
+        <section id="ferramentas">
+            <button type="button" class="login-option" id="ap">AP</button>
+            <button type="button" class="login-option" id="ipsma">IPSMA</button>
+            <button type="button" class="login-option" id="opai">OPAI</button>
+        </section>
+
+        <!-- Forms dinâmicos -->
+        <section id="Forms">
+            <!-- Aqui vem uma série de inputs dinâmicos -->
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Seus scripts  -->
+    <script src="loading.js"></script>
+    <script src="ap.js"></script>
+    <script src="ipsma.js"></script>
+    <script src="opai.js"></script>
+    <script src="ferramentas.js"></script>
+</body>
+</html>
