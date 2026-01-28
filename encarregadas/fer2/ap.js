@@ -1,10 +1,10 @@
 function criarCamposAP(container) {
   container.innerHTML = "";
+
+  // Flag de controle de envio
   let isEnviandoAP = false;
 
-  // [... todo o código de criação de campos permanece igual ...]
-  // Vou adicionar apenas a parte modificada no final
-
+  // ===== Campos =====
   const labelData = document.createElement("label");
   labelData.textContent = "Data:";
   const inputData = document.createElement("input");
@@ -86,6 +86,8 @@ function criarCamposAP(container) {
 
     labelSubtipo.appendChild(selectSubtipo);
     divSubtipo.appendChild(labelSubtipo);
+
+    // Adiciona listener no subtipo para revalidar
     selectSubtipo.addEventListener("change", validarCampos);
   });
 
@@ -168,30 +170,40 @@ function criarCamposAP(container) {
   botaoEnviar.style.cursor = "not-allowed";
   container.appendChild(botaoEnviar);
 
+  // ===== Validação =====
   function validarCampos() {
+    // Valida campos do formulário
     const campos = container.querySelectorAll("input, select");
     const todosPreenchidos = Array.from(campos).every(c => c.value.trim() !== "");
+
+    // Valida responsável (não pode ser vazio ou "Todos")
     const selectResponsavel = document.getElementById("responsavel");
     const responsavelValido = selectResponsavel &&
                               selectResponsavel.value.trim() !== "" &&
                               selectResponsavel.value !== "Todos";
+
+    // Botão só fica habilitado se AMBOS forem verdadeiros E não estiver enviando
     const podeEnviar = todosPreenchidos && responsavelValido && !isEnviandoAP;
+
     botaoEnviar.disabled = !podeEnviar;
     botaoEnviar.style.opacity = podeEnviar ? "1" : "0.6";
     botaoEnviar.style.cursor = podeEnviar ? "pointer" : "not-allowed";
   }
 
+  // Adiciona listeners nos campos do formulário
   const campos = container.querySelectorAll("input, select");
   campos.forEach(c => {
     c.addEventListener("input", validarCampos);
     c.addEventListener("change", validarCampos);
   });
 
+  // Adiciona listener no select de responsável (fora do formulário)
   const selectResponsavel = document.getElementById("responsavel");
   if (selectResponsavel) {
     selectResponsavel.addEventListener("change", validarCampos);
   }
 
+  // ===== Coletar dados =====
   function coletarDadosFormulario() {
     return {
       data: inputData.value,
@@ -207,13 +219,16 @@ function criarCamposAP(container) {
     };
   }
 
+  // ===== Envio =====
   botaoEnviar.addEventListener("click", async () => {
+    // Proteção contra duplo clique
     if (isEnviandoAP) return;
     isEnviandoAP = true;
 
     const dadosRecebimento = coletarDadosFormulario();
     const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzFQKBdjIUJkb04Hre7XGhNOFQln5cJjfDTL1IEcjCbbT0aMMDaQmwA5ayCBjLcfQuWGg/exec';
 
+    // Mostra o loading
     LoadingManager.show(botaoEnviar, "Enviando AP...");
 
     try {
@@ -224,23 +239,27 @@ function criarCamposAP(container) {
         body: JSON.stringify(dadosRecebimento)
       });
 
+      // Sucesso: mostra mensagem e limpa formulário
       LoadingManager.hideWithSuccess("AP salvo com sucesso!", () => {
+        // Limpa os inputs
         container.querySelectorAll("input, select").forEach(campo => campo.value = "");
-        isEnviandoAP = false;
-        validarCampos();
 
-        // ===== ATUALIZA AS ESTATÍSTICAS =====
-        if (typeof window.atualizarEstatisticasGlobal === "function") {
-          setTimeout(() => {
-            window.atualizarEstatisticasGlobal();
-          }, 2000);
-        }
+        // Reset da flag
+        isEnviandoAP = false;
+
+        // Revalida campos
+        validarCampos();
       });
 
     } catch (erro) {
+      // Erro: mostra mensagem e reabilita botão
       console.error("Erro ao enviar AP:", erro);
       LoadingManager.hideWithError("Erro ao enviar. Verifique sua conexão.");
+
+      // Reset da flag
       isEnviandoAP = false;
+
+      // Revalida campos
       validarCampos();
     }
   });

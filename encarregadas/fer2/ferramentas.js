@@ -5,6 +5,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     buttons.forEach((button) => {
         button.addEventListener("click", function () {
+            // Se for o botão de relatório, chama a função específica
+            if (button.id === "gerar-relatorio") {
+                gerarRelatorioVisual();
+                return;
+            }
+
             // Toggle: se já ativo, desativa e limpa
             if (button.classList.contains("active")) {
                 button.classList.remove("active");
@@ -41,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // === ATUALIZAÇÃO DINÂMICA DAS ESTATÍSTICAS ===
-    const urlBase = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOCdgTpKJg52io24jaXoqqCL2yXRyUeoK23-LbkNcZTBxzGuy8yxKTWXopmdqcP4bJboGeagpaHLPm/pub?output=csv";
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOCdgTpKJg52io24jaXoqqCL2yXRyUeoK23-LbkNcZTBxzGuy8yxKTWXopmdqcP4bJboGeagpaHLPm/pub?output=csv";
 
     const selectResponsavel = document.getElementById("responsavel");
     const statBoxes = document.querySelectorAll(".stat-box");
@@ -73,10 +79,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Função para atualizar as estatísticas
     function atualizarEstatisticas(responsavel) {
-        // Adiciona timestamp para evitar cache
-        const timestamp = new Date().getTime();
-        const url = `${urlBase}&timestamp=${timestamp}`;
-
         Papa.parse(url, {
             download: true,
             header: true,
@@ -144,11 +146,4 @@ document.addEventListener("DOMContentLoaded", function () {
     selectResponsavel.addEventListener("change", function () {
         atualizarEstatisticas(this.value);
     });
-
-    // ===== EXPÕE A FUNÇÃO GLOBALMENTE PARA SER CHAMADA APÓS ENVIOS =====
-    window.atualizarEstatisticasGlobal = function() {
-        const responsavelAtual = selectResponsavel.value;
-        console.log("🔄 Atualizando estatísticas após envio...");
-        atualizarEstatisticas(responsavelAtual);
-    };
 });

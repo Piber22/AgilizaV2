@@ -219,13 +219,6 @@ function criarCamposIPSMA(container) {
         container.querySelectorAll("input, select").forEach(c => c.value = "");
         isEnviando = false;
         validarCampos();
-
-        // ===== ATUALIZA AS ESTATÍSTICAS =====
-        if (typeof window.atualizarEstatisticasGlobal === "function") {
-          setTimeout(() => {
-            window.atualizarEstatisticasGlobal();
-          }, 2000);
-        }
       });
 
     } catch (err) {
