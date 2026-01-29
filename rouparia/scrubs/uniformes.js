@@ -11,12 +11,29 @@ let tamanhosEscolhidos = {}; // { nomeFuncionario: tamanho }
 let assinaturasColetadas = []; // Array de assinaturas em base64
 let indiceAssinaturaAtual = 0;
 
-// Canvas
 let canvas;
 let ctx;
 let desenhando = false;
 let posX = 0;
 let posY = 0;
+
+// =============================
+// FUNÇÃO AUXILIAR: Encurtar Nome
+// =============================
+function encurtarNome(nomeCompleto) {
+    const partes = nomeCompleto.trim().split(' ');
+
+    if (partes.length === 1) {
+        return partes[0];
+    }
+
+    if (partes.length === 2) {
+        return `${partes[0]} ${partes[1].charAt(0)}.`;
+    }
+
+    // 3 ou mais partes: Primeiro nome + inicial do último
+    return `${partes[0]} ${partes[partes.length - 1].charAt(0)}.`;
+}
 
 // =============================
 // 1) CARREGAR FUNCIONÁRIOS
@@ -186,8 +203,10 @@ function abrirModalTamanho() {
         const item = document.createElement('div');
         item.className = 'tamanho-item';
 
+        const nomeExibicao = encurtarNome(nome);
+
         item.innerHTML = `
-            <div class="tamanho-item-nome">${nome}</div>
+            <div class="tamanho-item-nome" title="${nome}">${nomeExibicao}</div>
             <div class="tamanho-buttons">
                 <button class="btn-tamanho" data-nome="${nome}" data-tamanho="P">P</button>
                 <button class="btn-tamanho" data-nome="${nome}" data-tamanho="M">M</button>
@@ -291,16 +310,20 @@ function configurarCanvas() {
 function iniciarDesenho(e) {
     desenhando = true;
     const rect = canvas.getBoundingClientRect();
-    posX = e.clientX - rect.left;
-    posY = e.clientY - rect.top;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    posX = (e.clientX - rect.left) * scaleX;
+    posY = (e.clientY - rect.top) * scaleY;
 }
 
 function desenhar(e) {
     if (!desenhando) return;
 
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
 
     ctx.beginPath();
     ctx.moveTo(posX, posY);
@@ -315,9 +338,11 @@ function iniciarDesenhoTouch(e) {
     e.preventDefault();
     desenhando = true;
     const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
     const touch = e.touches[0];
-    posX = touch.clientX - rect.left;
-    posY = touch.clientY - rect.top;
+    posX = (touch.clientX - rect.left) * scaleX;
+    posY = (touch.clientY - rect.top) * scaleY;
 }
 
 function desenharTouch(e) {
@@ -325,9 +350,11 @@ function desenharTouch(e) {
     if (!desenhando) return;
 
     const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
     const touch = e.touches[0];
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
+    const x = (touch.clientX - rect.left) * scaleX;
+    const y = (touch.clientY - rect.top) * scaleY;
 
     ctx.beginPath();
     ctx.moveTo(posX, posY);

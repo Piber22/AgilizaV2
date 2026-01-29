@@ -322,6 +322,7 @@ section {
 .tamanho-item {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 15px;
     padding: 15px;
     background-color: #333;
@@ -329,14 +330,20 @@ section {
 }
 
 .tamanho-item-nome {
-    flex: 1;
+    flex: 0 0 auto;
+    max-width: 150px;
     font-weight: 500;
     color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .tamanho-buttons {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
+    max-width: 200px;
 }
 
 .btn-tamanho {
@@ -349,6 +356,8 @@ section {
     font-size: 14px;
     font-weight: 600;
     transition: all 0.2s;
+    flex: 1 1 calc(33.333% - 6px);
+    min-width: 55px;
 }
 
 .btn-tamanho:hover {
