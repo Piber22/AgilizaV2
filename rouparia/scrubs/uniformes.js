@@ -239,6 +239,7 @@ function abrirModalTamanho() {
 
     btnAvancar.disabled = true;
     modal.style.display = 'block';
+    document.body.classList.add('modal-open');
 }
 
 function verificarTamanhosCompletos() {
@@ -248,6 +249,7 @@ function verificarTamanhosCompletos() {
 
 function fecharModalTamanho() {
     document.getElementById('modalTamanho').style.display = 'none';
+    document.body.classList.remove('modal-open');
 }
 
 // =============================
@@ -276,6 +278,7 @@ function abrirModalAssinatura() {
     }
 
     modal.style.display = 'block';
+    document.body.classList.add('modal-open');
 }
 
 function atualizarInfoAssinaturaMultipla() {
@@ -375,6 +378,7 @@ function limparAssinatura() {
 
 function fecharModalAssinatura() {
     document.getElementById('modalAssinatura').style.display = 'none';
+    document.body.classList.remove('modal-open');
     limparAssinatura();
 }
 
