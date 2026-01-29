@@ -317,6 +317,9 @@ section {
     flex-direction: column;
     gap: 15px;
     margin-bottom: 25px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 5px;
 }
 
 .tamanho-item {
@@ -537,6 +540,10 @@ section {
         margin: 10% auto;
     }
 
+    #listaTamanhosContainer {
+        max-height: 300px;
+    }
+
     .acoes-multiplas {
         flex-direction: column;
     }
@@ -551,20 +558,24 @@ section {
 }
 
 /* SCROLLBAR CUSTOMIZADA */
-#listaFuncionarios::-webkit-scrollbar {
+#listaFuncionarios::-webkit-scrollbar,
+#listaTamanhosContainer::-webkit-scrollbar {
     width: 8px;
 }
 
-#listaFuncionarios::-webkit-scrollbar-track {
+#listaFuncionarios::-webkit-scrollbar-track,
+#listaTamanhosContainer::-webkit-scrollbar-track {
     background: #201F20;
     border-radius: 10px;
 }
 
-#listaFuncionarios::-webkit-scrollbar-thumb {
+#listaFuncionarios::-webkit-scrollbar-thumb,
+#listaTamanhosContainer::-webkit-scrollbar-thumb {
     background: #5b5b5b;
     border-radius: 10px;
 }
 
-#listaFuncionarios::-webkit-scrollbar-thumb:hover {
+#listaFuncionarios::-webkit-scrollbar-thumb:hover,
+#listaTamanhosContainer::-webkit-scrollbar-thumb:hover {
     background: #FF460A;
 }
