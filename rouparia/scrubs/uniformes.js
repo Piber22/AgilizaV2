@@ -450,12 +450,6 @@ async function enviarDados() {
         // Resetar tudo
         resetarSistema();
 
-        const mensagem = tipoOperacao === 'entrega'
-            ? `✅ Entrega de ${funcionariosSelecionados.length} uniforme(s) registrada!`
-            : `✅ Devolução de ${funcionariosSelecionados.length} uniforme(s) registrada!`;
-
-        alert(mensagem);
-
     } catch (error) {
         esconderLoading();
         console.error('Erro ao enviar dados:', error);
