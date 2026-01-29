@@ -1,0 +1,511 @@
+// =============================
+// CONFIGURAÇÕES
+// =============================
+const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRuKBJbLlblPErMtxcvB9FTwl3ev05N2IU42a_7PIdFzA4L4wFX-ViML99QG7Xq-WYGSzl-7Ibh2W4W/pub?output=csv";
+const webAppUrl = "SUA_URL_DO_GOOGLE_APPS_SCRIPT_AQUI"; // Substitua pela URL do seu Web App
+
+let funcionarios = [];
+let funcionariosSelecionados = [];
+let tipoOperacao = ''; // 'entrega' ou 'devolucao'
+let tamanhosEscolhidos = {}; // { nomeFuncionario: tamanho }
+let assinaturasColetadas = []; // Array de assinaturas em base64
+let indiceAssinaturaAtual = 0;
+
+// Canvas
+let canvas;
+let ctx;
+let desenhando = false;
+let posX = 0;
+let posY = 0;
+
+// =============================
+// 1) CARREGAR FUNCIONÁRIOS
+// =============================
+async function carregarFuncionarios() {
+    try {
+        const response = await fetch(sheetCSVUrl);
+        const csvText = await response.text();
+
+        const linhas = csvText.split("\n").map(l => l.trim()).filter(l => l);
+
+        // Remove cabeçalho e processa nomes
+        funcionarios = linhas.slice(1)
+            .map(linha => {
+                // Remove aspas se houver
+                const nome = linha.replace(/^"|"$/g, '').trim();
+                return nome;
+            })
+            .filter(nome => nome)
+            .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+        renderizarFuncionarios();
+    } catch (error) {
+        console.error('Erro ao carregar funcionários:', error);
+        document.getElementById('funcionariosContainer').innerHTML =
+            '<p style="text-align:center; color:#ff4444;">Erro ao carregar funcionários. Verifique a conexão.</p>';
+    }
+}
+
+// =============================
+// 2) RENDERIZAR LISTA
+// =============================
+function renderizarFuncionarios(filtro = '') {
+    const container = document.getElementById('funcionariosContainer');
+    container.innerHTML = '';
+
+    const funcionariosFiltrados = funcionarios.filter(nome =>
+        nome.toLowerCase().includes(filtro.toLowerCase())
+    );
+
+    if (funcionariosFiltrados.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#777;">Nenhum funcionário encontrado.</p>';
+        return;
+    }
+
+    funcionariosFiltrados.forEach(nome => {
+        const item = document.createElement('div');
+        item.className = 'funcionario-item';
+        if (funcionariosSelecionados.includes(nome)) {
+            item.classList.add('selecionado');
+        }
+
+        item.innerHTML = `
+            <div class="funcionario-info">
+                <div class="checkbox-custom"></div>
+                <span class="funcionario-nome">${nome}</span>
+            </div>
+            <div class="funcionario-acoes">
+                <button class="btn-acao btn-entrega" data-nome="${nome}" data-tipo="entrega" title="Entregar Uniforme">
+                    📦
+                </button>
+                <button class="btn-acao btn-devolucao" data-nome="${nome}" data-tipo="devolucao" title="Receber Devolução">
+                    ✅
+                </button>
+            </div>
+        `;
+
+        // Click na área do nome/checkbox para seleção
+        const infoArea = item.querySelector('.funcionario-info');
+        infoArea.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleSelecao(nome);
+        });
+
+        // Click nos botões de ação
+        const btnEntrega = item.querySelector('.btn-entrega');
+        const btnDevolucao = item.querySelector('.btn-devolucao');
+
+        btnEntrega.addEventListener('click', (e) => {
+            e.stopPropagation();
+            iniciarOperacao([nome], 'entrega');
+        });
+
+        btnDevolucao.addEventListener('click', (e) => {
+            e.stopPropagation();
+            iniciarOperacao([nome], 'devolucao');
+        });
+
+        container.appendChild(item);
+    });
+}
+
+// =============================
+// 3) SELEÇÃO MÚLTIPLA
+// =============================
+function toggleSelecao(nome) {
+    const index = funcionariosSelecionados.indexOf(nome);
+
+    if (index > -1) {
+        funcionariosSelecionados.splice(index, 1);
+    } else {
+        funcionariosSelecionados.push(nome);
+    }
+
+    atualizarInterfaceSelecao();
+}
+
+function atualizarInterfaceSelecao() {
+    const contador = funcionariosSelecionados.length;
+    const btnLimpar = document.getElementById('limparSelecaoBtn');
+    const acoesMultiplas = document.getElementById('acoesMultiplas');
+    const contadorSelecao = document.getElementById('contadorSelecao');
+    const contadorEntrega = document.getElementById('contadorEntrega');
+    const contadorDevolucao = document.getElementById('contadorDevolucao');
+
+    if (contador > 0) {
+        btnLimpar.style.display = 'block';
+        acoesMultiplas.style.display = 'flex';
+        contadorSelecao.textContent = contador;
+        contadorEntrega.textContent = contador;
+        contadorDevolucao.textContent = contador;
+    } else {
+        btnLimpar.style.display = 'none';
+        acoesMultiplas.style.display = 'none';
+    }
+
+    renderizarFuncionarios(document.getElementById('buscaInput').value);
+}
+
+// =============================
+// 4) INICIAR OPERAÇÃO
+// =============================
+function iniciarOperacao(nomes, tipo) {
+    tipoOperacao = tipo;
+    funcionariosSelecionados = [...nomes];
+    tamanhosEscolhidos = {};
+    assinaturasColetadas = [];
+    indiceAssinaturaAtual = 0;
+
+    if (tipo === 'entrega') {
+        abrirModalTamanho();
+    } else {
+        // Devolução vai direto para assinatura
+        abrirModalAssinatura();
+    }
+}
+
+// =============================
+// 5) MODAL DE TAMANHO
+// =============================
+function abrirModalTamanho() {
+    const modal = document.getElementById('modalTamanho');
+    const container = document.getElementById('listaTamanhosContainer');
+    const btnAvancar = document.getElementById('avancarAssinaturaBtn');
+
+    container.innerHTML = '';
+
+    if (funcionariosSelecionados.length === 1) {
+        document.getElementById('nomeFuncionarioTamanho').textContent = funcionariosSelecionados[0];
+    } else {
+        document.getElementById('nomeFuncionarioTamanho').textContent =
+            `${funcionariosSelecionados.length} funcionários selecionados`;
+    }
+
+    // Criar seleção de tamanho para cada funcionário
+    funcionariosSelecionados.forEach(nome => {
+        const item = document.createElement('div');
+        item.className = 'tamanho-item';
+
+        item.innerHTML = `
+            <div class="tamanho-item-nome">${nome}</div>
+            <div class="tamanho-buttons">
+                <button class="btn-tamanho" data-nome="${nome}" data-tamanho="P">P</button>
+                <button class="btn-tamanho" data-nome="${nome}" data-tamanho="M">M</button>
+                <button class="btn-tamanho" data-nome="${nome}" data-tamanho="G">G</button>
+                <button class="btn-tamanho" data-nome="${nome}" data-tamanho="GG">GG</button>
+                <button class="btn-tamanho" data-nome="${nome}" data-tamanho="EXG">EXG</button>
+            </div>
+        `;
+
+        // Adicionar listeners aos botões
+        item.querySelectorAll('.btn-tamanho').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const nome = e.target.dataset.nome;
+                const tamanho = e.target.dataset.tamanho;
+
+                // Remove seleção anterior deste funcionário
+                item.querySelectorAll('.btn-tamanho').forEach(b => b.classList.remove('selecionado'));
+
+                // Adiciona nova seleção
+                e.target.classList.add('selecionado');
+                tamanhosEscolhidos[nome] = tamanho;
+
+                // Verifica se todos os tamanhos foram selecionados
+                verificarTamanhosCompletos();
+            });
+        });
+
+        container.appendChild(item);
+    });
+
+    btnAvancar.disabled = true;
+    modal.style.display = 'block';
+}
+
+function verificarTamanhosCompletos() {
+    const todosPreenchidos = funcionariosSelecionados.every(nome => tamanhosEscolhidos[nome]);
+    document.getElementById('avancarAssinaturaBtn').disabled = !todosPreenchidos;
+}
+
+function fecharModalTamanho() {
+    document.getElementById('modalTamanho').style.display = 'none';
+}
+
+// =============================
+// 6) MODAL DE ASSINATURA
+// =============================
+function abrirModalAssinatura() {
+    const modal = document.getElementById('modalAssinatura');
+    canvas = document.getElementById('canvasAssinatura');
+    ctx = canvas.getContext('2d');
+
+    // Configurar canvas
+    const container = canvas.parentElement;
+    canvas.width = container.clientWidth - 20;
+    canvas.height = 300;
+
+    configurarCanvas();
+
+    // Atualizar informações
+    if (funcionariosSelecionados.length === 1) {
+        document.getElementById('infoAssinatura').textContent =
+            `${funcionariosSelecionados[0]} - ${tipoOperacao === 'entrega' ? 'Entrega' : 'Devolução'}`;
+        document.getElementById('progressoAssinaturas').style.display = 'none';
+    } else {
+        atualizarInfoAssinaturaMultipla();
+        document.getElementById('progressoAssinaturas').style.display = 'block';
+    }
+
+    modal.style.display = 'block';
+}
+
+function atualizarInfoAssinaturaMultipla() {
+    const funcionarioAtual = funcionariosSelecionados[indiceAssinaturaAtual];
+    const info = tipoOperacao === 'entrega'
+        ? `${funcionarioAtual} - Tamanho: ${tamanhosEscolhidos[funcionarioAtual]}`
+        : `${funcionarioAtual} - Devolução`;
+
+    document.getElementById('infoAssinatura').textContent = info;
+    document.getElementById('assinaturaAtual').textContent = indiceAssinaturaAtual + 1;
+    document.getElementById('assinaturaTotal').textContent = funcionariosSelecionados.length;
+}
+
+function configurarCanvas() {
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // Mouse events
+    canvas.addEventListener('mousedown', iniciarDesenho);
+    canvas.addEventListener('mousemove', desenhar);
+    canvas.addEventListener('mouseup', pararDesenho);
+    canvas.addEventListener('mouseout', pararDesenho);
+
+    // Touch events
+    canvas.addEventListener('touchstart', iniciarDesenhoTouch);
+    canvas.addEventListener('touchmove', desenharTouch);
+    canvas.addEventListener('touchend', pararDesenho);
+}
+
+function iniciarDesenho(e) {
+    desenhando = true;
+    const rect = canvas.getBoundingClientRect();
+    posX = e.clientX - rect.left;
+    posY = e.clientY - rect.top;
+}
+
+function desenhar(e) {
+    if (!desenhando) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    ctx.beginPath();
+    ctx.moveTo(posX, posY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+
+    posX = x;
+    posY = y;
+}
+
+function iniciarDesenhoTouch(e) {
+    e.preventDefault();
+    desenhando = true;
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    posX = touch.clientX - rect.left;
+    posY = touch.clientY - rect.top;
+}
+
+function desenharTouch(e) {
+    e.preventDefault();
+    if (!desenhando) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+
+    ctx.beginPath();
+    ctx.moveTo(posX, posY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+
+    posX = x;
+    posY = y;
+}
+
+function pararDesenho() {
+    desenhando = false;
+}
+
+function limparAssinatura() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function fecharModalAssinatura() {
+    document.getElementById('modalAssinatura').style.display = 'none';
+    limparAssinatura();
+}
+
+// =============================
+// 7) CONFIRMAR ASSINATURA
+// =============================
+async function confirmarAssinatura() {
+    // Verificar se há assinatura
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixels = imageData.data;
+    let temDesenho = false;
+
+    for (let i = 0; i < pixels.length; i += 4) {
+        if (pixels[i + 3] !== 0) { // Alpha channel
+            temDesenho = true;
+            break;
+        }
+    }
+
+    if (!temDesenho) {
+        alert('Por favor, colete a assinatura antes de confirmar.');
+        return;
+    }
+
+    // Salvar assinatura
+    const assinaturaBase64 = canvas.toDataURL('image/png');
+    assinaturasColetadas.push(assinaturaBase64);
+
+    // Verificar se precisa de mais assinaturas
+    if (indiceAssinaturaAtual < funcionariosSelecionados.length - 1) {
+        indiceAssinaturaAtual++;
+        limparAssinatura();
+        atualizarInfoAssinaturaMultipla();
+    } else {
+        // Todas as assinaturas coletadas, enviar dados
+        fecharModalAssinatura();
+        await enviarDados();
+    }
+}
+
+// =============================
+// 8) ENVIAR DADOS
+// =============================
+async function enviarDados() {
+    mostrarLoading();
+
+    try {
+        const agora = new Date();
+        const data = agora.toLocaleDateString('pt-BR');
+        const horario = agora.toLocaleTimeString('pt-BR');
+
+        const registros = funcionariosSelecionados.map((nome, index) => ({
+            data: data,
+            horario: horario,
+            funcionario: nome,
+            tipo: tipoOperacao,
+            tamanho: tipoOperacao === 'entrega' ? tamanhosEscolhidos[nome] : '',
+            assinatura: assinaturasColetadas[index]
+        }));
+
+        // Enviar ao Google Apps Script
+        const response = await fetch(webAppUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(registros)
+        });
+
+        esconderLoading();
+
+        // Resetar tudo
+        resetarSistema();
+
+        const mensagem = tipoOperacao === 'entrega'
+            ? `✅ Entrega de ${funcionariosSelecionados.length} uniforme(s) registrada!`
+            : `✅ Devolução de ${funcionariosSelecionados.length} uniforme(s) registrada!`;
+
+        alert(mensagem);
+
+    } catch (error) {
+        esconderLoading();
+        console.error('Erro ao enviar dados:', error);
+        alert('❌ Erro ao registrar. Por favor, tente novamente.');
+    }
+}
+
+// =============================
+// 9) FUNÇÕES AUXILIARES
+// =============================
+function resetarSistema() {
+    funcionariosSelecionados = [];
+    tamanhosEscolhidos = {};
+    assinaturasColetadas = [];
+    indiceAssinaturaAtual = 0;
+    tipoOperacao = '';
+
+    atualizarInterfaceSelecao();
+}
+
+function mostrarLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+}
+
+function esconderLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+// =============================
+// 10) EVENT LISTENERS
+// =============================
+document.addEventListener('DOMContentLoaded', () => {
+    // Carregar funcionários
+    carregarFuncionarios();
+
+    // Busca
+    document.getElementById('buscaInput').addEventListener('input', (e) => {
+        renderizarFuncionarios(e.target.value);
+    });
+
+    // Limpar seleção
+    document.getElementById('limparSelecaoBtn').addEventListener('click', () => {
+        funcionariosSelecionados = [];
+        atualizarInterfaceSelecao();
+    });
+
+    // Ações múltiplas
+    document.getElementById('entregaMultiplaBtn').addEventListener('click', () => {
+        if (funcionariosSelecionados.length > 0) {
+            iniciarOperacao(funcionariosSelecionados, 'entrega');
+        }
+    });
+
+    document.getElementById('devolucaoMultiplaBtn').addEventListener('click', () => {
+        if (funcionariosSelecionados.length > 0) {
+            iniciarOperacao(funcionariosSelecionados, 'devolucao');
+        }
+    });
+
+    // Modal de tamanho
+    document.getElementById('cancelarTamanhoBtn').addEventListener('click', () => {
+        fecharModalTamanho();
+        resetarSistema();
+    });
+
+    document.getElementById('avancarAssinaturaBtn').addEventListener('click', () => {
+        fecharModalTamanho();
+        abrirModalAssinatura();
+    });
+
+    // Modal de assinatura
+    document.getElementById('limparAssinaturaBtn').addEventListener('click', limparAssinatura);
+
+    document.getElementById('cancelarAssinaturaBtn').addEventListener('click', () => {
+        fecharModalAssinatura();
+        resetarSistema();
+    });
+
+    document.getElementById('confirmarAssinaturaBtn').addEventListener('click', confirmarAssinatura);
+});
