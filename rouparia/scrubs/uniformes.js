@@ -2,7 +2,7 @@
 // CONFIGURAÇÕES
 // =============================
 const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRuKBJbLlblPErMtxcvB9FTwl3ev05N2IU42a_7PIdFzA4L4wFX-ViML99QG7Xq-WYGSzl-7Ibh2W4W/pub?output=csv";
-const webAppUrl = "SUA_URL_DO_GOOGLE_APPS_SCRIPT_AQUI"; // Substitua pela URL do seu Web App
+const webAppUrl = "https://script.google.com/macros/s/AKfycbxFt0FHHfA_T709f9z_UbbcCi62VkYZFp7xb2r_6IDrCkYD9og9PRcxaXTiYFaIXz5q/exec"; // Substitua pela URL do seu Web App
 
 let funcionarios = [];
 let funcionariosSelecionados = [];
