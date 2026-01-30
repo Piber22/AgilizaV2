@@ -8,79 +8,107 @@
     <link rel="stylesheet" href="trocaplantao.css">
 </head>
 <body>
-    <main>
-        <header class="header">
-            <a href="../encarregadas.html" class="logo-link">
-                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
-            </a>
-            <h1>Troca de plantão</h1>
-        </header>
+<main>
 
-        <section id="info">
-            <h2>Identificação</h2>
-            <label>Data: <input type="date" id="dataRecebimento"></label>
-            <label>
-              <span>Responsável:</span>
-                  <select id="responsavel" name="responsavel">
-                      <option value="" disabled selected>Selecione o nome</option>
-                      <option value="Graciela">Graciela</option>
-                      <option value="Giovana">Giovana</option>
-                      <option value="Jéssica">Jéssica</option>
-                      <option value="Alisson">Alisson</option>
-                      <option value="Daiane">Daiane</option>
-                </select>
-            </label>
-        </section>
+    <header class="header">
+        <a href="../encarregadas.html" class="logo-link">
+            <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+        </a>
+        <h1>Troca de plantão</h1>
+    </header>
 
-        <section id="setor">
-            <h2>Informações</h2>
+    <section id="info">
+        <h2>Identificação</h2>
 
-            <div class="campo-largo">
-                <label for="maquinas">Máquinas:</label>
-                <textarea id="maquinas" placeholder="Detalhes sobre máquinas..."></textarea>
+        <label>Data:
+            <input type="date" id="dataRecebimento">
+        </label>
+
+        <label>
+            <span>Responsável:</span>
+            <select id="responsavel">
+                <option value="" disabled selected>Selecione o nome</option>
+                <option value="Graciela">Graciela</option>
+                <option value="Giovana">Giovana</option>
+                <option value="Jéssica">Jéssica</option>
+                <option value="Alisson">Alisson</option>
+                <option value="Daiane">Daiane</option>
+            </select>
+        </label>
+    </section>
+
+    <section id="setor">
+        <h2>Informações</h2>
+
+
+
+        <div class="campo-largo">
+            <label for="maquinas">Máquinas:</label>
+            <textarea id="maquinas"></textarea>
+        </div>
+
+        <div class="campo-largo">
+            <label for="residuos_roupas">Resíduos e roupas:</label>
+            <textarea id="residuos_roupas"></textarea>
+        </div>
+
+        <div class="campo-largo">
+            <label for="terminais_solicitadas">Terminais ou altas pendentes:</label>
+            <textarea id="terminais_solicitadas"></textarea>
+        </div>
+
+        <div class="campo-largo">
+            <label for="leitos_vestir">Leitos para vestir pendentes:</label>
+            <textarea id="leitos_vestir"></textarea>
+        </div>
+
+        <div class="campo-largo">
+            <label for="terminais_programadas">Terminais programadas não executadas:</label>
+            <textarea id="terminais_programadas"></textarea>
+        </div>
+
+        <!-- SACOLAS -->
+        <div class="campo-largo">
+            <label>Sacolas entregues?</label>
+            <div class="checkbox-grid">
+                <label><input type="checkbox" value="UTI"> UTI</label>
+                <label><input type="checkbox" value="5PL"> 5PL</label>
+                <label><input type="checkbox" value="5GR"> 5GR</label>
+                <label><input type="checkbox" value="4A"> 4A</label>
+                <label><input type="checkbox" value="4B"> 4B</label>
+                <label><input type="checkbox" value="3º"> 3º</label>
+                <label><input type="checkbox" value="2º"> 2º</label>
+                <label><input type="checkbox" value="BLOCO"> BLOCO</label>
+                <label><input type="checkbox" value="USR"> USR</label>
+                <label><input type="checkbox" value="T.INT"> T.INT</label>
+                <label><input type="checkbox" value="ROUPARIA"> ROUPARIA</label>
+                <label><input type="checkbox" value="T.ADM"> T.ADM</label>
+                <label><input type="checkbox" value="USM"> USM</label>
             </div>
+        </div>
 
-            <div class="campo-largo">
-                <label for="residuos_roupas">Resíduos e roupas:</label>
-                <textarea id="residuos_roupas" placeholder="Informe se em algum andar ficaram resíduos ou roupas pendentes..."></textarea>
-            </div>
+        <div class="campo-largo">
+            <label for="observacoes">Observações:</label>
+            <textarea id="observacoes"></textarea>
+        </div>
+    </section>
 
-            <div class="campo-largo">
-                <label for="terminais_solicitadas">Terminais ou altas pendentes:</label>
-                <textarea id="terminais_solicitadas" placeholder="Informe se ficou alguma terminal em tela..."></textarea>
-            </div>
+    <button id="gerarBtn" class="login-option">Gerar Mensagem</button>
 
-            <div class="campo-largo">
-                <label for="leitos_vestir">Leitos para vestir pendentes:</label>
-                <textarea id="leitos_vestir" placeholder="Informe se algum leito ficou pendente de vestir..."></textarea>
-            </div>
+    <section id="mensagem">
+        <h2>Mensagem gerada:</h2>
+        <textarea id="resultado" rows="15" readonly></textarea>
+        <button id="copiarBtn" class="login-option">📋 Copiar Mensagem</button>
+    </section>
 
-            <div class="campo-largo">
-                <label for="terminais_programadas">Terminais programadas não executadas:</label>
-                <textarea id="terminais_programadas" placeholder="Informe se alguma terminal programada não foi feita..."></textarea>
-            </div>
+</main>
 
-            <div class="campo-largo">
-                <label for="observacoes">Observações:</label>
-                <textarea id="observacoes" placeholder="Outras observações importantes..."></textarea>
-            </div>
-        </section>
+<footer class="footer">
+    <p>© 2025 <strong>Manserv - Equipe HSANA</strong></p>
+</footer>
 
-        <button id="gerarBtn" class="login-option">Gerar Mensagem</button>
-
-        <section id="mensagem">
-            <h2>Mensagem gerada:</h2>
-            <textarea id="resultado" rows="15" readonly></textarea>
-            <button id="copiarBtn" class="login-option">📋 Copiar Mensagem</button>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
-    </footer>
-
-    <script src="trocaplantao.js"></script>
-    <script src="sheet.js"></script>
+<script src="trocaplantao.js"></script>
+<script src="sheet.js"></script>
 
 </body>
 </html>

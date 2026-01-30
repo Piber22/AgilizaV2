@@ -186,6 +186,31 @@ select {
     font-size: 14px;
     color: #777;
 }
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.checkbox-grid label {
+    display: flex;
+    justify-content: flex-start; /* 🔥 impede empurrar o texto */
+    align-items: center;
+    gap: 8px;
+    margin: 0;                  /* remove margens herdadas */
+    width: auto;                /* evita stretch */
+}
+
+.checkbox-grid label span {
+    width: auto;                /* 🔥 anula regra global */
+}
+
+.checkbox-grid input[type="checkbox"] {
+    transform: scale(1.1);
+    margin: 0;
+}
 
 /* RESPONSIVO */
 @media (max-width: 768px) {
