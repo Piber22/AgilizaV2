@@ -4,6 +4,52 @@ let dadosRecebidos = {};
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // INICIALIZAR CHECKBOXES CUSTOMIZADOS
+    const checkboxes = document.querySelectorAll('.checkbox-grid input[type="checkbox"]');
+    console.log(`📦 Encontrados ${checkboxes.length} checkboxes`);
+
+    checkboxes.forEach((checkbox, index) => {
+        const label = checkbox.closest('label');
+        const visualCheckbox = label.querySelector('.checkbox-visual');
+
+        console.log(`✅ Inicializando checkbox ${index + 1}:`, checkbox.value);
+
+        if (!visualCheckbox) {
+            console.error(`❌ Checkbox visual não encontrado para ${checkbox.value}`);
+            return;
+        }
+
+        // Evento de mudança no checkbox real
+        checkbox.addEventListener('change', function() {
+            console.log(`🔄 Checkbox ${this.value} mudou para:`, this.checked);
+            if (this.checked) {
+                visualCheckbox.classList.add('checked');
+                visualCheckbox.textContent = '✓';
+            } else {
+                visualCheckbox.classList.remove('checked');
+                visualCheckbox.textContent = '';
+            }
+        });
+
+        // Permitir clicar no visual para marcar/desmarcar
+        visualCheckbox.addEventListener('click', (e) => {
+            e.stopPropagation();
+            console.log(`👆 Clicou no visual do checkbox ${checkbox.value}`);
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event('change'));
+        });
+
+        // Permitir clicar no label inteiro
+        label.addEventListener('click', (e) => {
+            // Evita duplo disparo se clicar no visual
+            if (e.target === visualCheckbox) return;
+
+            console.log(`👆 Clicou no label do checkbox ${checkbox.value}`);
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event('change'));
+        });
+    });
+
     document.getElementById("gerarBtn").addEventListener("click", function () {
 
         // DATA + HORA
@@ -38,6 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.checkbox-grid input[type="checkbox"]:checked')
         ).map(cb => cb.value);
 
+        console.log("🎯 Sacolas selecionadas:", sacolasSelecionadas);
+
         // MENSAGEM
         let msg = `📋 TROCA DE PLANTÃO 📋\n`;
         msg += `📌 RESPONSÁVEL: ${responsavel.toUpperCase()}\n`;
@@ -47,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         msg += `*TERMINAIS OU ALTAS PENDENTES:* ${terminais_solicitadas}\n\n`;
         msg += `*LEITOS PARA VESTIR PENDENTES:* ${leitos_vestir}\n\n`;
         msg += `*TERMINAIS PROGRAMADAS NÃO EXECUTADAS:* ${terminais_programadas}\n\n`;
-        msg += `*SACOLAS ENTREGUES:* ${sacolasSelecionadas.length ? sacolasSelecionadas.join(', ') : 'Nenhuma'}\n\n`;
+        msg += `*SACOLAS DEVOLVIDAS:* ${sacolasSelecionadas.length ? sacolasSelecionadas.join(', ') : 'Nenhuma'}\n\n`;
         msg += `*OBSERVAÇÕES:* ${observacoes}\n\n`;
 
         document.getElementById("resultado").value = msg;
@@ -65,6 +113,33 @@ document.addEventListener('DOMContentLoaded', () => {
             terminais_programadas,
             observacoes
         };
+    });
+
+    // EVENTO BOTÃO COPIAR
+    document.getElementById("copiarBtn").addEventListener("click", function () {
+        const textarea = document.getElementById("resultado");
+
+        if (!textarea.value) {
+            alert("⚠️ Gere a mensagem primeiro!");
+            return;
+        }
+
+        navigator.clipboard.writeText(textarea.value)
+            .then(() => {
+                console.log("📋 Mensagem copiada para área de transferência");
+
+                // Código do convite do grupo do WhatsApp
+                const inviteCode = "IAbXun9LRzc61P6bm1coD8";
+
+                // Tenta abrir no app do WhatsApp
+                const whatsappAppURL = `whatsapp://chat?code=${inviteCode}`;
+                window.location.href = whatsappAppURL;
+                console.log("📱 Abrindo grupo do WhatsApp");
+            })
+            .catch(err => {
+                console.error("❌ Erro ao copiar: ", err);
+                alert("Não foi possível copiar a mensagem.");
+            });
     });
 
 });
