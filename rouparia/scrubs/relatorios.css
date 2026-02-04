@@ -125,6 +125,7 @@ main {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
+
 }
 
 .btn-filtrar {
@@ -135,18 +136,18 @@ main {
 .btn-filtrar:hover {
     background-color: #e03d08;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 70, 10, 0.4);
+
 }
 
 .btn-hoje {
-    background-color: var(--info);
+    background-color: var(--primary);
     color: white;
 }
 
 .btn-hoje:hover {
-    background-color: #1976D2;
+    background-color: var(--primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+
 }
 
 .acoes-relatorio {
@@ -170,23 +171,23 @@ main {
 }
 
 .btn-imagem {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--success);
     color: white;
 }
 
 .btn-imagem:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+
 }
 
 .btn-excel {
-    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    background: var(--success);
     color: white;
 }
 
 .btn-excel:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(17, 153, 142, 0.5);
+
 }
 
 /* ==================== TABS ==================== */
