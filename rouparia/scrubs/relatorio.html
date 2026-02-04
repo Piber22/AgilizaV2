@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios de Uniformes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="relatorios.css">
+</head>
+<body>
+
+<main>
+    <!-- Cabeçalho -->
+    <header class="header">
+        <a href="../rouparia.html" class="logo-link">
+            <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+        </a>
+        <h1>Relatórios de Uniformes</h1>
+    </header>
+
+    <!-- Filtros e Controles -->
+    <section id="controles" class="controles">
+        <div class="filtro-data">
+            <label for="dataInicio">De:</label>
+            <input type="date" id="dataInicio">
+
+            <label for="dataFim">Até:</label>
+            <input type="date" id="dataFim">
+
+            <button id="btnFiltrar" class="btn-filtrar">Filtrar</button>
+            <button id="btnHoje" class="btn-hoje">Hoje</button>
+        </div>
+
+        <div class="acoes-relatorio">
+            <button id="btnGerarImagem" class="btn-acao btn-imagem">
+                📸 Gerar Resumo
+            </button>
+            <button id="btnGerarExcel" class="btn-acao btn-excel">
+                📊 Exportar Excel
+            </button>
+        </div>
+    </section>
+
+    <!-- Navegação por Abas -->
+    <nav class="tabs">
+        <button class="tab-btn active" data-tab="visao-geral">📊 Visão Geral</button>
+        <button class="tab-btn" data-tab="por-tamanho">📏 Por Tamanho</button>
+        <button class="tab-btn" data-tab="pendencias">⚠️ Pendências</button>
+    </nav>
+
+    <!-- Conteúdo das Abas -->
+    <div class="tab-content">
+
+        <!-- ABA: Visão Geral -->
+        <div id="visao-geral" class="tab-pane active">
+            <section class="card">
+                <h2 class="card-title">Resumo do Período</h2>
+                <div class="stats-grid">
+                    <div class="stat-card stat-entrega">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Entregas</div>
+                            <div class="stat-value" id="totalEntregas">0</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-devolucao">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Devoluções</div>
+                            <div class="stat-value" id="totalDevolucoes">0</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-pendente">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Pendentes</div>
+                            <div class="stat-value" id="totalPendentes">0</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2 class="card-title">Movimentações Recentes</h2>
+                <div id="movimentacoesRecentes" class="lista-movimentacoes">
+                    <p class="placeholder">Selecione um período para visualizar</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- ABA: Por Tamanho -->
+        <div id="por-tamanho" class="tab-pane">
+            <section class="card">
+                <h2 class="card-title">Entregas por Tamanho</h2>
+                <div id="entregasPorTamanho" class="tamanhos-grid">
+                    <!-- Preenchido dinamicamente -->
+                </div>
+            </section>
+
+            <section class="card">
+                <h2 class="card-title">Devoluções por Tamanho</h2>
+                <div id="devolucoesPorTamanho" class="tamanhos-grid">
+                    <!-- Preenchido dinamicamente -->
+                </div>
+            </section>
+
+            <section class="card">
+                <h2 class="card-title">Saldo por Tamanho</h2>
+                <div id="saldoPorTamanho" class="tamanhos-grid">
+                    <!-- Preenchido dinamicamente -->
+                </div>
+            </section>
+        </div>
+
+        <!-- ABA: Pendências -->
+        <div id="pendencias" class="tab-pane">
+            <section class="card">
+                <h2 class="card-title">Uniformes Pendentes de Devolução</h2>
+                <div id="listaPendencias" class="lista-pendencias">
+                    <p class="placeholder">Nenhuma pendência encontrada</p>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2 class="card-title">Análise de Pendências</h2>
+                <div id="analisePendencias" class="analise-pendencias">
+                    <!-- Preenchido dinamicamente -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+</main>
+
+<!-- Canvas oculto para geração de imagem -->
+<canvas id="canvasRelatorio" style="display:none;"></canvas>
+
+<!-- Loading -->
+<div id="loadingOverlay" class="loading-overlay" style="display:none;">
+    <div class="loading-spinner"></div>
+    <p id="loadingText">Carregando dados...</p>
+</div>
+
+<!-- Toast de notificações -->
+<div id="toast" class="toast"></div>
+
+<footer class="footer">
+    <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="relatorios.js"></script>
+</body>
+</html>
