@@ -2,7 +2,7 @@
 // CONFIGURAÇÕES
 // =============================
 const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRuKBJbLlblPErMtxcvB9FTwl3ev05N2IU42a_7PIdFzA4L4wFX-ViML99QG7Xq-WYGSzl-7Ibh2W4W/pub?output=csv";
-const webAppUrl = "https://script.google.com/macros/s/AKfycbxFt0FHHfA_T709f9z_UbbcCi62VkYZFp7xb2r_6IDrCkYD9og9PRcxaXTiYFaIXz5q/exec"; // Substitua pela URL do seu Web App
+const webAppUrl = "https://script.google.com/macros/s/AKfycbxB3ODp6qwtqCVW83tKzH2oiRFGRoXpBA48hzJNwVCMdfjOxM7yugP3lTgueFu7cglr/exec";
 
 let funcionarios = [];
 let funcionariosSelecionados = [];
@@ -10,6 +10,9 @@ let tipoOperacao = ''; // 'entrega' ou 'devolucao'
 let tamanhosEscolhidos = {}; // { nomeFuncionario: tamanho }
 let assinaturasColetadas = []; // Array de assinaturas em base64
 let indiceAssinaturaAtual = 0;
+
+// Cache de tamanhos buscados do histórico
+let tamanhosHistorico = {};
 
 let canvas;
 let ctx;
@@ -33,6 +36,27 @@ function encurtarNome(nomeCompleto) {
 
     // 3 ou mais partes: Primeiro nome + inicial do último
     return `${partes[0]} ${partes[partes.length - 1].charAt(0)}.`;
+}
+
+// =============================
+// BUSCAR TAMANHOS DO HISTÓRICO
+// =============================
+async function buscarTamanhosHistorico(nomesFuncionarios) {
+    const promises = nomesFuncionarios.map(async (nome) => {
+        try {
+            const url = `${webAppUrl}?funcionario=${encodeURIComponent(nome)}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.status === 'success' && data.tamanho) {
+                tamanhosHistorico[nome] = data.tamanho;
+            }
+        } catch (error) {
+            console.error(`Erro ao buscar tamanho para ${nome}:`, error);
+        }
+    });
+
+    await Promise.all(promises);
 }
 
 // =============================
@@ -166,7 +190,7 @@ function atualizarInterfaceSelecao() {
 // =============================
 // 4) INICIAR OPERAÇÃO
 // =============================
-function iniciarOperacao(nomes, tipo) {
+async function iniciarOperacao(nomes, tipo) {
     tipoOperacao = tipo;
     funcionariosSelecionados = [...nomes];
     tamanhosEscolhidos = {};
@@ -176,7 +200,12 @@ function iniciarOperacao(nomes, tipo) {
     if (tipo === 'entrega') {
         abrirModalTamanho();
     } else {
-        // Devolução vai direto para assinatura
+        // Para devolução, buscar tamanhos do histórico primeiro
+        mostrarLoading();
+        await buscarTamanhosHistorico(nomes);
+        esconderLoading();
+
+        // Vai direto para assinatura
         abrirModalAssinatura();
     }
 }
@@ -243,8 +272,9 @@ function abrirModalTamanho() {
 }
 
 function verificarTamanhosCompletos() {
-    const todosPreenchidos = funcionariosSelecionados.every(nome => tamanhosEscolhidos[nome]);
-    document.getElementById('avancarAssinaturaBtn').disabled = !todosPreenchidos;
+    const btnAvancar = document.getElementById('avancarAssinaturaBtn');
+    const todosSelecionados = funcionariosSelecionados.every(nome => tamanhosEscolhidos[nome]);
+    btnAvancar.disabled = !todosSelecionados;
 }
 
 function fecharModalTamanho() {
@@ -260,36 +290,32 @@ function abrirModalAssinatura() {
     canvas = document.getElementById('canvasAssinatura');
     ctx = canvas.getContext('2d');
 
-    // Configurar canvas
-    const container = canvas.parentElement;
-    canvas.width = container.clientWidth - 20;
-    canvas.height = 300;
+    // Configurar dimensões do canvas
+    const containerWidth = canvas.parentElement.offsetWidth - 20;
+    canvas.width = containerWidth;
+    canvas.height = 200;
 
     configurarCanvas();
-
-    // Atualizar informações
-    if (funcionariosSelecionados.length === 1) {
-        document.getElementById('infoAssinatura').textContent =
-            `${funcionariosSelecionados[0]} - ${tipoOperacao === 'entrega' ? 'Entrega' : 'Devolução'}`;
-        document.getElementById('progressoAssinaturas').style.display = 'none';
-    } else {
-        atualizarInfoAssinaturaMultipla();
-        document.getElementById('progressoAssinaturas').style.display = 'block';
-    }
+    atualizarInfoAssinaturaMultipla();
 
     modal.style.display = 'block';
     document.body.classList.add('modal-open');
 }
 
 function atualizarInfoAssinaturaMultipla() {
-    const funcionarioAtual = funcionariosSelecionados[indiceAssinaturaAtual];
-    const info = tipoOperacao === 'entrega'
-        ? `${funcionarioAtual} - Tamanho: ${tamanhosEscolhidos[funcionarioAtual]}`
-        : `${funcionarioAtual} - Devolução`;
+    const nomeAtual = funcionariosSelecionados[indiceAssinaturaAtual];
+    const infoElement = document.getElementById('infoAssinatura');
+    const progressoDiv = document.getElementById('progressoAssinaturas');
 
-    document.getElementById('infoAssinatura').textContent = info;
-    document.getElementById('assinaturaAtual').textContent = indiceAssinaturaAtual + 1;
-    document.getElementById('assinaturaTotal').textContent = funcionariosSelecionados.length;
+    if (funcionariosSelecionados.length === 1) {
+        infoElement.textContent = `Por favor, ${nomeAtual}, assine abaixo.`;
+        progressoDiv.style.display = 'none';
+    } else {
+        infoElement.textContent = `Por favor, ${nomeAtual}, assine abaixo.`;
+        progressoDiv.style.display = 'block';
+        document.getElementById('assinaturaAtual').textContent = indiceAssinaturaAtual + 1;
+        document.getElementById('assinaturaTotal').textContent = funcionariosSelecionados.length;
+    }
 }
 
 function configurarCanvas() {
@@ -430,14 +456,26 @@ async function enviarDados() {
         const data = agora.toLocaleDateString('pt-BR');
         const horario = agora.toLocaleTimeString('pt-BR');
 
-        const registros = funcionariosSelecionados.map((nome, index) => ({
-            data: data,
-            horario: horario,
-            funcionario: nome,
-            tipo: tipoOperacao,
-            tamanho: tipoOperacao === 'entrega' ? tamanhosEscolhidos[nome] : '',
-            assinatura: assinaturasColetadas[index]
-        }));
+        const registros = funcionariosSelecionados.map((nome, index) => {
+            let tamanho = '';
+
+            if (tipoOperacao === 'entrega') {
+                // Para entrega, usa o tamanho escolhido no modal
+                tamanho = tamanhosEscolhidos[nome];
+            } else {
+                // Para devolução, usa o tamanho do histórico (se existir)
+                tamanho = tamanhosHistorico[nome] || '';
+            }
+
+            return {
+                data: data,
+                horario: horario,
+                funcionario: nome,
+                tipo: tipoOperacao,
+                tamanho: tamanho,
+                assinatura: assinaturasColetadas[index]
+            };
+        });
 
         // Enviar ao Google Apps Script
         const response = await fetch(webAppUrl, {
@@ -467,6 +505,7 @@ async function enviarDados() {
 function resetarSistema() {
     funcionariosSelecionados = [];
     tamanhosEscolhidos = {};
+    tamanhosHistorico = {};
     assinaturasColetadas = [];
     indiceAssinaturaAtual = 0;
     tipoOperacao = '';

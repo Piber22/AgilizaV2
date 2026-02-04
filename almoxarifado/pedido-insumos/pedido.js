@@ -45,6 +45,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     const adesivo = parseInt(document.getElementById("adesivo").value || 0);
     const canetatecido = parseInt(document.getElementById("canetatecido").value || 0);
     const canetapermanente = parseInt(document.getElementById("canetapermanente").value || 0);
+    const cordaobranco = parseInt(document.getElementById("cordaobranco").value || 0);
 
     // Lista de itens com código
     const itens = [
@@ -71,7 +72,8 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         { nome: "Controle de limpeza", valor: cl, codigo: "52961" },
         { nome: "Adesivo", valor: adesivo, codigo: "60084" },
         { nome: "Caneta para tecido", valor: canetatecido, codigo: "58548" },
-        { nome: "Caneta permanente", valor: canetapermanente, codigo: "43259" }
+        { nome: "Caneta permanente", valor: canetapermanente, codigo: "43259" },
+        { nome: "Cordão branco", valor: cordaobranco, codigo: "58154" }
     ];
 
     // 🔹 Montar mensagem (agora com data e horário automáticos)
@@ -97,7 +99,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         ph, pt, toalha, alcool, sabonete, sabonetebac, gojo,
         sacopicotado, sacohamper, sp100, sv100, sb100, sl100,
         sp60, sv60, sb50, sl50, sp20, sv20, cv, cl, adesivo,
-        canetatecido, canetapermanente
+        canetatecido, canetapermanente, cordaobranco
     };
 
     // Para verificar (opcional)
