@@ -200,7 +200,7 @@ function renderizarMovimentacoesRecentes() {
 // 6) POR TAMANHO
 // =============================
 function atualizarPorTamanho() {
-    const tamanhos = ['P', 'M', 'G', 'GG', 'EXG'];
+    const tamanhos = ['P', 'M', 'G', 'GG', 'EG'];
 
     // Entregas por tamanho
     const entregasPorTam = contarPorTamanho(dadosFiltrados.filter(d => d.tipo === 'entrega'));
@@ -443,7 +443,7 @@ async function gerarImagemResumo() {
 
         y += 80;
         const entregasPorTam = contarPorTamanho(dadosFiltrados.filter(d => d.tipo === 'entrega'));
-        const tamanhos = ['P', 'M', 'G', 'GG', 'EXG'];
+        const tamanhos = ['P', 'M', 'G', 'GG', 'EG'];
 
         tamanhos.forEach((tam, index) => {
             const x = 150 + (index * 170);
@@ -598,7 +598,7 @@ function gerarExcel() {
         // Aba 2: Resumo por Tamanho
         const entregas = contarPorTamanho(dadosFiltrados.filter(d => d.tipo === 'entrega'));
         const devolucoes = contarPorTamanho(dadosFiltrados.filter(d => d.tipo === 'devolucao'));
-        const tamanhos = ['P', 'M', 'G', 'GG', 'EXG'];
+        const tamanhos = ['P', 'M', 'G', 'GG', 'EG'];
 
         const resumoTamanho = tamanhos.map(tam => ({
             'Tamanho': tam,
