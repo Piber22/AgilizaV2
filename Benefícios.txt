@@ -1,4 +1,0 @@
-Ganho de tempo
-Registro em planilha
-Abertura para outros tipos de checklists (efetivo, passagem de plantão, enxoval deixado para o próximo plantão)
-teste

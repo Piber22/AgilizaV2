@@ -241,7 +241,7 @@ function abrirModalTamanho() {
                 <button class="btn-tamanho" data-nome="${nome}" data-tamanho="M">M</button>
                 <button class="btn-tamanho" data-nome="${nome}" data-tamanho="G">G</button>
                 <button class="btn-tamanho" data-nome="${nome}" data-tamanho="GG">GG</button>
-                <button class="btn-tamanho" data-nome="${nome}" data-tamanho="EXG">EXG</button>
+                <button class="btn-tamanho" data-nome="${nome}" data-tamanho="EG">EG</button>
             </div>
         `;
 
