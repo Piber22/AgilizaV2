@@ -1,0 +1,430 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #201F20;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 40px;
+}
+
+main {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 0px;
+}
+
+/* CABEÇALHO */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #201F20;
+    position: relative;
+    margin-bottom: 0px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.logo-link {
+    position: absolute;
+    left: 20px;
+}
+
+.logo {
+    width: 40px;
+    height: auto;
+}
+
+.header h1 {
+    text-align: center;
+    font-size: 1.8em;
+    margin: 0;
+}
+
+/* SEÇÕES */
+h2, h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+section {
+    background-color: #201F20;
+    padding: 25px 30px;
+    margin: 10px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+
+/* ESTATÍSTICAS */
+.stats-grid {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.stat-box {
+    border-radius: 8px;
+    padding: 10px 16px;
+    text-align: center;
+    min-width: 100px;
+    flex: 1;
+    color: #fff;
+    border: 2px solid #5b5b5b;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #ccc;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.stat-value.sucesso {
+    color: #4CAF50;
+}
+
+.stat-box.destaque {
+    border-color: #E94B22;
+}
+
+/* LISTA DE ATIVIDADES */
+#listaAtividades {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.atividade-item {
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    border: 2px solid #3a3a3a;
+    transition: all 0.3s ease;
+}
+
+.atividade-item:hover {
+    border-color: #5b5b5b;
+}
+
+.atividade-item.concluida {
+    background-color: #1a3a1a;
+    border-color: #4CAF50;
+}
+
+.atividade-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.atividade-data {
+    font-size: 11px;
+    color: #999;
+    font-weight: 600;
+}
+
+.atividade-terminal {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    margin: 3px 0;
+}
+
+.atividade-encarregada {
+    font-size: 12px;
+    color: #E94B22;
+    font-weight: 500;
+}
+
+/* TOGGLE SWITCH */
+.toggle-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 60px;
+    height: 32px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #5b5b5b;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(28px);
+}
+
+input:disabled + .slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.toggle-label {
+    font-size: 10px;
+    color: #999;
+    text-align: center;
+}
+
+input:checked ~ .toggle-label {
+    color: #4CAF50;
+    font-weight: 600;
+}
+
+/* MENSAGENS */
+.loading, .error, .empty {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-style: italic;
+}
+
+.error {
+    color: #E94B22;
+}
+
+/* BOTÃO DE CONFIGURAÇÃO */
+.btn-config {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #E94B22;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease;
+    z-index: 100;
+}
+
+.btn-config:hover {
+    transform: scale(1.1);
+}
+
+.btn-config:active {
+    transform: scale(0.95);
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+    background-color: #2a2a2a;
+    margin: 10% auto;
+    padding: 30px;
+    border: 2px solid #E94B22;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 20px;
+}
+
+.close:hover,
+.close:focus {
+    color: #fff;
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+}
+
+.info-text {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.modal-content label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.modal-content label span {
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.modal-content input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 2px solid #5b5b5b;
+    background-color: #201F20;
+    color: #fff;
+    font-size: 14px;
+}
+
+/* BOTÕES */
+.login-option {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px;
+    background-color: #201F20;
+    border: 2px solid #E94B22;
+    box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    margin: 10px auto 0;
+}
+
+.login-option:hover {
+    background-color: #E94B22;
+}
+
+.login-option:active {
+    transform: scale(0.97);
+}
+
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #777;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    section {
+        margin: 10px 20px;
+        padding: 20px 20px;
+    }
+
+    .header h1 {
+        font-size: 1.4em;
+    }
+
+    h2, h3 {
+        font-size: 1.2em;
+    }
+
+    .logo {
+        width: 30px;
+    }
+
+    .logo-link {
+        left: 15px;
+    }
+
+    .atividade-item {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .atividade-terminal {
+        font-size: 14px;
+    }
+
+    .stat-value {
+        font-size: 20px;
+    }
+
+    .btn-config {
+        bottom: 15px;
+        right: 15px;
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        gap: 10px;
+    }
+
+    .stat-box {
+        min-width: 80px;
+        padding: 8px 12px;
+    }
+
+    .stat-label {
+        font-size: 11px;
+    }
+
+    .stat-value {
+        font-size: 18px;
+    }
+}

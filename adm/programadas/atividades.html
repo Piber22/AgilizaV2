@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Atividades</title>
+
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="atividades.css">
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../gestao.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Atividades</h1>
+        </header>
+
+        <!-- Estatísticas -->
+        <section id="estatisticas">
+            <h3>Acompanhamento</h3>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Programadas</div>
+                    <div class="stat-value" id="totalProgramadas">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Realizadas</div>
+                    <div class="stat-value sucesso" id="totalRealizadas">0</div>
+                </div>
+                <div class="stat-box destaque">
+                    <div class="stat-label">Conclusão</div>
+                    <div class="stat-value" id="percentualConclusao">0%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lista de Atividades -->
+        <section id="atividades">
+            <h2>Atividades de Hoje</h2>
+            <div id="listaAtividades">
+                <p class="loading">Carregando atividades...</p>
+            </div>
+        </section>
+
+        <!-- Modal de Configuração (opcional) -->
+        <button id="btnConfig" class="btn-config" title="Configurar API">⚙️</button>
+
+        <div id="modalConfig" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Configuração Google Sheets API</h2>
+                <p class="info-text">Para permitir a marcação de atividades, você precisa configurar a API do Google Sheets.</p>
+                <label>
+                    <span>API Key:</span>
+                    <input type="text" id="apiKey" placeholder="Cole sua API Key aqui">
+                </label>
+                <label>
+                    <span>Spreadsheet ID:</span>
+                    <input type="text" id="spreadsheetId" placeholder="ID da planilha">
+                </label>
+                <button id="salvarConfig" class="login-option">Salvar Configuração</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="atividades.js"></script>
+</body>
+</html>
