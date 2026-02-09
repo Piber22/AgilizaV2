@@ -42,30 +42,17 @@
 
         <!-- Lista de Atividades -->
         <section id="atividades">
-            <h2>Atividades de Hoje</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; flex-wrap: wrap;">
+                <h2 style="margin: 0;">Atividades</h2>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button id="btnOcultarConcluidas" class="btn-filtro">🚫 Ocultar Concluídas</button>
+                    <button id="btnOrdenarData" class="btn-filtro">📅 ↓ Mais Recente Primeiro</button>
+                </div>
+            </div>
             <div id="listaAtividades">
                 <p class="loading">Carregando atividades...</p>
             </div>
         </section>
-
-        <!-- Modal de Configuração (opcional) -->
-        <button id="btnConfig" class="btn-config" title="Configurar API">⚙️</button>
-
-        <div id="modalConfig" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Configuração do Sistema</h2>
-                <p class="info-text">Configure a URL do Google Apps Script para permitir salvar as marcações na planilha.</p>
-                <label>
-                    <span>URL do Web App:</span>
-                    <input type="text" id="webAppUrl" placeholder="https://script.google.com/macros/s/.../exec">
-                </label>
-                <p style="font-size: 11px; color: #999; margin-top: -10px; line-height: 1.4;">
-                    Veja o arquivo <strong>CONFIGURACAO_WEBAPP.md</strong> para instruções completas de como criar o Web App.
-                </p>
-                <button id="salvarConfig" class="login-option">Salvar Configuração</button>
-            </div>
-        </div>
     </main>
 
     <footer class="footer">

@@ -3,8 +3,9 @@ console.log("Sistema de Gerenciamento de Atividades - Inicializado");
 // Configurações
 const CONFIG = {
     csvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGpu-l508FWdrdlZcGRG83UAuAeD54deCg6074rW1AGSUDTFON2R2dgsc8-ZNcSGOC/pub?gid=2015636690&output=csv",
-    // URL do Google Apps Script Web App
-    webAppUrl: localStorage.getItem('webAppUrl') || ''
+    // ⬇️ COLE SUA URL DO WEB APP AQUI (entre as aspas)
+    webAppUrl: 'https://script.google.com/macros/s/AKfycbzqhtngtubpKKGS0_18gPaM3GWjRfyR65TkLwh4RzC3Ge-aQD9tNL1KN2kNV_XnIPd6/exec'
+    // Exemplo: 'https://script.google.com/macros/s/AKfycbz.../exec'
 };
 
 // Elementos DOM
@@ -12,14 +13,14 @@ const listaAtividades = document.getElementById('listaAtividades');
 const totalProgramadas = document.getElementById('totalProgramadas');
 const totalRealizadas = document.getElementById('totalRealizadas');
 const percentualConclusao = document.getElementById('percentualConclusao');
-const btnConfig = document.getElementById('btnConfig');
-const modal = document.getElementById('modalConfig');
-const closeModal = document.querySelector('.close');
-const salvarConfig = document.getElementById('salvarConfig');
+const btnOcultarConcluidas = document.getElementById('btnOcultarConcluidas');
+const btnOrdenarData = document.getElementById('btnOrdenarData');
 
 // Dados globais
 let todosOsDados = [];
 let atividadesHoje = [];
+let ocultarConcluidas = false;
+let ordenacaoCrescente = true; // true = mais antigo primeiro, false = mais recente primeiro
 
 // Função para obter data atual no formato dd/mm/yyyy
 function getDataAtual() {
@@ -97,14 +98,43 @@ function filtrarEExibir() {
     const dataHoje = getDataAtual();
 
     // Filtrar atividades até hoje
-    atividadesHoje = todosOsDados.filter(row => {
+    let atividadesFiltradas = todosOsDados.filter(row => {
         const dataAtividade = row.DATA || '';
         return dataEhAnteriorOuIgual(dataAtividade, dataHoje);
     });
 
-    // Calcular estatísticas
-    const programadas = atividadesHoje.length;
-    const realizadas = atividadesHoje.filter(row => {
+    // Ordenar por data
+    atividadesFiltradas.sort((a, b) => {
+        const dataA = converterParaDate(a.DATA || '');
+        const dataB = converterParaDate(b.DATA || '');
+
+        if (!dataA || !dataB) return 0;
+
+        if (ordenacaoCrescente) {
+            return dataA - dataB; // Mais antigo primeiro
+        } else {
+            return dataB - dataA; // Mais recente primeiro
+        }
+    });
+
+    // Filtrar concluídas se necessário
+    if (ocultarConcluidas) {
+        atividadesFiltradas = atividadesFiltradas.filter(row => {
+            const situacao = (row['Situação'] || row['SituaÃ§Ã£o'] || '').trim().toLowerCase();
+            return situacao !== 'feito';
+        });
+    }
+
+    atividadesHoje = atividadesFiltradas;
+
+    // Calcular estatísticas (sempre considerar TODAS as atividades, não apenas filtradas)
+    const todasAteHoje = todosOsDados.filter(row => {
+        const dataAtividade = row.DATA || '';
+        return dataEhAnteriorOuIgual(dataAtividade, dataHoje);
+    });
+
+    const programadas = todasAteHoje.length;
+    const realizadas = todasAteHoje.filter(row => {
         const situacao = (row['Situação'] || row['SituaÃ§Ã£o'] || '').trim().toLowerCase();
         return situacao === 'feito';
     }).length;
@@ -114,6 +144,15 @@ function filtrarEExibir() {
     totalProgramadas.textContent = programadas;
     totalRealizadas.textContent = realizadas;
     percentualConclusao.textContent = `${percentual}%`;
+
+    // Atualizar texto do botão
+    if (btnOcultarConcluidas) {
+        btnOcultarConcluidas.textContent = ocultarConcluidas ? '👁️ Mostrar Concluídas' : '🚫 Ocultar Concluídas';
+    }
+
+    if (btnOrdenarData) {
+        btnOrdenarData.textContent = ordenacaoCrescente ? '📅 ↓ Mais Recente Primeiro' : '📅 ↑ Mais Antigo Primeiro';
+    }
 
     // Renderizar lista
     renderizarAtividades();
@@ -169,12 +208,14 @@ async function marcarAtividade(index, checked) {
 
     try {
         // Se tem Web App configurada, tenta atualizar
-        if (CONFIG.webAppUrl) {
+        if (CONFIG.webAppUrl && CONFIG.webAppUrl !== 'COLE_SUA_URL_DO_WEB_APP_AQUI') {
             await atualizarViaWebApp(atividade.rowIndex, checked);
         } else {
             // Simula atualização local (sem persistência)
-            console.warn("Web App não configurada. Atualizando apenas localmente.");
-            alert("⚠️ Configure o Web App no botão ⚙️ para salvar as alterações!");
+            console.warn("⚠️ Web App não configurada!");
+            console.warn("📝 Edite o arquivo atividades.js e cole sua URL do Web App na linha:");
+            console.warn("   webAppUrl: 'COLE_SUA_URL_AQUI'");
+            alert("⚠️ Configure a URL do Web App no arquivo atividades.js para salvar as alterações!\n\nVeja o console (F12) para mais informações.");
             await new Promise(resolve => setTimeout(resolve, 300)); // Simula delay
         }
 
@@ -232,6 +273,7 @@ async function atualizarViaWebApp(rowIndex, checked) {
     const dataExecucao = checked ? getDataAtual() : '';
 
     console.log('Atualizando via Web App...', {
+        url: CONFIG.webAppUrl,
         row: rowIndex,
         situacao: situacao,
         execucao: dataExecucao
@@ -239,9 +281,9 @@ async function atualizarViaWebApp(rowIndex, checked) {
 
     const response = await fetch(CONFIG.webAppUrl, {
         method: 'POST',
-        mode: 'no-cors', // Importante para evitar erro CORS
+        mode: 'no-cors',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'text/plain',
         },
         body: JSON.stringify({
             row: rowIndex,
@@ -250,50 +292,26 @@ async function atualizarViaWebApp(rowIndex, checked) {
         })
     });
 
-    // No modo no-cors, não podemos ler a resposta
-    // Assumimos sucesso se não houver erro de rede
-    console.log("Atividade enviada ao Web App");
+    console.log("✅ Requisição enviada ao Web App");
 
     // Aguardar um pouco para dar tempo da planilha atualizar
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 }
 
-// Modal de configuração
-btnConfig.addEventListener('click', () => {
-    document.getElementById('webAppUrl').value = CONFIG.webAppUrl;
-    modal.style.display = 'block';
-});
+// Event listeners dos botões de filtro
+if (btnOcultarConcluidas) {
+    btnOcultarConcluidas.addEventListener('click', () => {
+        ocultarConcluidas = !ocultarConcluidas;
+        filtrarEExibir();
+    });
+}
 
-closeModal.addEventListener('click', () => {
-    modal.style.display = 'none';
-});
-
-window.addEventListener('click', (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-});
-
-salvarConfig.addEventListener('click', () => {
-    const webAppUrl = document.getElementById('webAppUrl').value.trim();
-
-    if (!webAppUrl) {
-        alert('Por favor, preencha a URL do Web App.');
-        return;
-    }
-
-    // Validar URL básica
-    if (!webAppUrl.includes('script.google.com')) {
-        alert('URL inválida. Deve ser uma URL do Google Apps Script.');
-        return;
-    }
-
-    CONFIG.webAppUrl = webAppUrl;
-    localStorage.setItem('webAppUrl', webAppUrl);
-
-    alert('Configuração salva com sucesso!');
-    modal.style.display = 'none';
-});
+if (btnOrdenarData) {
+    btnOrdenarData.addEventListener('click', () => {
+        ordenacaoCrescente = !ordenacaoCrescente;
+        filtrarEExibir();
+    });
+}
 
 // Tornar funções globais para uso no HTML
 window.marcarAtividade = marcarAtividade;
