@@ -4,7 +4,7 @@ console.log("Sistema de Gerenciamento de Atividades - Inicializado");
 const CONFIG = {
     csvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGpu-l508FWdrdlZcGRG83UAuAeD54deCg6074rW1AGSUDTFON2R2dgsc8-ZNcSGOC/pub?gid=2015636690&output=csv",
     // URL do Google Apps Script Web App
-    webAppUrl: localStorage.getItem('https://script.google.com/macros/s/AKfycbyuQYbNUK3lWR6KzyWkeD3OkQTXe_22MU3BWTf3_Ng20AJePYRSBwHttE19rrX87RcNKg/exec') || ''
+    webAppUrl: localStorage.getItem('webAppUrl') || ''
 };
 
 // Elementos DOM
