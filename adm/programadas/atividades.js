@@ -3,10 +3,8 @@ console.log("Sistema de Gerenciamento de Atividades - Inicializado");
 // Configurações
 const CONFIG = {
     csvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGpu-l508FWdrdlZcGRG83UAuAeD54deCg6074rW1AGSUDTFON2R2dgsc8-ZNcSGOC/pub?gid=2015636690&output=csv",
-    // Para edição via API (configurar posteriormente)
-    apiKey: localStorage.getItem('sheetsApiKey') || '',
-    spreadsheetId: localStorage.getItem('spreadsheetId') || '',
-    range: 'Sheet1!A2:G' // Ajuste conforme sua planilha
+    // URL do Google Apps Script Web App
+    webAppUrl: localStorage.getItem('https://script.google.com/macros/s/AKfycbyuQYbNUK3lWR6KzyWkeD3OkQTXe_22MU3BWTf3_Ng20AJePYRSBwHttE19rrX87RcNKg/exec') || ''
 };
 
 // Elementos DOM
@@ -170,12 +168,13 @@ async function marcarAtividade(index, checked) {
     checkbox.disabled = true;
 
     try {
-        // Se tem API configurada, tenta atualizar via API
-        if (CONFIG.apiKey && CONFIG.spreadsheetId) {
-            await atualizarViaAPI(atividade.rowIndex, checked);
+        // Se tem Web App configurada, tenta atualizar
+        if (CONFIG.webAppUrl) {
+            await atualizarViaWebApp(atividade.rowIndex, checked);
         } else {
             // Simula atualização local (sem persistência)
-            console.warn("API não configurada. Atualizando apenas localmente.");
+            console.warn("Web App não configurada. Atualizando apenas localmente.");
+            alert("⚠️ Configure o Web App no botão ⚙️ para salvar as alterações!");
             await new Promise(resolve => setTimeout(resolve, 300)); // Simula delay
         }
 
@@ -207,14 +206,12 @@ async function marcarAtividade(index, checked) {
         // Mensagens de erro mais específicas
         let mensagem = "Erro ao atualizar atividade.";
 
-        if (error.message.includes("não configurados")) {
-            mensagem = "Configure a API no botão ⚙️ antes de marcar atividades.";
-        } else if (error.message.includes("403") || error.message.includes("401")) {
-            mensagem = "Erro de permissão. Verifique:\n1. API Key está correta\n2. Planilha está compartilhada como 'Editar'\n3. API Key tem permissão para Google Sheets API";
-        } else if (error.message.includes("404")) {
-            mensagem = "Planilha não encontrada. Verifique o Spreadsheet ID.";
-        } else if (error.message.includes("CORS")) {
-            mensagem = "Erro de CORS. Verifique as restrições da API Key no Google Cloud Console.";
+        if (error.message.includes("não configurad")) {
+            mensagem = "Configure o Web App no botão ⚙️ antes de marcar atividades.";
+        } else if (error.message.includes("Failed to fetch")) {
+            mensagem = "Erro de conexão. Verifique:\n1. URL do Web App está correta\n2. Web App está publicado como 'Qualquer pessoa'\n3. Sua conexão com a internet";
+        } else {
+            mensagem = `Erro: ${error.message}`;
         }
 
         alert(mensagem);
@@ -225,50 +222,45 @@ async function marcarAtividade(index, checked) {
     }
 }
 
-// Atualizar via Google Sheets API
-async function atualizarViaAPI(rowIndex, checked) {
-    if (!CONFIG.apiKey || !CONFIG.spreadsheetId) {
-        throw new Error("API Key ou Spreadsheet ID não configurados");
+// Atualizar via Google Apps Script Web App
+async function atualizarViaWebApp(rowIndex, checked) {
+    if (!CONFIG.webAppUrl) {
+        throw new Error("Web App URL não configurada");
     }
 
-    const valores = checked ? 'Feito' : '';
+    const situacao = checked ? 'Feito' : '';
     const dataExecucao = checked ? getDataAtual() : '';
 
-    // Coluna E = Situação (índice 4), Coluna F = Execução (índice 5)
-    const range = `Sheet1!E${rowIndex}:F${rowIndex}`;
-
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.spreadsheetId}/values/${range}?valueInputOption=USER_ENTERED&key=${CONFIG.apiKey}`;
-
-    console.log('Atualizando planilha...', {
-        spreadsheetId: CONFIG.spreadsheetId,
-        range: range,
-        valores: [valores, dataExecucao]
+    console.log('Atualizando via Web App...', {
+        row: rowIndex,
+        situacao: situacao,
+        execucao: dataExecucao
     });
 
-    const response = await fetch(url, {
-        method: 'PUT',
+    const response = await fetch(CONFIG.webAppUrl, {
+        method: 'POST',
+        mode: 'no-cors', // Importante para evitar erro CORS
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            values: [[valores, dataExecucao]]
+            row: rowIndex,
+            situacao: situacao,
+            execucao: dataExecucao
         })
     });
 
-    if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Erro da API:', errorText);
-        throw new Error(`Erro ao atualizar planilha: ${response.status} - ${errorText}`);
-    }
+    // No modo no-cors, não podemos ler a resposta
+    // Assumimos sucesso se não houver erro de rede
+    console.log("Atividade enviada ao Web App");
 
-    const result = await response.json();
-    console.log("Atividade atualizada com sucesso via API", result);
+    // Aguardar um pouco para dar tempo da planilha atualizar
+    await new Promise(resolve => setTimeout(resolve, 500));
 }
 
 // Modal de configuração
 btnConfig.addEventListener('click', () => {
-    document.getElementById('apiKey').value = CONFIG.apiKey;
-    document.getElementById('spreadsheetId').value = CONFIG.spreadsheetId;
+    document.getElementById('webAppUrl').value = CONFIG.webAppUrl;
     modal.style.display = 'block';
 });
 
@@ -283,29 +275,23 @@ window.addEventListener('click', (event) => {
 });
 
 salvarConfig.addEventListener('click', () => {
-    const apiKey = document.getElementById('apiKey').value.trim();
-    let spreadsheetInput = document.getElementById('spreadsheetId').value.trim();
+    const webAppUrl = document.getElementById('webAppUrl').value.trim();
 
-    if (!apiKey || !spreadsheetInput) {
-        alert('Por favor, preencha todos os campos.');
+    if (!webAppUrl) {
+        alert('Por favor, preencha a URL do Web App.');
         return;
     }
 
-    // Extrair ID se for uma URL completa
-    let spreadsheetId = spreadsheetInput;
-    const urlMatch = spreadsheetInput.match(/\/d\/([a-zA-Z0-9-_]+)/);
-    if (urlMatch) {
-        spreadsheetId = urlMatch[1];
-        console.log('ID extraído da URL:', spreadsheetId);
+    // Validar URL básica
+    if (!webAppUrl.includes('script.google.com')) {
+        alert('URL inválida. Deve ser uma URL do Google Apps Script.');
+        return;
     }
 
-    CONFIG.apiKey = apiKey;
-    CONFIG.spreadsheetId = spreadsheetId;
+    CONFIG.webAppUrl = webAppUrl;
+    localStorage.setItem('webAppUrl', webAppUrl);
 
-    localStorage.setItem('sheetsApiKey', apiKey);
-    localStorage.setItem('spreadsheetId', spreadsheetId);
-
-    alert(`Configuração salva com sucesso!\nSpreadsheet ID: ${spreadsheetId}`);
+    alert('Configuração salva com sucesso!');
     modal.style.display = 'none';
 });
 

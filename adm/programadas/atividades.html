@@ -54,18 +54,14 @@
         <div id="modalConfig" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <h2>Configuração Google Sheets API</h2>
-                <p class="info-text">Para permitir a marcação de atividades, você precisa configurar a API do Google Sheets.</p>
+                <h2>Configuração do Sistema</h2>
+                <p class="info-text">Configure a URL do Google Apps Script para permitir salvar as marcações na planilha.</p>
                 <label>
-                    <span>API Key:</span>
-                    <input type="text" id="apiKey" placeholder="Cole sua API Key aqui">
+                    <span>URL do Web App:</span>
+                    <input type="text" id="webAppUrl" placeholder="https://script.google.com/macros/s/.../exec">
                 </label>
-                <label>
-                    <span>Spreadsheet ID ou URL:</span>
-                    <input type="text" id="spreadsheetId" placeholder="Cole a URL completa ou apenas o ID">
-                </label>
-                <p style="font-size: 12px; color: #999; margin-top: -10px;">
-                    Exemplo: https://docs.google.com/spreadsheets/d/<strong>1Dj2B4O...</strong>/edit
+                <p style="font-size: 11px; color: #999; margin-top: -10px; line-height: 1.4;">
+                    Veja o arquivo <strong>CONFIGURACAO_WEBAPP.md</strong> para instruções completas de como criar o Web App.
                 </p>
                 <button id="salvarConfig" class="login-option">Salvar Configuração</button>
             </div>
