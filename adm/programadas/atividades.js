@@ -203,7 +203,21 @@ async function marcarAtividade(index, checked) {
 
     } catch (error) {
         console.error("Erro ao atualizar atividade:", error);
-        alert("Erro ao atualizar atividade. Verifique a configuração da API.");
+
+        // Mensagens de erro mais específicas
+        let mensagem = "Erro ao atualizar atividade.";
+
+        if (error.message.includes("não configurados")) {
+            mensagem = "Configure a API no botão ⚙️ antes de marcar atividades.";
+        } else if (error.message.includes("403") || error.message.includes("401")) {
+            mensagem = "Erro de permissão. Verifique:\n1. API Key está correta\n2. Planilha está compartilhada como 'Editar'\n3. API Key tem permissão para Google Sheets API";
+        } else if (error.message.includes("404")) {
+            mensagem = "Planilha não encontrada. Verifique o Spreadsheet ID.";
+        } else if (error.message.includes("CORS")) {
+            mensagem = "Erro de CORS. Verifique as restrições da API Key no Google Cloud Console.";
+        }
+
+        alert(mensagem);
         // Reverter checkbox
         checkbox.checked = !checked;
     } finally {
@@ -225,6 +239,12 @@ async function atualizarViaAPI(rowIndex, checked) {
 
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.spreadsheetId}/values/${range}?valueInputOption=USER_ENTERED&key=${CONFIG.apiKey}`;
 
+    console.log('Atualizando planilha...', {
+        spreadsheetId: CONFIG.spreadsheetId,
+        range: range,
+        valores: [valores, dataExecucao]
+    });
+
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
@@ -236,11 +256,13 @@ async function atualizarViaAPI(rowIndex, checked) {
     });
 
     if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || 'Erro ao atualizar planilha');
+        const errorText = await response.text();
+        console.error('Erro da API:', errorText);
+        throw new Error(`Erro ao atualizar planilha: ${response.status} - ${errorText}`);
     }
 
-    console.log("Atividade atualizada com sucesso via API");
+    const result = await response.json();
+    console.log("Atividade atualizada com sucesso via API", result);
 }
 
 // Modal de configuração
@@ -262,20 +284,29 @@ window.addEventListener('click', (event) => {
 
 salvarConfig.addEventListener('click', () => {
     const apiKey = document.getElementById('apiKey').value.trim();
-    const spreadsheetId = document.getElementById('spreadsheetId').value.trim();
+    let spreadsheetInput = document.getElementById('spreadsheetId').value.trim();
 
-    if (apiKey && spreadsheetId) {
-        CONFIG.apiKey = apiKey;
-        CONFIG.spreadsheetId = spreadsheetId;
-
-        localStorage.setItem('sheetsApiKey', apiKey);
-        localStorage.setItem('spreadsheetId', spreadsheetId);
-
-        alert('Configuração salva com sucesso!');
-        modal.style.display = 'none';
-    } else {
+    if (!apiKey || !spreadsheetInput) {
         alert('Por favor, preencha todos os campos.');
+        return;
     }
+
+    // Extrair ID se for uma URL completa
+    let spreadsheetId = spreadsheetInput;
+    const urlMatch = spreadsheetInput.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (urlMatch) {
+        spreadsheetId = urlMatch[1];
+        console.log('ID extraído da URL:', spreadsheetId);
+    }
+
+    CONFIG.apiKey = apiKey;
+    CONFIG.spreadsheetId = spreadsheetId;
+
+    localStorage.setItem('sheetsApiKey', apiKey);
+    localStorage.setItem('spreadsheetId', spreadsheetId);
+
+    alert(`Configuração salva com sucesso!\nSpreadsheet ID: ${spreadsheetId}`);
+    modal.style.display = 'none';
 });
 
 // Tornar funções globais para uso no HTML
