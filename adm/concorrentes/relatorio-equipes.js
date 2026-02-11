@@ -342,11 +342,11 @@ function renderizarEquipes(equipes) {
                 <div class="equipe-detalhes">
                     <div class="detalhe-item">
                         <div class="detalhe-label">Concorrentes</div>
-                        <div class="detalhe-valor" style="color: #4CAF50;">${equipe.totalConcorrentes.toFixed(0)}</div>
+                        <div class="detalhe-valor" style="color: #fff;;">${equipe.totalConcorrentes.toFixed(0)}</div>
                     </div>
                     <div class="detalhe-item">
                         <div class="detalhe-label">Meta</div>
-                        <div class="detalhe-valor" style="color: #E94B22;">${equipe.totalMeta.toFixed(0)}</div>
+                        <div class="detalhe-valor" style="color: #fff;;">${equipe.totalMeta.toFixed(0)}</div>
                     </div>
                     <div class="detalhe-item">
                         <div class="detalhe-label">Registros</div>
