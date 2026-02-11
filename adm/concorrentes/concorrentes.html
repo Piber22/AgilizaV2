@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Desempenho das Equipes</title>
+
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="relatorio-equipes.css">
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../gestao.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Relatório de Desempenho</h1>
+        </header>
+
+        <!-- Filtros -->
+        <section id="filtros">
+            <h3>Período de Análise</h3>
+            <div class="filtros-container">
+                <div class="filtro-item">
+                    <label for="dataInicio">Data Inicial:</label>
+                    <input type="date" id="dataInicio" class="input-data">
+                </div>
+                <div class="filtro-item">
+                    <label for="dataFim">Data Final:</label>
+                    <input type="date" id="dataFim" class="input-data">
+                </div>
+                <button id="btnFiltrar" class="btn-filtro-principal">🔍 Filtrar</button>
+                <button id="btnLimpar" class="btn-filtro-secundario">🔄 Limpar</button>
+            </div>
+        </section>
+
+        <!-- Estatísticas Gerais -->
+        <section id="estatisticas">
+            <h3>Resumo Geral</h3>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Total de Registros</div>
+                    <div class="stat-value" id="totalRegistros">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Equipes</div>
+                    <div class="stat-value" id="totalEquipes">0</div>
+                </div>
+                <div class="stat-box destaque">
+                    <div class="stat-label">Média Geral</div>
+                    <div class="stat-value" id="mediaGeral">0%</div>
+                </div>
+                <div class="stat-box meta">
+                    <div class="stat-label">Meta</div>
+                    <div class="stat-value meta-valor">85%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Desempenho por Equipe -->
+        <section id="desempenho">
+            <h2>Desempenho por Equipe</h2>
+            <div id="listaEquipes">
+                <p class="loading">Carregando dados...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="relatorio-equipes.js"></script>
+</body>
+</html>

@@ -1,0 +1,432 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #201F20;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 40px;
+}
+
+main {
+    width: 100%;
+    max-width: 900px;
+    margin-top: 0px;
+}
+
+/* CABEÇALHO */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #201F20;
+    position: relative;
+    margin-bottom: 0px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.logo-link {
+    position: absolute;
+    left: 20px;
+}
+
+.logo {
+    width: 40px;
+    height: auto;
+}
+
+.header h1 {
+    text-align: center;
+    font-size: 1.8em;
+    margin: 0;
+}
+
+/* SEÇÕES */
+h2, h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+section {
+    background-color: #201F20;
+    padding: 25px 30px;
+    margin: 10px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+
+/* FILTROS */
+.filtros-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.filtro-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 150px;
+}
+
+.filtro-item label {
+    font-size: 13px;
+    color: #ccc;
+    font-weight: 500;
+}
+
+.input-data {
+    padding: 10px 12px;
+    background-color: #2a2a2a;
+    border: 2px solid #5b5b5b;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.input-data:focus {
+    outline: none;
+    border-color: #E94B22;
+    background-color: #3a3a3a;
+}
+
+.input-data::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* BOTÕES DE FILTRO */
+.btn-filtro-principal {
+    padding: 10px 20px;
+    background-color: #E94B22;
+    border: 2px solid #E94B22;
+    color: white;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    white-space: nowrap;
+}
+
+.btn-filtro-principal:hover {
+    background-color: #ff5722;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(233, 75, 34, 0.4);
+}
+
+.btn-filtro-principal:active {
+    transform: translateY(0);
+}
+
+.btn-filtro-secundario {
+    padding: 10px 20px;
+    background-color: #2a2a2a;
+    border: 2px solid #5b5b5b;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    white-space: nowrap;
+}
+
+.btn-filtro-secundario:hover {
+    background-color: #3a3a3a;
+    border-color: #E94B22;
+    transform: translateY(-1px);
+}
+
+.btn-filtro-secundario:active {
+    transform: translateY(0);
+}
+
+/* ESTATÍSTICAS */
+.stats-grid {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.stat-box {
+    border-radius: 8px;
+    padding: 10px 16px;
+    text-align: center;
+    min-width: 120px;
+    flex: 1;
+    color: #fff;
+    border: 2px solid #5b5b5b;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #ccc;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.stat-box.destaque {
+    border-color: #E94B22;
+}
+
+.stat-box.meta {
+    border-color: #4CAF50;
+}
+
+.stat-value.meta-valor {
+    color: #4CAF50;
+}
+
+/* LISTA DE EQUIPES */
+#listaEquipes {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.equipe-card {
+    background-color: #2a2a2a;
+    border-radius: 10px;
+    padding: 20px;
+    border: 2px solid #3a3a3a;
+    transition: all 0.3s ease;
+}
+
+.equipe-card:hover {
+    border-color: #5b5b5b;
+    transform: translateY(-2px);
+}
+
+.equipe-card.acima-meta {
+    background-color: #1a3a1a;
+    border-color: #4CAF50;
+}
+
+.equipe-card.abaixo-meta {
+    background-color: #3a1a1a;
+    border-color: #E94B22;
+}
+
+.equipe-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.equipe-nome {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.equipe-percentual {
+    font-size: 28px;
+    font-weight: bold;
+    color: #E94B22;
+}
+
+.equipe-card.acima-meta .equipe-percentual {
+    color: #4CAF50;
+}
+
+.equipe-detalhes {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #3a3a3a;
+}
+
+.detalhe-item {
+    text-align: center;
+}
+
+.detalhe-label {
+    font-size: 11px;
+    color: #999;
+    margin-bottom: 5px;
+}
+
+.detalhe-valor {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* BARRA DE PROGRESSO */
+.progress-container {
+    width: 100%;
+    height: 8px;
+    background-color: #3a3a3a;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #E94B22, #ff5722);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.equipe-card.acima-meta .progress-bar {
+    background: linear-gradient(90deg, #4CAF50, #66BB6A);
+}
+
+.progress-meta-line {
+    position: absolute;
+    left: 85%;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(255,255,255,0.5);
+}
+
+/* MENSAGENS */
+.loading, .error, .empty {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-style: italic;
+}
+
+.error {
+    color: #E94B22;
+}
+
+/* INDICADOR DE STATUS */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.acima {
+    background-color: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+    border: 1px solid #4CAF50;
+}
+
+.status-badge.abaixo {
+    background-color: rgba(233, 75, 34, 0.2);
+    color: #E94B22;
+    border: 1px solid #E94B22;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #777;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    section {
+        margin: 10px 20px;
+        padding: 20px 20px;
+    }
+
+    .header h1 {
+        font-size: 1.4em;
+    }
+
+    h2, h3 {
+        font-size: 1.2em;
+    }
+
+    .logo {
+        width: 30px;
+    }
+
+    .logo-link {
+        left: 15px;
+    }
+
+    .filtros-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filtro-item {
+        width: 100%;
+    }
+
+    .btn-filtro-principal,
+    .btn-filtro-secundario {
+        width: 100%;
+    }
+
+    .equipe-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .equipe-percentual {
+        font-size: 24px;
+    }
+
+    .stat-value {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        gap: 10px;
+    }
+
+    .stat-box {
+        min-width: 80px;
+        padding: 8px 12px;
+    }
+
+    .stat-label {
+        font-size: 11px;
+    }
+
+    .stat-value {
+        font-size: 18px;
+    }
+
+    .equipe-nome {
+        font-size: 18px;
+    }
+
+    .detalhe-valor {
+        font-size: 16px;
+    }
+}
