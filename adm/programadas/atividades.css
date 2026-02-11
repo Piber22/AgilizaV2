@@ -262,6 +262,32 @@ input:checked ~ .toggle-label {
     transform: translateY(0);
 }
 
+/* BOTÃO RELATÓRIO */
+.btn-relatorio {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    background-color: #E94B22;
+    border: 2px solid #E94B22;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.btn-relatorio:hover {
+    background-color: #ff5722;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(233, 75, 34, 0.4);
+}
+
+.btn-relatorio:active {
+    transform: translateY(0);
+}
+
 .footer {
     text-align: center;
     margin-top: 20px;

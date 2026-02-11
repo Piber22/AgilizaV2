@@ -4,7 +4,7 @@ console.log("Sistema de Gerenciamento de Atividades - Inicializado");
 const CONFIG = {
     csvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGpu-l508FWdrdlZcGRG83UAuAeD54deCg6074rW1AGSUDTFON2R2dgsc8-ZNcSGOC/pub?gid=2015636690&output=csv",
     // ⬇️ COLE SUA URL DO WEB APP AQUI (entre as aspas)
-    webAppUrl: 'https://script.google.com/macros/s/AKfycbzqhtngtubpKKGS0_18gPaM3GWjRfyR65TkLwh4RzC3Ge-aQD9tNL1KN2kNV_XnIPd6/exec'
+    webAppUrl: 'COLE_SUA_URL_DO_WEB_APP_AQUI'
     // Exemplo: 'https://script.google.com/macros/s/AKfycbz.../exec'
 };
 
@@ -311,6 +311,12 @@ if (btnOrdenarData) {
         ordenacaoCrescente = !ordenacaoCrescente;
         filtrarEExibir();
     });
+}
+
+// Event listener do botão de relatório
+const btnGerarRelatorio = document.getElementById('btnGerarRelatorio');
+if (btnGerarRelatorio) {
+    btnGerarRelatorio.addEventListener('click', gerarRelatorioVisual);
 }
 
 // Tornar funções globais para uso no HTML
