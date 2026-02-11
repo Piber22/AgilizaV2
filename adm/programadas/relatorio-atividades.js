@@ -1,12 +1,26 @@
 // ===== GERAÇÃO DE RELATÓRIO VISUAL =====
 
+// Event listener do botão (aguarda DOM estar pronto)
+document.addEventListener('DOMContentLoaded', () => {
+    const btnGerarRelatorio = document.getElementById('btnGerarRelatorio');
+    if (btnGerarRelatorio) {
+        btnGerarRelatorio.addEventListener('click', gerarRelatorioVisual);
+    }
+});
+
 function gerarRelatorioVisual() {
-    const dataHoje = getDataAtual();
+    // Aguardar que todosOsDados esteja disponível
+    if (!window.todosOsDados || window.todosOsDados.length === 0) {
+        alert('Aguarde o carregamento dos dados ou não há atividades disponíveis.');
+        return;
+    }
+
+    const dataHoje = window.getDataAtual();
 
     // Filtrar atividades até hoje
-    const atividadesAteHoje = todosOsDados.filter(row => {
+    const atividadesAteHoje = window.todosOsDados.filter(row => {
         const dataAtividade = row.DATA || '';
-        return dataEhAnteriorOuIgual(dataAtividade, dataHoje);
+        return window.dataEhAnteriorOuIgual(dataAtividade, dataHoje);
     });
 
     if (atividadesAteHoje.length === 0) {
@@ -134,7 +148,7 @@ function criarModalRelatorio(colaboradores, totalGeral) {
     `;
 
     const titulo = document.createElement("h1");
-    titulo.textContent = "Relatório de Atividades - HSANA";
+    titulo.textContent = "Relatório de terminais programadas";
     titulo.style.cssText = `
         color: #fff;
         font-size: 32px;
@@ -144,7 +158,7 @@ function criarModalRelatorio(colaboradores, totalGeral) {
     `;
 
     const subtitulo = document.createElement("p");
-    subtitulo.textContent = "Acompanhamento de Performance das Encarregadas";
+    subtitulo.textContent = "Acompanhamento de Performance das equipes";
     subtitulo.style.cssText = `
         color: #aaa;
         font-size: 16px;
@@ -169,14 +183,25 @@ function criarModalRelatorio(colaboradores, totalGeral) {
     header.appendChild(subtitulo);
     header.appendChild(data);
 
-    // Grid de colaboradores
+    // Grid de colaboradores (2x2)
     const grid = document.createElement("div");
     grid.style.cssText = `
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
         gap: 20px;
         margin-bottom: 30px;
     `;
+
+    // Adicionar media query para mobile
+    const style = document.createElement('style');
+    style.textContent = `
+        @media (max-width: 768px) {
+            #relatorio-container > div:nth-child(3) {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 
     // Para cada encarregada, cria um card
     colaboradores.forEach(colab => {
@@ -204,7 +229,7 @@ function criarModalRelatorio(colaboradores, totalGeral) {
 
 function criarCardColaborador(nome, realizadas, total) {
     const porcentagem = total > 0 ? ((realizadas / total) * 100) : 0;
-    const isCompleto = realizadas >= total;
+    const isCompleto = porcentagem >= 85; // 85% ou mais = verde
 
     const card = document.createElement("div");
     card.style.cssText = `
@@ -356,7 +381,7 @@ function criarCardColaborador(nome, realizadas, total) {
 
 function criarResumoTotal(realizadas, total) {
     const porcentagem = total > 0 ? ((realizadas / total) * 100) : 0;
-    const isCompleto = realizadas >= total;
+    const isCompleto = porcentagem >= 85; // 85% ou mais = verde
 
     const resumoDiv = document.createElement("div");
     resumoDiv.style.cssText = `
@@ -389,7 +414,7 @@ function criarResumoTotal(realizadas, total) {
     const boxProgramadas = criarBoxResumo("Total Programadas", total, "#5b5b5b");
 
     // Box Total Realizadas
-    const boxRealizadas = criarBoxResumo("Total Realizadas", realizadas, "#4CAF50");
+    const boxRealizadas = criarBoxResumo("Total Realizadas", realizadas, "#5b5b5b");
 
     // Box Percentual
     const boxPercentual = document.createElement("div");

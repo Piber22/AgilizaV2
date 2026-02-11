@@ -4,7 +4,7 @@ console.log("Sistema de Gerenciamento de Atividades - Inicializado");
 const CONFIG = {
     csvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9iOLrhTX24hYGpu-l508FWdrdlZcGRG83UAuAeD54deCg6074rW1AGSUDTFON2R2dgsc8-ZNcSGOC/pub?gid=2015636690&output=csv",
     // ⬇️ COLE SUA URL DO WEB APP AQUI (entre as aspas)
-    webAppUrl: 'COLE_SUA_URL_DO_WEB_APP_AQUI'
+    webAppUrl: 'https://script.google.com/macros/s/AKfycbzqhtngtubpKKGS0_18gPaM3GWjRfyR65TkLwh4RzC3Ge-aQD9tNL1KN2kNV_XnIPd6/exec'
     // Exemplo: 'https://script.google.com/macros/s/AKfycbz.../exec'
 };
 
@@ -84,6 +84,9 @@ async function carregarDados() {
             listaAtividades.innerHTML = '<p class="empty">Nenhuma atividade encontrada.</p>';
             return;
         }
+
+        // Atualizar variável global para uso em outros scripts
+        window.todosOsDados = todosOsDados;
 
         filtrarEExibir();
 
@@ -313,14 +316,11 @@ if (btnOrdenarData) {
     });
 }
 
-// Event listener do botão de relatório
-const btnGerarRelatorio = document.getElementById('btnGerarRelatorio');
-if (btnGerarRelatorio) {
-    btnGerarRelatorio.addEventListener('click', gerarRelatorioVisual);
-}
-
-// Tornar funções globais para uso no HTML
+// Tornar funções globais para uso no HTML e outros scripts
 window.marcarAtividade = marcarAtividade;
+window.getDataAtual = getDataAtual;
+window.dataEhAnteriorOuIgual = dataEhAnteriorOuIgual;
+window.todosOsDados = todosOsDados;
 
 // Inicializar
 document.addEventListener('DOMContentLoaded', () => {
