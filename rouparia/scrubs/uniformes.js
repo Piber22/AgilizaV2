@@ -3,6 +3,7 @@
 // =============================
 const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRuKBJbLlblPErMtxcvB9FTwl3ev05N2IU42a_7PIdFzA4L4wFX-ViML99QG7Xq-WYGSzl-7Ibh2W4W/pub?output=csv";
 const webAppUrl = "https://script.google.com/macros/s/AKfycbxB3ODp6qwtqCVW83tKzH2oiRFGRoXpBA48hzJNwVCMdfjOxM7yugP3lTgueFu7cglr/exec";
+const CSV_HISTORICO_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRUjsGsLK_m-wD1NLtaQ-BR9qHjwJW47TQYwR23tuQ7RCUKu--yRim0-ExuxYY-Lia4oerHYjKRN2_Z/pub?output=csv";
 
 let funcionarios = [];
 let funcionariosSelecionados = [];
@@ -13,6 +14,9 @@ let indiceAssinaturaAtual = 0;
 
 // Cache de tamanhos buscados do histórico
 let tamanhosHistorico = {};
+
+// Novo: Mapa de funcionários com pendências
+let funcionariosComPendencia = new Set();
 
 let canvas;
 let ctx;
@@ -36,6 +40,89 @@ function encurtarNome(nomeCompleto) {
 
     // 3 ou mais partes: Primeiro nome + inicial do último
     return `${partes[0]} ${partes[partes.length - 1].charAt(0)}.`;
+}
+
+// =============================
+// NOVO: VERIFICAR PENDÊNCIAS
+// =============================
+async function verificarPendencias() {
+    try {
+        const response = await fetch(CSV_HISTORICO_URL);
+        const csvText = await response.text();
+
+        const dados = processarCSVHistorico(csvText);
+
+        // Criar mapa de saldo por funcionário
+        const saldoPorFuncionario = {};
+
+        dados.forEach(item => {
+            if (!saldoPorFuncionario[item.funcionario]) {
+                saldoPorFuncionario[item.funcionario] = 0;
+            }
+
+            if (item.tipo === 'entrega') {
+                saldoPorFuncionario[item.funcionario]++;
+            } else if (item.tipo === 'devolucao') {
+                saldoPorFuncionario[item.funcionario]--;
+            }
+        });
+
+        // Atualizar set de funcionários com pendência
+        funcionariosComPendencia.clear();
+        Object.keys(saldoPorFuncionario).forEach(nome => {
+            if (saldoPorFuncionario[nome] > 0) {
+                funcionariosComPendencia.add(nome);
+            }
+        });
+
+    } catch (error) {
+        console.error('Erro ao verificar pendências:', error);
+    }
+}
+
+function processarCSVHistorico(csvText) {
+    const linhas = csvText.split('\n').map(l => l.trim()).filter(l => l);
+    const dados = [];
+
+    // Pular cabeçalho
+    for (let i = 1; i < linhas.length; i++) {
+        const linha = linhas[i];
+        const campos = parseCSVLine(linha);
+
+        if (campos.length >= 4) {
+            dados.push({
+                data: campos[0],
+                horario: campos[1],
+                funcionario: campos[2],
+                tipo: campos[3].toLowerCase(),
+                tamanho: campos[4] || '',
+            });
+        }
+    }
+
+    return dados;
+}
+
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+
+        if (char === '"') {
+            inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+            result.push(current.trim());
+            current = '';
+        } else {
+            current += char;
+        }
+    }
+
+    result.push(current.trim());
+    return result;
 }
 
 // =============================
@@ -64,6 +151,7 @@ async function buscarTamanhosHistorico(nomesFuncionarios) {
 // =============================
 async function carregarFuncionarios() {
     try {
+        // Carregar lista de funcionários
         const response = await fetch(sheetCSVUrl);
         const csvText = await response.text();
 
@@ -78,6 +166,9 @@ async function carregarFuncionarios() {
             })
             .filter(nome => nome)
             .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+        // Verificar pendências
+        await verificarPendencias();
 
         renderizarFuncionarios();
     } catch (error) {
@@ -106,6 +197,12 @@ function renderizarFuncionarios(filtro = '') {
     funcionariosFiltrados.forEach(nome => {
         const item = document.createElement('div');
         item.className = 'funcionario-item';
+
+        // NOVO: Adicionar classe se tem pendência
+        if (funcionariosComPendencia.has(nome)) {
+            item.classList.add('com-pendencia');
+        }
+
         if (funcionariosSelecionados.includes(nome)) {
             item.classList.add('selecionado');
         }
@@ -138,7 +235,8 @@ function renderizarFuncionarios(filtro = '') {
 
         btnEntrega.addEventListener('click', (e) => {
             e.stopPropagation();
-            iniciarOperacao([nome], 'entrega');
+            // NOVO: Verificar pendência antes de iniciar entrega
+            verificarPendenciaAntesDaEntrega([nome]);
         });
 
         btnDevolucao.addEventListener('click', (e) => {
@@ -148,6 +246,64 @@ function renderizarFuncionarios(filtro = '') {
 
         container.appendChild(item);
     });
+}
+
+// =============================
+// NOVO: VERIFICAR PENDÊNCIA ANTES DA ENTREGA
+// =============================
+function verificarPendenciaAntesDaEntrega(nomes) {
+    // Verificar se algum dos funcionários tem pendência
+    const comPendencia = nomes.filter(nome => funcionariosComPendencia.has(nome));
+
+    if (comPendencia.length > 0) {
+        const nomesComPendencia = comPendencia.join(', ');
+        const mensagem = comPendencia.length === 1
+            ? `O(A) colaborador(a) ${nomesComPendencia} possui pendências de devolução. Deseja prosseguir mesmo assim?`
+            : `Os colaboradores ${nomesComPendencia} possuem pendências de devolução. Deseja prosseguir mesmo assim?`;
+
+        abrirModalConfirmacao(mensagem, () => {
+            iniciarOperacao(nomes, 'entrega');
+        });
+    } else {
+        iniciarOperacao(nomes, 'entrega');
+    }
+}
+
+// =============================
+// NOVO: MODAL DE CONFIRMAÇÃO
+// =============================
+function abrirModalConfirmacao(mensagem, callback) {
+    const modal = document.getElementById('modalConfirmacao');
+    const mensagemEl = document.getElementById('mensagemConfirmacao');
+
+    mensagemEl.textContent = mensagem;
+    modal.style.display = 'block';
+    document.body.classList.add('modal-open');
+
+    // Configurar botões
+    const btnCancelar = document.getElementById('cancelarConfirmacaoBtn');
+    const btnProsseguir = document.getElementById('prosseguirConfirmacaoBtn');
+
+    // Remover listeners anteriores
+    const novoBtnCancelar = btnCancelar.cloneNode(true);
+    const novoBtnProsseguir = btnProsseguir.cloneNode(true);
+    btnCancelar.parentNode.replaceChild(novoBtnCancelar, btnCancelar);
+    btnProsseguir.parentNode.replaceChild(novoBtnProsseguir, btnProsseguir);
+
+    // Adicionar novos listeners
+    novoBtnCancelar.addEventListener('click', () => {
+        fecharModalConfirmacao();
+    });
+
+    novoBtnProsseguir.addEventListener('click', () => {
+        fecharModalConfirmacao();
+        callback();
+    });
+}
+
+function fecharModalConfirmacao() {
+    document.getElementById('modalConfirmacao').style.display = 'none';
+    document.body.classList.remove('modal-open');
 }
 
 // =============================
@@ -242,39 +398,45 @@ function abrirModalTamanho() {
                 <button class="btn-tamanho" data-nome="${nome}" data-tamanho="G">G</button>
                 <button class="btn-tamanho" data-nome="${nome}" data-tamanho="GG">GG</button>
                 <button class="btn-tamanho" data-nome="${nome}" data-tamanho="EG">EG</button>
+                <button class="btn-tamanho" data-nome="${nome}" data-tamanho="EGG">EGG</button>
             </div>
         `;
-
-        // Adicionar listeners aos botões
-        item.querySelectorAll('.btn-tamanho').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const nome = e.target.dataset.nome;
-                const tamanho = e.target.dataset.tamanho;
-
-                // Remove seleção anterior deste funcionário
-                item.querySelectorAll('.btn-tamanho').forEach(b => b.classList.remove('selecionado'));
-
-                // Adiciona nova seleção
-                e.target.classList.add('selecionado');
-                tamanhosEscolhidos[nome] = tamanho;
-
-                // Verifica se todos os tamanhos foram selecionados
-                verificarTamanhosCompletos();
-            });
-        });
 
         container.appendChild(item);
     });
 
-    btnAvancar.disabled = true;
+    // Event listeners nos botões de tamanho
+    container.querySelectorAll('.btn-tamanho').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const nome = e.target.dataset.nome;
+            const tamanho = e.target.dataset.tamanho;
+
+            // Desmarcar outros botões deste funcionário
+            container.querySelectorAll(`[data-nome="${nome}"]`).forEach(b => {
+                b.classList.remove('selecionado');
+            });
+
+            // Marcar este botão
+            e.target.classList.add('selecionado');
+
+            // Salvar escolha
+            tamanhosEscolhidos[nome] = tamanho;
+
+            // Verificar se todos escolheram
+            verificarSelecaoCompleta();
+        });
+    });
+
     modal.style.display = 'block';
     document.body.classList.add('modal-open');
+    btnAvancar.disabled = true;
 }
 
-function verificarTamanhosCompletos() {
+function verificarSelecaoCompleta() {
     const btnAvancar = document.getElementById('avancarAssinaturaBtn');
-    const todosSelecionados = funcionariosSelecionados.every(nome => tamanhosEscolhidos[nome]);
-    btnAvancar.disabled = !todosSelecionados;
+    const todosEscolheram = funcionariosSelecionados.every(nome => tamanhosEscolhidos[nome]);
+
+    btnAvancar.disabled = !todosEscolheram;
 }
 
 function fecharModalTamanho() {
@@ -290,50 +452,46 @@ function abrirModalAssinatura() {
     canvas = document.getElementById('canvasAssinatura');
     ctx = canvas.getContext('2d');
 
-    // Configurar dimensões do canvas
-    const containerWidth = canvas.parentElement.offsetWidth - 20;
-    canvas.width = containerWidth;
-    canvas.height = 200;
+    // Configurar canvas com tamanho fixo
+    canvas.width = 600;
+    canvas.height = 300;
 
-    configurarCanvas();
-    atualizarInfoAssinaturaMultipla();
-
-    modal.style.display = 'block';
-    document.body.classList.add('modal-open');
-}
-
-function atualizarInfoAssinaturaMultipla() {
-    const nomeAtual = funcionariosSelecionados[indiceAssinaturaAtual];
-    const infoElement = document.getElementById('infoAssinatura');
-    const progressoDiv = document.getElementById('progressoAssinaturas');
-
-    if (funcionariosSelecionados.length === 1) {
-        infoElement.textContent = `Por favor, ${nomeAtual}, assine abaixo.`;
-        progressoDiv.style.display = 'none';
-    } else {
-        infoElement.textContent = `Por favor, ${nomeAtual}, assine abaixo.`;
-        progressoDiv.style.display = 'block';
-        document.getElementById('assinaturaAtual').textContent = indiceAssinaturaAtual + 1;
-        document.getElementById('assinaturaTotal').textContent = funcionariosSelecionados.length;
-    }
-}
-
-function configurarCanvas() {
     ctx.strokeStyle = '#000';
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
+    atualizarInfoAssinaturaMultipla();
+
+    modal.style.display = 'block';
+    document.body.classList.add('modal-open');
+
     // Mouse events
     canvas.addEventListener('mousedown', iniciarDesenho);
     canvas.addEventListener('mousemove', desenhar);
     canvas.addEventListener('mouseup', pararDesenho);
-    canvas.addEventListener('mouseout', pararDesenho);
+    canvas.addEventListener('mouseleave', pararDesenho);
 
     // Touch events
     canvas.addEventListener('touchstart', iniciarDesenhoTouch);
     canvas.addEventListener('touchmove', desenharTouch);
     canvas.addEventListener('touchend', pararDesenho);
+}
+
+function atualizarInfoAssinaturaMultipla() {
+    const nomeFuncionario = funcionariosSelecionados[indiceAssinaturaAtual];
+    const infoAssinatura = document.getElementById('infoAssinatura');
+    const progressoDiv = document.getElementById('progressoAssinaturas');
+
+    if (funcionariosSelecionados.length === 1) {
+        infoAssinatura.textContent = `Assinatura de ${nomeFuncionario}`;
+        progressoDiv.style.display = 'none';
+    } else {
+        infoAssinatura.textContent = `Assinatura de ${nomeFuncionario}`;
+        progressoDiv.style.display = 'block';
+        document.getElementById('assinaturaAtual').textContent = indiceAssinaturaAtual + 1;
+        document.getElementById('assinaturaTotal').textContent = funcionariosSelecionados.length;
+    }
 }
 
 function iniciarDesenho(e) {
@@ -489,6 +647,9 @@ async function enviarDados() {
 
         esconderLoading();
 
+        // NOVO: Atualizar pendências após registro
+        await verificarPendencias();
+
         // Resetar tudo
         resetarSistema();
 
@@ -539,10 +700,10 @@ document.addEventListener('DOMContentLoaded', () => {
         atualizarInterfaceSelecao();
     });
 
-    // Ações múltiplas
+    // Ações múltiplas - MODIFICADO para verificar pendências
     document.getElementById('entregaMultiplaBtn').addEventListener('click', () => {
         if (funcionariosSelecionados.length > 0) {
-            iniciarOperacao(funcionariosSelecionados, 'entrega');
+            verificarPendenciaAntesDaEntrega(funcionariosSelecionados);
         }
     });
 
