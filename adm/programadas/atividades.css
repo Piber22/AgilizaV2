@@ -237,6 +237,53 @@ input:checked ~ .toggle-label {
     color: #E94B22;
 }
 
+/* FILTRO DE DATAS */
+.filtro-datas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+    padding: 15px;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 2px solid #3a3a3a;
+}
+
+.filtro-data-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 150px;
+}
+
+.filtro-data-grupo label {
+    font-size: 12px;
+    color: #ccc;
+    font-weight: 500;
+}
+
+.input-data {
+    padding: 8px 10px;
+    background-color: #201F20;
+    border: 2px solid #5b5b5b;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.input-data:focus {
+    outline: none;
+    border-color: #E94B22;
+}
+
+.input-data::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
 /* BOTÕES DE FILTRO */
 .btn-filtro {
     padding: 8px 14px;
@@ -334,6 +381,14 @@ input:checked ~ .toggle-label {
     .btn-filtro {
         font-size: 12px;
         padding: 7px 12px;
+    }
+
+    .filtro-datas {
+        padding: 12px;
+    }
+
+    .filtro-data-grupo {
+        min-width: 130px;
     }
 }
 

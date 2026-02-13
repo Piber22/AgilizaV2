@@ -17,23 +17,47 @@ function gerarRelatorioVisual() {
 
     const dataHoje = window.getDataAtual();
 
-    // Filtrar atividades até hoje
-    const atividadesAteHoje = window.todosOsDados.filter(row => {
+    // Usar as datas do filtro se estiverem definidas, senão usa data atual
+    let dataInicial = window.dataInicialFiltro || null;
+    let dataFinal = window.dataFinalFiltro || dataHoje;
+
+    console.log('=== GERANDO RELATÓRIO ===');
+    console.log('Data Inicial do Filtro:', dataInicial);
+    console.log('Data Final do Filtro:', dataFinal);
+    console.log('Data Hoje:', dataHoje);
+
+    // Filtrar atividades de acordo com o período
+    const atividadesFiltradas = window.todosOsDados.filter(row => {
         const dataAtividade = row.DATA || '';
-        return window.dataEhAnteriorOuIgual(dataAtividade, dataHoje);
+
+        // Verificar se está até a data final
+        if (!window.dataEhAnteriorOuIgual(dataAtividade, dataFinal)) {
+            return false;
+        }
+
+        // Verificar se está após ou igual à data inicial (se definida)
+        if (dataInicial) {
+            if (!window.dataEhAnteriorOuIgual(dataInicial, dataAtividade)) {
+                return false;
+            }
+        }
+
+        return true;
     });
 
-    if (atividadesAteHoje.length === 0) {
-        alert('Nenhuma atividade encontrada para gerar o relatório.');
+    console.log('Total de atividades filtradas:', atividadesFiltradas.length);
+
+    if (atividadesFiltradas.length === 0) {
+        alert('Nenhuma atividade encontrada para gerar o relatório no período selecionado.');
         return;
     }
 
     // Agrupar por encarregada
     const estatisticasPorEncarregada = {};
 
-    atividadesAteHoje.forEach(atividade => {
+    atividadesFiltradas.forEach(atividade => {
         const encarregada = atividade.Encarregada || 'Sem Responsável';
-        const situacao = (atividade['Situação'] || atividade['SituaÃ§Ã£o'] || '').trim().toLowerCase();
+        const situacao = (atividade['Situação'] || atividade['Situação'] || '').trim().toLowerCase();
         const concluida = situacao === 'feito';
 
         if (!estatisticasPorEncarregada[encarregada]) {
@@ -54,10 +78,10 @@ function gerarRelatorioVisual() {
     const colaboradores = Object.values(estatisticasPorEncarregada)
         .sort((a, b) => a.nome.localeCompare(b.nome));
 
-    criarModalRelatorio(colaboradores, atividadesAteHoje.length);
+    criarModalRelatorio(colaboradores, atividadesFiltradas.length, dataInicial, dataFinal);
 }
 
-function criarModalRelatorio(colaboradores, totalGeral) {
+function criarModalRelatorio(colaboradores, totalGeral, dataInicial, dataFinal) {
     // Remove modal anterior se existir
     const modalExistente = document.getElementById("modal-relatorio");
     if (modalExistente) {
@@ -166,13 +190,37 @@ function criarModalRelatorio(colaboradores, totalGeral) {
         font-family: 'Montserrat', sans-serif;
     `;
 
+    // Período do relatório
+    const periodo = document.createElement("p");
+    let textoPeriodo = '';
+    if (dataInicial && dataFinal) {
+        textoPeriodo = `Período: ${dataInicial} até ${dataFinal}`;
+    } else if (dataFinal) {
+        textoPeriodo = `Até ${dataFinal}`;
+    } else {
+        const hoje = new Date().toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+        textoPeriodo = hoje;
+    }
+    periodo.textContent = textoPeriodo;
+    periodo.style.cssText = `
+        color: #E94B22;
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-family: 'Montserrat', sans-serif;
+    `;
+
     const data = document.createElement("p");
     const hoje = new Date().toLocaleDateString('pt-BR', {
         day: '2-digit',
         month: 'long',
         year: 'numeric'
     });
-    data.textContent = hoje;
+    data.textContent = `Gerado em: ${hoje}`;
     data.style.cssText = `
         color: #888;
         font-size: 14px;
@@ -181,6 +229,7 @@ function criarModalRelatorio(colaboradores, totalGeral) {
 
     header.appendChild(titulo);
     header.appendChild(subtitulo);
+    header.appendChild(periodo);
     header.appendChild(data);
 
     // Grid de colaboradores (2x2)

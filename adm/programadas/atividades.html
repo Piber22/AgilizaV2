@@ -21,12 +21,25 @@
             <a href="../gestao.html" class="logo-link">
                 <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
             </a>
-            <h1>Atividades</h1>
+            <h1>Programadas</h1>
         </header>
 
         <!-- Estatísticas -->
         <section id="estatisticas">
             <h3>Acompanhamento</h3>
+                        <!-- Filtro de Datas -->
+            <div class="filtro-datas">
+                <div class="filtro-data-grupo">
+                    <label for="dataInicial">Data Inicial:</label>
+                    <input type="date" id="dataInicial" class="input-data">
+                </div>
+                <div class="filtro-data-grupo">
+                    <label for="dataFinal">Data Final:</label>
+                    <input type="date" id="dataFinal" class="input-data">
+                </div>
+                <button id="btnAplicarFiltro" class="btn-filtro">🔍</button>
+                <button id="btnLimparFiltro" class="btn-filtro">🔄</button>
+            </div>
             <div class="stats-grid">
                 <div class="stat-box">
                     <div class="stat-label">Programadas</div>
@@ -53,6 +66,9 @@
                     <button id="btnOrdenarData" class="btn-filtro">📅 ↓ Mais Recente Primeiro</button>
                 </div>
             </div>
+
+
+
             <div id="listaAtividades">
                 <p class="loading">Carregando atividades...</p>
             </div>

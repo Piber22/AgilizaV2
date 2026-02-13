@@ -15,12 +15,18 @@ const totalRealizadas = document.getElementById('totalRealizadas');
 const percentualConclusao = document.getElementById('percentualConclusao');
 const btnOcultarConcluidas = document.getElementById('btnOcultarConcluidas');
 const btnOrdenarData = document.getElementById('btnOrdenarData');
+const inputDataInicial = document.getElementById('dataInicial');
+const inputDataFinal = document.getElementById('dataFinal');
+const btnAplicarFiltro = document.getElementById('btnAplicarFiltro');
+const btnLimparFiltro = document.getElementById('btnLimparFiltro');
 
 // Dados globais
 let todosOsDados = [];
 let atividadesHoje = [];
 let ocultarConcluidas = false;
 let ordenacaoCrescente = true; // true = mais antigo primeiro, false = mais recente primeiro
+let dataInicialFiltro = null;
+let dataFinalFiltro = null;
 
 // Função para obter data atual no formato dd/mm/yyyy
 function getDataAtual() {
@@ -38,6 +44,24 @@ function converterParaDate(dataStr) {
     if (partes.length !== 3) return null;
     const [dia, mes, ano] = partes;
     return new Date(ano, mes - 1, dia);
+}
+
+// Função para converter data dd/mm/yyyy para formato yyyy-mm-dd (input type="date")
+function converterParaInputDate(dataStr) {
+    if (!dataStr || dataStr.length < 10) return '';
+    const partes = dataStr.split('/');
+    if (partes.length !== 3) return '';
+    const [dia, mes, ano] = partes;
+    return `${ano}-${mes}-${dia}`;
+}
+
+// Função para converter data yyyy-mm-dd para dd/mm/yyyy
+function converterDeInputDate(dataStr) {
+    if (!dataStr) return '';
+    const partes = dataStr.split('-');
+    if (partes.length !== 3) return '';
+    const [ano, mes, dia] = partes;
+    return `${dia}/${mes}/${ano}`;
 }
 
 // Função para comparar datas
@@ -100,10 +124,29 @@ async function carregarDados() {
 function filtrarEExibir() {
     const dataHoje = getDataAtual();
 
-    // Filtrar atividades até hoje
+    // Determinar qual data final usar (filtro ou hoje)
+    let dataLimite = dataHoje;
+    if (dataFinalFiltro) {
+        dataLimite = dataFinalFiltro;
+    }
+
+    // Filtrar atividades até a data limite
     let atividadesFiltradas = todosOsDados.filter(row => {
         const dataAtividade = row.DATA || '';
-        return dataEhAnteriorOuIgual(dataAtividade, dataHoje);
+
+        // Verificar se está até a data limite
+        if (!dataEhAnteriorOuIgual(dataAtividade, dataLimite)) {
+            return false;
+        }
+
+        // Verificar se está após ou igual à data inicial (se definida)
+        if (dataInicialFiltro) {
+            if (!dataEhAnteriorOuIgual(dataInicialFiltro, dataAtividade)) {
+                return false;
+            }
+        }
+
+        return true;
     });
 
     // Ordenar por data
@@ -123,22 +166,35 @@ function filtrarEExibir() {
     // Filtrar concluídas se necessário
     if (ocultarConcluidas) {
         atividadesFiltradas = atividadesFiltradas.filter(row => {
-            const situacao = (row['Situação'] || row['SituaÃ§Ã£o'] || '').trim().toLowerCase();
+            const situacao = (row['Situação'] || row['Situação'] || '').trim().toLowerCase();
             return situacao !== 'feito';
         });
     }
 
     atividadesHoje = atividadesFiltradas;
 
-    // Calcular estatísticas (sempre considerar TODAS as atividades, não apenas filtradas)
-    const todasAteHoje = todosOsDados.filter(row => {
+    // Calcular estatísticas (sempre considerar o período filtrado)
+    const todasNoFiltro = todosOsDados.filter(row => {
         const dataAtividade = row.DATA || '';
-        return dataEhAnteriorOuIgual(dataAtividade, dataHoje);
+
+        // Verificar se está até a data limite
+        if (!dataEhAnteriorOuIgual(dataAtividade, dataLimite)) {
+            return false;
+        }
+
+        // Verificar se está após ou igual à data inicial (se definida)
+        if (dataInicialFiltro) {
+            if (!dataEhAnteriorOuIgual(dataInicialFiltro, dataAtividade)) {
+                return false;
+            }
+        }
+
+        return true;
     });
 
-    const programadas = todasAteHoje.length;
-    const realizadas = todasAteHoje.filter(row => {
-        const situacao = (row['Situação'] || row['SituaÃ§Ã£o'] || '').trim().toLowerCase();
+    const programadas = todasNoFiltro.length;
+    const realizadas = todasNoFiltro.filter(row => {
+        const situacao = (row['Situação'] || row['Situação'] || '').trim().toLowerCase();
         return situacao === 'feito';
     }).length;
     const percentual = programadas > 0 ? ((realizadas / programadas) * 100).toFixed(1) : 0;
@@ -316,11 +372,59 @@ if (btnOrdenarData) {
     });
 }
 
+// Event listeners para filtro de datas
+if (btnAplicarFiltro) {
+    btnAplicarFiltro.addEventListener('click', () => {
+        const dataInicial = inputDataInicial.value;
+        const dataFinal = inputDataFinal.value;
+
+        if (!dataInicial && !dataFinal) {
+            alert('Por favor, selecione pelo menos uma data (inicial ou final).');
+            return;
+        }
+
+        // Validar se data inicial é anterior ou igual à data final
+        if (dataInicial && dataFinal) {
+            const dtInicial = new Date(dataInicial);
+            const dtFinal = new Date(dataFinal);
+
+            if (dtInicial > dtFinal) {
+                alert('A data inicial não pode ser posterior à data final.');
+                return;
+            }
+        }
+
+        // Converter para formato dd/mm/yyyy
+        dataInicialFiltro = dataInicial ? converterDeInputDate(dataInicial) : null;
+        dataFinalFiltro = dataFinal ? converterDeInputDate(dataFinal) : null;
+
+        filtrarEExibir();
+    });
+}
+
+if (btnLimparFiltro) {
+    btnLimparFiltro.addEventListener('click', () => {
+        inputDataInicial.value = '';
+        inputDataFinal.value = '';
+        dataInicialFiltro = null;
+        dataFinalFiltro = null;
+        filtrarEExibir();
+    });
+}
+
 // Tornar funções globais para uso no HTML e outros scripts
 window.marcarAtividade = marcarAtividade;
 window.getDataAtual = getDataAtual;
 window.dataEhAnteriorOuIgual = dataEhAnteriorOuIgual;
 window.todosOsDados = todosOsDados;
+
+// Usar getters para garantir que sempre pegamos os valores atualizados
+Object.defineProperty(window, 'dataInicialFiltro', {
+    get: function() { return dataInicialFiltro; }
+});
+Object.defineProperty(window, 'dataFinalFiltro', {
+    get: function() { return dataFinalFiltro; }
+});
 
 // Inicializar
 document.addEventListener('DOMContentLoaded', () => {
