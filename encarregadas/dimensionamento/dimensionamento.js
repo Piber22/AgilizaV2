@@ -52,7 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
           usr: document.getElementById("usr").value || "",
           usm: document.getElementById("usm").value || "",
           r1: document.getElementById("r1").value || "",
-          r2: document.getElementById("r2").value || ""
+          r2: document.getElementById("r2").value || "",
+          almox: document.getElementById("r2").value || ""
       };
 
       // Montar mensagem
@@ -71,7 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
       msg += `Térreo - Prédio ADM: ${dadosRecebidos.tadm}\n\n`;
       msg += `Rouparia: ${dadosRecebidos.rouparia}\n\n`;
       msg += `Resíduos 1: ${dadosRecebidos.r1}\n`;
-      msg += `Resíduos 2: ${dadosRecebidos.r2}\n`;
+      msg += `Resíduos 2: ${dadosRecebidos.r2}\n\n`;
+      msg += `Almoxarifado: ${dadosRecebidos.almox}\n`;
 
       document.getElementById("resultado").value = msg;
 
