@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de MTRs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="mtr.css">
+</head>
+<body>
+
+<main>
+
+    <!-- Cabeçalho -->
+    <header class="header">
+        <a href="#" class="logo-link">
+            <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+        </a>
+        <h1>Gestão de MTRs</h1>
+    </header>
+
+    <!-- Navegação -->
+    <nav>
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="mudarMenu(0, this)">📥 Entrada</button>
+            <button class="nav-tab" onclick="mudarMenu(1, this)">📤 Entrega</button>
+            <button class="nav-tab" onclick="mudarMenu(2, this)">📋 Histórico</button>
+        </div>
+    </nav>
+
+    <!-- ====== MENU 1: ENTRADA DE MTRs ====== -->
+    <div id="menu-0" class="page active">
+        <section>
+            <h2>Registrar MTRs Recebidas</h2>
+
+            <div id="mtrBlocksContainer">
+                <!-- Bloco inicial -->
+                <div class="mtr-block" data-index="1">
+                    <div class="mtr-block-header">
+                        <span class="mtr-block-title">MTR #1</span>
+                    </div>
+                    <label>Data de Emissão:
+                        <input type="date" class="campo-data">
+                    </label>
+                    <label>Código da MTR:
+                        <input type="text" class="campo-codigo" maxlength="10" placeholder="10 dígitos">
+                    </label>
+                    <div class="field-error codigo-error" style="display:none;">⚠ O código deve ter exatamente 10 dígitos.</div>
+                    <label>Tipo:
+                        <select class="campo-tipo">
+                            <option value="">Selecione:</option>
+                            <option value="Infectante/Perfuro">Infectante/Perfuro</option>
+                            <option value="Químico">Químico</option>
+                            <option value="Papelão">Papelão</option>
+                            <option value="Plástico">Plástico</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn-add" id="btnAddMTR" onclick="adicionarBlocoMTR()">
+                + Adicionar MTR
+            </button>
+
+            <div class="btn-row">
+                <button class="btn-primary" onclick="salvarMTRs()">💾 Salvar Entradas</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- ====== MENU 2: ENTREGA DE MTRs ====== -->
+    <div id="menu-1" class="page">
+        <section>
+            <h2>Selecione uma ou mais MTRs e clique em "Confirmar Entrega</h2>
+
+            <div id="mtrEntregaList" class="mtr-list">
+                <p class="msg-loading">Carregando MTRs em posse...</p>
+            </div>
+
+            <div class="btn-row" style="margin-top:20px;">
+                <button class="btn-secondary" onclick="desmarcarTodos()">Desmarcar Todos</button>
+                <button class="btn-primary" onclick="abrirModalEntrega()">✔ Confirmar Entrega</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- ====== MENU 3: HISTÓRICO ====== -->
+    <div id="menu-2" class="page">
+        <section>
+            <h2>Histórico de MTRs</h2>
+
+            <div class="filtros">
+                <input type="text" id="filtroHistCodigo" placeholder="Código MTR...">
+                <select id="filtroHistTipo">
+                    <option value="">Todos os tipos</option>
+                    <option value="Infectante/Perfuro">Infectante/Perfuro</option>
+                    <option value="Químico">Químico</option>
+                    <option value="Papelão">Papelão</option>
+                    <option value="Plástico">Plástico</option>
+                </select>
+                <select id="filtroHistStatus">
+                    <option value="">Todos os status</option>
+                    <option value="Em Posse">Em Posse</option>
+                    <option value="Entregue">Entregue</option>
+                </select>
+                <button onclick="filtrarHistorico()">Filtrar</button>
+            </div>
+
+            <div class="table-container">
+                <table id="tabelaHistorico">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Tipo</th>
+                            <th>Dt. Emissão</th>
+                            <th>Dt. Entrega</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="5" class="msg-loading">Carregando histórico...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+</main>
+
+<!-- ====== MODAL DE CONFIRMAÇÃO ====== -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <h3>Confirmar entrega das seguintes MTRs?</h3>
+        <div class="modal-list" id="modalLista"></div>
+        <div class="modal-btns">
+            <button class="btn-secondary" onclick="fecharModal()">✗ Não</button>
+            <button class="btn-primary" onclick="confirmarEntrega()">✔ Sim</button>
+        </div>
+    </div>
+</div>
+
+<!-- ====== TOAST ====== -->
+<div class="toast" id="toast"></div>
+
+<footer class="footer">
+    <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+</footer>
+
+<script src="mtr.js"></script>
+</body>
+</html>
