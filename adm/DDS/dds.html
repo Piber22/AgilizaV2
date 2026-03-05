@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acompanhamento de DDS</title>
+
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="dds.css">
+
+    <!-- html2canvas para exportação de imagem -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../gestao.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>DDS Equipes</h1>
+        </header>
+
+        <!-- Estatísticas -->
+        <section id="estatisticas">
+            <h3>Acompanhamento</h3>
+
+            <!-- Filtro de Datas -->
+            <div class="filtro-datas">
+                <div class="filtro-data-grupo">
+                    <label for="dataInicial">Data Inicial:</label>
+                    <input type="date" id="dataInicial" class="input-data">
+                </div>
+                <div class="filtro-data-grupo">
+                    <label for="dataFinal">Data Final:</label>
+                    <input type="date" id="dataFinal" class="input-data">
+                </div>
+                <button id="btnAplicarFiltro" class="btn-filtro">🔍 Filtrar</button>
+                <button id="btnLimparFiltro" class="btn-filtro">🔄 Limpar</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Programados</div>
+                    <div class="stat-value" id="totalProgramados">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Executados</div>
+                    <div class="stat-value sucesso" id="totalExecutados">0</div>
+                </div>
+                <div class="stat-box destaque">
+                    <div class="stat-label">Conclusão</div>
+                    <div class="stat-value" id="percentualConclusao">0%</div>
+                </div>
+            </div>
+
+            <button id="btnGerarRelatorio" class="btn-relatorio">📊 Gerar Relatório</button>
+        </section>
+
+        <!-- Lista de Equipes -->
+        <section id="equipes">
+            <h2>Equipes</h2>
+            <div id="listaEquipes">
+                <p class="loading">Carregando dados...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="relatorio-dds.js"></script>
+    <script src="dds.js"></script>
+</body>
+</html>
