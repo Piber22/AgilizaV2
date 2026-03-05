@@ -126,8 +126,8 @@
     </div>
     <section id="relatorios" class="controles">
         <div class="acoes-relatorio">
-            <button id="btnGerarImagem" class="btn-acao btn-imagem">
-                📸 Gerar Resumo
+            <button id="btnGerarTexto" class="btn-acao btn-imagem">
+                📋 Gerar Resumo
             </button>
             <button id="btnGerarExcel" class="btn-acao btn-excel">
                 📊 Exportar Excel
@@ -137,10 +137,7 @@
 
 </main>
 
-<!-- Canvas oculto para geração de imagem -->
-<canvas id="canvasRelatorio" style="display:none;"></canvas>
 
-<!-- Loading -->
 <div id="loadingOverlay" class="loading-overlay" style="display:none;">
     <div class="loading-spinner"></div>
     <p id="loadingText">Carregando dados...</p>
@@ -154,6 +151,8 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="relatorios-excel.js"></script>
+<script src="relatorios-texto.js"></script>
 <script src="relatorios.js"></script>
 </body>
 </html>
