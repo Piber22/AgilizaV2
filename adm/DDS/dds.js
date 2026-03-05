@@ -278,7 +278,7 @@ btnLimparFiltro.addEventListener('click', () => {
     filtrarEExibir();
 });
 
-// ===== INICIALIZAÇÃO =====
+// ===== INICIALIZAÇÃO  =====
 
 document.addEventListener('DOMContentLoaded', () => {
     carregarDados();

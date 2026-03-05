@@ -213,7 +213,7 @@ function criarResumoGeral(executado, programado) {
     return div;
 }
 
-// ===== EXPORTAR COMO PNG =====
+// ===== EXPORTAR COMO PNG  =====
 
 function baixarImagem(container, botoesDiv) {
     botoesDiv.style.display = 'none';

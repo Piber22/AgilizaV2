@@ -201,7 +201,7 @@ section {
     transform: translateY(0);
 }
 
-/* ── LISTA DE EQUIPES ── */
+/* ── LISTA DE EQUIPES ──  */
 #listaEquipes {
     display: flex;
     flex-direction: column;
