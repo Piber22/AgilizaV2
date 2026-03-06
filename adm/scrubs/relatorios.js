@@ -195,6 +195,9 @@ function atualizarPorTamanho() {
 
     const saldo = {};
     tamanhos.forEach(tam => {
+        // Pendência = entregas - devoluções.
+        // Positivo: mais saídas que retornos (uniforme ainda fora).
+        // Negativo: mais devoluções que entregas no período (situação atípica, mas exibida para não esconder inconsistências).
         saldo[tam] = (entregasPorTam[tam] || 0) - (devolucoesPorTam[tam] || 0);
     });
     renderizarTamanhos('saldoPorTamanho', saldo, tamanhos, true);
@@ -216,7 +219,7 @@ function renderizarTamanhos(containerId, dados, tamanhos, mostrarSaldo) {
     let total = 0;
     const html = tamanhos.map(tam => {
         const valor = dados[tam] || 0;
-        total += Math.abs(valor);
+        total += valor;
 
         return `
             <div class="tamanho-card ${mostrarSaldo && valor < 0 ? 'negativo' : ''}">

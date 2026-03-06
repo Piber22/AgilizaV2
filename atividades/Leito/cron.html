@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Atividades</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="atividades.css">
+</head>
+<body>
+
+<main>
+    <!-- Cabeçalho -->
+    <header class="header">
+        <a href="../index.html" class="logo-link">
+            <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+        </a>
+        <h1>Registro de Atividades</h1>
+    </header>
+
+    <!-- Formulário de entrada -->
+    <section id="formulario">
+        <div class="form-group">
+            <label for="nomeHigienista">Nome do Higienista</label>
+            <input type="text" id="nomeHigienista" placeholder="Digite o nome do higienista...">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="selectQuarto">Quarto</label>
+                <select id="selectQuarto">
+                    <option value="">Selecione o quarto...</option>
+                    <option>2203</option><option>2204</option><option>2205</option>
+                    <option>2206</option><option>2207</option>
+                    <option>2301</option><option>2302</option><option>2303</option>
+                    <option>2304</option><option>2305</option><option>2306</option><option>2307</option>
+                    <option>2401</option><option>2402</option><option>2403</option>
+                    <option>2404</option><option>2405</option><option>2406</option>
+                    <option>2407</option><option>2408</option><option>2409</option>
+                    <option>2410</option><option>2411</option><option>2412</option>
+                    <option>2413</option><option>2414</option><option>2415</option>
+                    <option>2416</option><option>2417</option><option>2418</option>
+                    <option>2419</option>
+                    <option>2501</option><option>2502</option><option>2503</option>
+                    <option>2504</option><option>2505</option><option>2506</option>
+                    <option>2507</option><option>2508</option><option>2509</option>
+                    <option>2510</option><option>2511</option><option>2512</option>
+                    <option>2513</option><option>2514</option><option>2515</option>
+                    <option>2516</option><option>2517</option><option>2518</option>
+                    <option>2519</option><option>2520</option><option>2521</option>
+                    <option>2522</option>
+                    <option>Sala dos médicos</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="selectLeito">Leito</label>
+                <select id="selectLeito">
+                    <option value="">Selecione o leito...</option>
+                    <option>A</option>
+                    <option>B</option>
+                    <option>C</option>
+                    <option>D</option>
+                    <option>E</option>
+                    <option>F</option>
+                    <option>Leito único</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="btn-iniciar-container">
+            <button id="btnIniciar" class="btn-iniciar">Iniciar Atividade</button>
+        </div>
+    </section>
+
+    <!-- Cronômetro (oculto até iniciar) -->
+    <section id="secaoCronometro" style="display:none;">
+        <div class="cronometro-wrapper">
+
+            <!-- Círculo SVG de progresso -->
+            <div class="circulo-container">
+                <svg id="svgCronometro" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Trilha de fundo do círculo -->
+                    <circle class="circulo-fundo" cx="110" cy="110" r="95"/>
+
+                    <!-- Barra de progresso preenchida -->
+                    <circle id="circuloProgresso" class="circulo-progresso" cx="110" cy="110" r="95"/>
+
+                    <!-- Marcação 1: 60 minutos (fim da zona verde) -->
+                    <line id="marca60" class="marca" x1="110" y1="15" x2="110" y2="30" transform="rotate(0, 110, 110)"/>
+                    <!-- Marcação 2: 65 minutos -->
+                    <line id="marca65" class="marca" x1="110" y1="15" x2="110" y2="30" transform="rotate(30, 110, 110)"/>
+                    <!-- Marcação 3: 70 minutos -->
+                    <line id="marca70" class="marca" x1="110" y1="15" x2="110" y2="30" transform="rotate(60, 110, 110)"/>
+
+                    <!-- Labels das marcações -->
+                    <text class="marca-label" x="110" y="10" text-anchor="middle" transform="rotate(0, 110, 110)">60'</text>
+                    <text class="marca-label" x="110" y="10" text-anchor="middle" transform="rotate(30, 110, 110)">65'</text>
+                    <text class="marca-label" x="110" y="10" text-anchor="middle" transform="rotate(60, 110, 110)">70'</text>
+                </svg>
+
+                <!-- Texto do cronômetro no centro do círculo -->
+                <div class="cronometro-centro">
+                    <span id="displayCronometro" class="cronometro-tempo">00:00:00</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="btn-finalizar-container">
+            <button id="btnFinalizar" class="btn-finalizar">Finalizar Atividade</button>
+        </div>
+    </section>
+
+</main>
+
+<!-- Modal: Responsável e Assinatura -->
+<div id="modalFinalizacao" class="modal">
+    <div class="modal-content modal-assinatura">
+        <h2>Finalizar Registro</h2>
+        <p id="infoFinalizacao">Informe o responsável pela verificação</p>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="nomeResponsavel" style="color:#aaa; font-size:14px; margin-bottom:6px; display:block;">Nome do Responsável</label>
+            <input type="text" id="nomeResponsavel" placeholder="Digite o nome do responsável..." style="width:100%;">
+        </div>
+
+        <label style="color:#aaa; font-size:14px; margin-bottom:6px; display:block;">Assinatura do Responsável</label>
+        <div class="canvas-container">
+            <canvas id="canvasAssinatura"></canvas>
+        </div>
+
+        <div class="modal-buttons">
+            <button id="limparAssinaturaBtn" class="btn-limpar">🔄 Limpar</button>
+            <button id="cancelarFinalizacaoBtn" class="btn-cancelar">Cancelar</button>
+            <button id="confirmarFinalizacaoBtn" class="btn-confirmar">✓ Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Sucesso -->
+<div id="modalSucesso" class="modal">
+    <div class="modal-content modal-confirmacao">
+        <div class="confirmacao-icon">✅</div>
+        <h2 style="color:#4CAF50;">Atividade Registrada!</h2>
+        <p id="mensagemSucesso"></p>
+        <div class="modal-buttons">
+            <button id="novaAtividadeBtn" class="btn-confirmar">+ Nova Atividade</button>
+        </div>
+    </div>
+</div>
+
+<!-- Loading -->
+<div id="loadingOverlay" class="loading-overlay" style="display:none;">
+    <div class="loading-spinner"></div>
+    <p>Salvando...</p>
+</div>
+
+<footer class="footer">
+    <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+</footer>
+
+<script src="atividades.js"></script>
+</body>
+</html>

@@ -1,0 +1,546 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #201F20;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 40px;
+}
+
+body.modal-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
+
+main {
+    width: 100%;
+    max-width: 800px;
+    margin-top: 0px;
+}
+
+/* ========== CABEÇALHO ========== */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #201F20;
+    position: relative;
+    margin-bottom: 0px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.logo-link {
+    position: absolute;
+    left: 20px;
+}
+
+.logo {
+    width: 40px;
+    height: auto;
+}
+
+.header h1 {
+    text-align: center;
+    font-size: 1.8em;
+    margin: 0;
+}
+
+/* ========== SEÇÕES ========== */
+section {
+    background-color: #201F20;
+    padding: 25px 30px;
+    margin: 10px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+
+/* ========== FORMULÁRIO ========== */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #aaa;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input[type="text"],
+.form-group select {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 2px solid #5b5b5b;
+    background-color: #2a2a2a;
+    color: #fff;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.form-group input[type="text"]::placeholder {
+    color: #666;
+}
+
+.form-group input[type="text"]:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #FF460A;
+}
+
+.form-group select option {
+    background-color: #2a2a2a;
+    color: #fff;
+}
+
+/* Seta customizada para select */
+.form-group select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23aaa' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.btn-iniciar-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+/* ========== BOTÃO INICIAR ========== */
+.btn-iniciar {
+    padding: 15px 50px;
+    border-radius: 8px;
+    border: none;
+    background-color: #2196F3;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+    letter-spacing: 0.5px;
+}
+
+.btn-iniciar:hover:not(:disabled) {
+    background-color: #1976D2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+}
+
+/* Estado: Atividade em execução */
+.btn-iniciar.em-execucao {
+    background-color: #555;
+    color: #999;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ========== CRONÔMETRO ========== */
+#secaoCronometro {
+    padding: 30px;
+}
+
+.cronometro-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.circulo-container {
+    position: relative;
+    width: 260px;
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#svgCronometro {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotate(-90deg); /* Começa o preenchimento pelo topo */
+}
+
+/* Trilha de fundo (círculo cinza) */
+.circulo-fundo {
+    fill: none;
+    stroke: #333;
+    stroke-width: 18;
+}
+
+/* Barra de progresso (cor muda via JS) */
+.circulo-progresso {
+    fill: none;
+    stroke-width: 18;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s linear, stroke 0.5s ease;
+    /* Cor inicial: verde */
+    stroke: #4CAF50;
+}
+
+/* ========== MARCAÇÕES NO CÍRCULO ========== */
+/* As marcações são linhas no SVG rotacionadas via JS/transform */
+.marca {
+    stroke: #fff;
+    stroke-width: 3;
+    opacity: 0.7;
+}
+
+/* Labels das marcações (texto dos minutos) */
+.marca-label {
+    fill: #aaa;
+    font-size: 11px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    /* Contrarotaciona para o texto aparecer na posição correta */
+    transform-box: fill-box;
+}
+
+/* ========== TEXTO CENTRAL DO CRONÔMETRO ========== */
+.cronometro-centro {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.cronometro-tempo {
+    font-size: 2.2em;
+    font-weight: 600;
+    letter-spacing: 2px;
+    transition: color 0.5s ease;
+    /* Cor inicial: verde */
+    color: #4CAF50;
+}
+
+/* ========== ESTADOS DE COR DO CRONÔMETRO ========== */
+/*
+ * ZONA VERDE: 0 até 60 minutos
+ * Altere os valores em atividades.js nas constantes:
+ *   LIMITE_VERDE = 60 * 60     (em segundos)
+ */
+.cronometro-verde {
+    color: #4CAF50 !important;
+}
+.circulo-verde {
+    stroke: #4CAF50 !important;
+}
+
+/*
+ * ZONA VERDE-AMARELADA: 60 até 65 minutos
+ * Altere: LIMITE_VERDE_AMARELO = 65 * 60
+ */
+.cronometro-verde-amarelo {
+    color: #8BC34A !important;
+}
+.circulo-verde-amarelo {
+    stroke: #8BC34A !important;
+}
+
+/*
+ * ZONA AMARELA: 65 até 70 minutos
+ * Altere: LIMITE_AMARELO = 70 * 60
+ */
+.cronometro-amarelo {
+    color: #FFC107 !important;
+}
+.circulo-amarelo {
+    stroke: #FFC107 !important;
+}
+
+/*
+ * ZONA VERMELHA: acima de 70 minutos
+ * Altere: LIMITE_VERMELHO = 70 * 60
+ */
+.cronometro-vermelho {
+    color: #F44336 !important;
+}
+.circulo-vermelho {
+    stroke: #F44336 !important;
+}
+
+/* ========== BOTÃO FINALIZAR ========== */
+.btn-finalizar-container {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-finalizar {
+    padding: 15px 50px;
+    border-radius: 8px;
+    border: none;
+    background-color: #FF460A;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+    letter-spacing: 0.5px;
+}
+
+.btn-finalizar:hover {
+    background-color: #e03d08;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 70, 10, 0.4);
+}
+
+/* ========== MODAL ========== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: #2a2a2a;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    animation: slideDown 0.3s;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-content h2 {
+    margin-bottom: 10px;
+    text-align: center;
+    color: #FF460A;
+}
+
+.modal-content p {
+    text-align: center;
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+/* Modal assinatura */
+.modal-assinatura {
+    max-width: 700px;
+}
+
+.canvas-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+#canvasAssinatura {
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    cursor: crosshair;
+    display: block;
+    width: 100%;
+    height: 200px;
+    touch-action: none;
+}
+
+/* Modal confirmação/sucesso */
+.modal-confirmacao {
+    max-width: 450px;
+    text-align: center;
+}
+
+.confirmacao-icon {
+    font-size: 4em;
+    margin-bottom: 15px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.modal-confirmacao p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+/* ========== BOTÕES DO MODAL ========== */
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-cancelar,
+.btn-confirmar,
+.btn-limpar {
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancelar {
+    background-color: #666;
+    color: white;
+}
+
+.btn-cancelar:hover {
+    background-color: #555;
+}
+
+.btn-confirmar {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-confirmar:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+.btn-limpar {
+    background-color: #2196F3;
+    color: white;
+}
+
+.btn-limpar:hover {
+    background-color: #1976D2;
+}
+
+/* ========== LOADING ========== */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #444;
+    border-top-color: #FF460A;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-overlay p {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #fff;
+}
+
+/* ========== FOOTER ========== */
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #777;
+}
+
+/* ========== RESPONSIVO ========== */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.3em;
+    }
+
+    .logo {
+        width: 30px;
+    }
+
+    .logo-link {
+        left: 15px;
+    }
+
+    section {
+        margin: 10px 15px;
+        padding: 20px 20px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .circulo-container {
+        width: 220px;
+        height: 220px;
+    }
+
+    .cronometro-tempo {
+        font-size: 1.8em;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 25px 20px;
+        margin: 10% auto;
+    }
+
+    .modal-assinatura {
+        max-width: 95%;
+    }
+}

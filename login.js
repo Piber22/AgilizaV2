@@ -1,10 +1,17 @@
 // Seleciona os botões
+const btnAtividade = document.getElementById('atividade');
 const btnRecebimento = document.getElementById('recebimento');
 const btnEncarregadas = document.getElementById('encarregadas');
 const btnGestao = document.getElementById('gestao');
 const loginError = document.getElementById('login-error');
 const btnAlmoxarifado = document.getElementById('almoxarifado');
 
+
+// Redirecionamento ao clicar em "atividade"
+btnAtividade.addEventListener('click', () => {
+  loginError.textContent = ""; // limpa mensagem
+  window.location.href = "atividades/atividades.html"; // redireciona
+});
 
 // Redirecionamento ao clicar em "Rouparia"
 btnRecebimento.addEventListener('click', () => {
