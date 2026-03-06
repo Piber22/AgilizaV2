@@ -28,6 +28,13 @@ const CIRCUNFERENCIA = 2 * Math.PI * RAIO_CIRCULO; // ≈ 596.9
 const DURACAO_MAXIMA_CIRCULO = LIMITE_AMARELO; // 70 minutos
 
 // ============================================================
+//  🔗  URL DO APPS SCRIPT (Google Sheets)
+//  Cole aqui a URL gerada ao publicar o Apps Script como
+//  "Web App" com acesso "Qualquer pessoa"
+// ============================================================
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxz5edAFizfR_oQB3yKvopWahm9p_tp5q8u8w4tae7r8wU1_HHX_MJy7POHD6rE99P_/exec';
+
+// ============================================================
 //  ESTADO DA APLICAÇÃO
 // ============================================================
 let timerInterval = null;       // Intervalo do setInterval
@@ -307,8 +314,56 @@ btnCancelarFinalizar.addEventListener('click', function () {
     timerInterval = setInterval(tick, 1000);
 });
 
-// Botão confirmar finalização
-btnConfirmarFinalizar.addEventListener('click', function () {
+// ============================================================
+//  FUNÇÕES AUXILIARES DE DATA E HORA
+// ============================================================
+
+// Formata um objeto Date em DD/MM/AAAA
+function formatarData(date) {
+    const d = String(date.getDate()).padStart(2, '0');
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const a = date.getFullYear();
+    return `${d}/${m}/${a}`;
+}
+
+// Formata um objeto Date em HH:MM:SS
+function formatarHora(date) {
+    const h = String(date.getHours()).padStart(2, '0');
+    const m = String(date.getMinutes()).padStart(2, '0');
+    const s = String(date.getSeconds()).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+}
+
+// ============================================================
+//  ENVIO PARA O GOOGLE SHEETS via Apps Script (no-cors)
+//  Mesma abordagem do projeto de referência que funciona:
+//  Content-Type: application/json + mode: no-cors
+// ============================================================
+async function enviarParaPlanilha(dados) {
+    try {
+        console.log('📤 Enviando para planilha:', dados);
+
+        await fetch(APPS_SCRIPT_URL, {
+            method:  'POST',
+            mode:    'no-cors',           // ← evita bloqueio de CORS
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(dados)
+        });
+
+        // Com no-cors não conseguimos ler a resposta, mas os dados são enviados
+        console.log('✅ Dados enviados! Verifique a planilha.');
+        return true;
+
+    } catch (erro) {
+        console.error('❌ Erro ao enviar:', erro);
+        return false;
+    }
+}
+
+// ============================================================
+//  BOTÃO: CONFIRMAR FINALIZAÇÃO → envia para o Google Sheets
+// ============================================================
+btnConfirmarFinalizar.addEventListener('click', async function () {
     const nomeResponsavel = document.getElementById('nomeResponsavel').value.trim();
 
     if (!nomeResponsavel) {
@@ -316,41 +371,58 @@ btnConfirmarFinalizar.addEventListener('click', function () {
         document.getElementById('nomeResponsavel').focus();
         return;
     }
-
     if (assinaturaVazia) {
         alert('Por favor, insira a assinatura do responsável.');
         return;
     }
 
-    // Captura a assinatura como imagem base64
-    const assinaturaBase64 = canvasAssinatura.toDataURL('image/png');
-
-    // Monta o objeto final do registro
-    const registroFinal = {
-        higienista:    dadosRegistro.higienista,
-        quarto:        dadosRegistro.quarto,
-        leito:         dadosRegistro.leito,
-        inicio:        dadosRegistro.inicio.toLocaleString('pt-BR'),
-        fim:           dadosRegistro.fim.toLocaleString('pt-BR'),
-        duracao:       dadosRegistro.duracao,
-        responsavel:   nomeResponsavel,
-        assinatura:    assinaturaBase64,
-        // Zona final de cor (indica se ficou dentro ou fora do prazo)
-        status:        determinarZonaCor(segundosDecorridos)
+    // ----------------------------------------------------------
+    //  PAYLOAD — ordem das colunas na planilha:
+    //  [1] Data        → DD/MM/AAAA
+    //  [2] HoraInicio  → HH:MM:SS
+    //  [3] HoraFim     → HH:MM:SS
+    //  [4] Higienista
+    //  [5] Quarto
+    //  [6] Leito
+    //  [7] Duracao     → HH:MM:SS
+    //  [8] Responsavel
+    //  [9] Status      → verde | verde-amarelo | amarelo | vermelho
+    //  [10] Assinatura → base64 PNG
+    // ----------------------------------------------------------
+    const payload = {
+        data:        formatarData(dadosRegistro.inicio),
+        horaInicio:  formatarHora(dadosRegistro.inicio),
+        horaFim:     formatarHora(dadosRegistro.fim),
+        higienista:  dadosRegistro.higienista,
+        quarto:      dadosRegistro.quarto,
+        leito:       dadosRegistro.leito,
+        duracao:     dadosRegistro.duracao,
+        responsavel: nomeResponsavel,
+        status:      determinarZonaCor(segundosDecorridos),
+        assinatura:  canvasAssinatura.toDataURL('image/png')
     };
 
-    console.log('📋 Registro finalizado:', registroFinal);
-    // 👆 AQUI: futuramente enviar registroFinal para o Google Sheets
-
     fecharModal(modalFinalizacao);
+    document.getElementById('loadingOverlay').style.display = 'flex';
 
-    // Exibe modal de sucesso
-    document.getElementById('mensagemSucesso').innerHTML =
-        `<strong>${dadosRegistro.higienista}</strong><br>` +
-        `Quarto ${dadosRegistro.quarto} – Leito ${dadosRegistro.leito}<br>` +
-        `Tempo total: <strong>${dadosRegistro.duracao}</strong>`;
+    const sucesso = await enviarParaPlanilha(payload);
 
-    abrirModal(modalSucesso);
+    document.getElementById('loadingOverlay').style.display = 'none';
+
+    if (sucesso) {
+        document.getElementById('mensagemSucesso').innerHTML =
+            `<strong>${dadosRegistro.higienista}</strong><br>` +
+            `Quarto ${dadosRegistro.quarto} – Leito ${dadosRegistro.leito}<br>` +
+            `Início: ${formatarHora(dadosRegistro.inicio)} &nbsp;|&nbsp; Fim: ${formatarHora(dadosRegistro.fim)}<br>` +
+            `Tempo total: <strong>${dadosRegistro.duracao}</strong>`;
+        abrirModal(modalSucesso);
+    } else {
+        // Erro de rede — reabre o modal e retoma o timer
+        alert('❌ Erro ao enviar os dados. Verifique sua conexão e tente novamente.');
+        abrirModal(modalFinalizacao);
+        atividadeAtiva = true;
+        timerInterval  = setInterval(tick, 1000);
+    }
 });
 
 // ============================================================
@@ -402,7 +474,7 @@ function resetarInterface() {
     document.getElementById('selectLeito').disabled    = false;
 
     // Reseta botão iniciar
-    btnIniciar.textContent = '▶ Iniciar Atividade';
+    btnIniciar.textContent = 'Iniciar Atividade';
     btnIniciar.classList.remove('em-execucao');
     btnIniciar.disabled = false;
 
