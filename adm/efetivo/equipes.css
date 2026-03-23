@@ -1,0 +1,598 @@
+/* =============================================
+   MANSERV HSANA — GESTÃO DE EQUIPES
+   ============================================= */
+
+:root {
+    --bg: #141313;
+    --bg2: #1a1919;
+    --bg3: #201F20;
+    --bg4: #252424;
+    --surface: #2a2929;
+    --surface2: #333232;
+    --border: #3a3939;
+    --border2: #464545;
+    --text: #f0efef;
+    --text2: #a8a7a7;
+    --text3: #6e6d6d;
+    --red: #E94B22;
+    --red-dim: rgba(233,75,34,0.15);
+    --red-border: rgba(233,75,34,0.35);
+    --blue: #3b82f6;
+    --blue-dim: rgba(59,130,246,0.15);
+    --blue-border: rgba(59,130,246,0.35);
+    --purple: #873BFF;
+    --purple-dim: rgba(135,59,255,0.15);
+    --purple-border: rgba(135,59,255,0.35);
+    --green: #22c55e;
+    --green-dim: rgba(34,197,94,0.12);
+    --header-h: 64px;
+    --legend-h: 38px;
+    --radius: 10px;
+    --radius-sm: 7px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ============ HEADER ============ */
+.header {
+    height: var(--header-h);
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    gap: 20px;
+}
+
+.header-left, .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+.header-right { justify-content: flex-end; }
+.header-center { flex: 2; display: flex; justify-content: center; }
+
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.brand-logo-img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+}
+.brand-name { font-weight: 700; font-size: 13px; letter-spacing: 2px; color: var(--text); }
+.brand-sub { font-size: 10px; color: var(--text3); letter-spacing: 0.5px; margin-top: 1px; }
+
+.stats-bar {
+    display: flex;
+    align-items: center;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 4px;
+}
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 18px;
+    gap: 1px;
+}
+.stat-num { font-size: 18px; font-weight: 700; line-height: 1; }
+.stat-label { font-size: 9px; color: var(--text3); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+.stat-divider { width: 1px; height: 28px; background: var(--border); }
+
+.btn-add {
+    display: flex; align-items: center; gap: 7px;
+    padding: 9px 18px;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.btn-add:hover { background: #d43d18; transform: translateY(-1px); }
+.btn-add:active { transform: scale(0.97); }
+
+.btn-secondary {
+    display: none;
+    width: 34px; height: 34px;
+    background: var(--surface);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-secondary:hover { background: var(--surface2); color: var(--text); }
+
+/* ============ LEGEND BAR ============ */
+.legend-bar {
+    height: var(--legend-h);
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    gap: 20px;
+    font-size: 11px;
+    color: var(--text2);
+}
+.legend-item { display: flex; align-items: center; gap: 6px; font-weight: 500; }
+.legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.dot-normal { background: var(--surface2); border: 1.5px solid var(--border2); }
+.dot-candidato { background: var(--blue-dim); border: 1.5px solid var(--blue); }
+.dot-demissao { background: var(--purple-dim); border: 1.5px solid var(--purple); }
+.dot-vaga { background: var(--red-dim); border: 1.5px solid var(--red); }
+.legend-sep { flex: 1; }
+.legend-hint {
+    display: flex; align-items: center; gap: 6px;
+    color: var(--text3);
+    font-size: 10px;
+    font-weight: 400;
+}
+
+/* ============ BOARD ============ */
+.board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    padding: 20px 24px 40px;
+    min-height: calc(100vh - var(--header-h) - var(--legend-h));
+    align-items: start;
+}
+
+/* ============ TEAM COLUMN ============ */
+.team-column {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+.team-column.drag-over {
+    border-color: var(--red);
+    box-shadow: 0 0 0 2px var(--red-dim);
+}
+
+.team-header {
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+}
+.team-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.team-name {
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text);
+}
+.team-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: var(--surface);
+    color: var(--text2);
+    border: 1px solid var(--border);
+}
+.team-badge.badge-warn {
+    background: var(--red-dim);
+    color: var(--red);
+    border-color: var(--red-border);
+}
+.team-badge.badge-ok {
+    background: var(--green-dim);
+    color: var(--green);
+    border-color: rgba(34,197,94,0.3);
+}
+
+.team-progress {
+    height: 3px;
+    background: var(--bg);
+    border-radius: 2px;
+    overflow: hidden;
+}
+.team-progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+}
+.team-capacity {
+    margin-top: 6px;
+    font-size: 9px;
+    color: var(--text3);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+/* ============ TEAM BODY ============ */
+.team-body {
+    padding: 10px;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* ============ COLABORADOR CARD ============ */
+.colab-card {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: grab;
+    transition: all 0.15s;
+    user-select: none;
+    position: relative;
+}
+.colab-card:hover {
+    background: var(--surface2);
+    border-color: var(--border2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.colab-card:active { cursor: grabbing; }
+.colab-card.dragging {
+    opacity: 0.4;
+    transform: scale(0.97);
+}
+
+/* Tipos de cards */
+.colab-card.tipo-candidato {
+    background: var(--blue-dim);
+    border-color: var(--blue-border);
+}
+.colab-card.tipo-candidato:hover { background: rgba(59,130,246,0.22); }
+
+.colab-card.tipo-demissao {
+    background: var(--purple-dim);
+    border-color: var(--purple-border);
+}
+.colab-card.tipo-demissao:hover { background: rgba(135,59,255,0.22); }
+
+.colab-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0;
+    background: var(--bg);
+    color: var(--text2);
+}
+.tipo-candidato .colab-avatar { background: rgba(59,130,246,0.2); color: var(--blue); }
+.tipo-demissao .colab-avatar { background: rgba(135,59,255,0.2); color: var(--purple); }
+
+.colab-info { flex: 1; min-width: 0; }
+.colab-name {
+    font-size: 11.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text);
+}
+.tipo-candidato .colab-name { color: var(--blue); }
+.tipo-demissao .colab-name { color: var(--purple); }
+
+.colab-sub {
+    font-size: 9px;
+    color: var(--text3);
+    margin-top: 1px;
+    font-weight: 400;
+}
+
+.colab-linked {
+    font-size: 8px;
+    color: var(--text3);
+    margin-top: 1px;
+    display: flex; align-items: center; gap: 3px;
+}
+.colab-linked svg { flex-shrink: 0; }
+
+/* Badge de horário — aparece ao lado do nome */
+.colab-horario {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text3);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Badge de vínculo */
+.link-badge {
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    position: absolute;
+    top: 6px; right: 6px;
+}
+
+/* ============ VAGA ABERTA (clicável) ============ */
+.vaga-slot {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border: 1px dashed var(--red-border);
+    border-radius: var(--radius-sm);
+    color: var(--red);
+    font-size: 11px;
+    font-weight: 500;
+    opacity: 0.7;
+    background: var(--red-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+}
+.vaga-slot:hover {
+    opacity: 1;
+    background: rgba(233,75,34,0.22);
+    border-color: var(--red);
+    transform: translateY(-1px);
+}
+.vaga-slot:active { transform: scale(0.98); }
+.vaga-slot svg { flex-shrink: 0; }
+
+/* ============ CONTEXT MENU ============ */
+.context-menu {
+    position: fixed;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 6px;
+    z-index: 9999;
+    min-width: 210px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    animation: ctxIn 0.12s ease;
+}
+@keyframes ctxIn {
+    from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.ctx-header {
+    padding: 8px 12px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+}
+.ctx-btn {
+    display: flex; align-items: center; gap: 9px;
+    width: 100%;
+    padding: 9px 12px;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 6px;
+    text-align: left;
+    transition: background 0.15s;
+}
+.ctx-btn:hover { background: var(--surface); }
+.ctx-btn-danger { color: var(--red); }
+.ctx-btn-danger:hover { background: var(--red-dim); }
+.ctx-btn-blue { color: var(--blue); }
+.ctx-btn-blue:hover { background: var(--blue-dim); }
+.ctx-sep { height: 1px; background: var(--border); margin: 4px 0; }
+
+/* ============ MODAL ============ */
+.modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 32px;
+    width: 420px;
+    max-width: 92vw;
+    position: relative;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+    animation: modalIn 0.2s ease;
+}
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+}
+.modal-close:hover { background: var(--surface2); color: var(--text); }
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--text);
+}
+
+.form-group { margin-bottom: 16px; }
+.form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+.form-input, .form-select {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    transition: border-color 0.15s;
+    appearance: none;
+}
+.form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--red);
+}
+.form-input::placeholder { color: var(--text3); }
+
+.modal-actions { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
+.btn-modal-primary {
+    padding: 10px 24px;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-modal-primary:hover { background: #d43d18; }
+.btn-modal-cancel {
+    padding: 10px 20px;
+    background: var(--surface);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-modal-cancel:hover { background: var(--surface2); color: var(--text); }
+
+.confirm-message {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+.confirm-name { font-weight: 700; color: var(--text); }
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 12px 18px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    z-index: 99999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    display: flex; align-items: center; gap: 10px;
+    max-width: 320px;
+    animation: toastIn 0.2s ease;
+}
+.toast.toast-success { border-color: var(--green); }
+.toast.toast-error { border-color: var(--red); }
+@keyframes toastIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+/* ── Split card: estilos por lado ── */
+
+/* LADO ESQUERDO = FUTURA DEMISSÃO (roxo) */
+.colab-card-split .split-left {
+    background: var(--purple-dim);
+    border-right: 1px solid var(--purple-border);
+}
+
+.colab-card-split .split-left .colab-avatar {
+    background: rgba(135,59,255,0.2);
+    color: var(--purple);
+}
+
+.colab-card-split .split-left .colab-name {
+    color: var(--purple);
+}
+
+/* LADO DIREITO = CANDIDATO (azul) */
+.colab-card-split .split-right {
+    background: var(--blue-dim);
+}
+
+.colab-card-split .split-right .colab-avatar {
+    background: rgba(59,130,246,0.2);
+    color: var(--blue);
+}
+
+.colab-card-split .split-right .colab-name {
+    color: var(--blue);
+}
