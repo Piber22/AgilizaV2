@@ -5,7 +5,7 @@ const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRuKBJbLlbl
 const webAppUrl = "https://script.google.com/macros/s/AKfycbxB3ODp6qwtqCVW83tKzH2oiRFGRoXpBA48hzJNwVCMdfjOxM7yugP3lTgueFu7cglr/exec";
 const CSV_HISTORICO_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRUjsGsLK_m-wD1NLtaQ-BR9qHjwJW47TQYwR23tuQ7RCUKu--yRim0-ExuxYY-Lia4oerHYjKRN2_Z/pub?output=csv";
 
-let funcionarios = [];
+let funcionarios = []; // Array de objetos { nome, validade, diasRestantes }
 let funcionariosSelecionados = [];
 let tipoOperacao = ''; // 'entrega' ou 'devolucao'
 let tamanhosEscolhidos = {}; // { nomeFuncionario: tamanho }
@@ -157,15 +157,51 @@ async function carregarFuncionarios() {
 
         const linhas = csvText.split("\n").map(l => l.trim()).filter(l => l);
 
-        // Remove cabeçalho e processa nomes
+        // Remove cabeçalho e processa nomes com validade
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+
         funcionarios = linhas.slice(1)
             .map(linha => {
-                // Remove aspas se houver
-                const nome = linha.replace(/^"|"$/g, '').trim();
-                return nome;
+                const campos = parseCSVLine(linha);
+                const nome = (campos[0] || '').replace(/^"|"$/g, '').trim();
+                const validadeRaw = (campos[1] || '').replace(/^"|"$/g, '').trim();
+
+                if (!nome) return null;
+
+                // Sem coluna validade ou "permanente" → sempre exibe
+                if (!validadeRaw || validadeRaw.toLowerCase() === 'permanente') {
+                    return { nome, permanente: true, diasRestantes: null };
+                }
+
+                // Tentar parsear data no formato DD/MM/YYYY
+                const partes = validadeRaw.split('/');
+                let dataValidade = null;
+                if (partes.length === 3) {
+                    dataValidade = new Date(
+                        parseInt(partes[2]),
+                        parseInt(partes[1]) - 1,
+                        parseInt(partes[0])
+                    );
+                    dataValidade.setHours(0, 0, 0, 0);
+                }
+
+                if (!dataValidade || isNaN(dataValidade)) {
+                    // Data inválida → trata como permanente
+                    return { nome, permanente: true, diasRestantes: null };
+                }
+
+                // Calcular dias restantes
+                const diffMs = dataValidade - hoje;
+                const diasRestantes = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+                // Se já expirou (diasRestantes < 0), não inclui
+                if (diasRestantes < 0) return null;
+
+                return { nome, permanente: false, diasRestantes };
             })
-            .filter(nome => nome)
-            .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+            .filter(f => f !== null)
+            .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
 
         // Verificar pendências
         await verificarPendencias();
@@ -185,8 +221,8 @@ function renderizarFuncionarios(filtro = '') {
     const container = document.getElementById('funcionariosContainer');
     container.innerHTML = '';
 
-    const funcionariosFiltrados = funcionarios.filter(nome =>
-        nome.toLowerCase().includes(filtro.toLowerCase())
+    const funcionariosFiltrados = funcionarios.filter(f =>
+        f.nome.toLowerCase().includes(filtro.toLowerCase())
     );
 
     if (funcionariosFiltrados.length === 0) {
@@ -194,11 +230,11 @@ function renderizarFuncionarios(filtro = '') {
         return;
     }
 
-    funcionariosFiltrados.forEach(nome => {
+    funcionariosFiltrados.forEach(f => {
+        const { nome, permanente, diasRestantes } = f;
         const item = document.createElement('div');
         item.className = 'funcionario-item';
 
-        // NOVO: Adicionar classe se tem pendência
         if (funcionariosComPendencia.has(nome)) {
             item.classList.add('com-pendencia');
         }
@@ -207,10 +243,24 @@ function renderizarFuncionarios(filtro = '') {
             item.classList.add('selecionado');
         }
 
+        // Badge de validade (só para não-permanentes)
+        let validadeBadge = '';
+        if (!permanente && diasRestantes !== null) {
+            let labelValidade;
+            if (diasRestantes === 0) {
+                labelValidade = 'vence hoje';
+            } else if (diasRestantes === 1) {
+                labelValidade = '1 dia';
+            } else {
+                labelValidade = `${diasRestantes} dias`;
+            }
+            validadeBadge = `<span class="validade-badge">${labelValidade}</span>`;
+        }
+
         item.innerHTML = `
             <div class="funcionario-info">
                 <div class="checkbox-custom"></div>
-                <span class="funcionario-nome">${nome}</span>
+                <span class="funcionario-nome">${nome}${validadeBadge}</span>
             </div>
             <div class="funcionario-acoes">
                 <button class="btn-acao btn-entrega" data-nome="${nome}" data-tipo="entrega" title="Entregar Uniforme">
@@ -222,20 +272,17 @@ function renderizarFuncionarios(filtro = '') {
             </div>
         `;
 
-        // Click na área do nome/checkbox para seleção
         const infoArea = item.querySelector('.funcionario-info');
         infoArea.addEventListener('click', (e) => {
             e.stopPropagation();
             toggleSelecao(nome);
         });
 
-        // Click nos botões de ação
         const btnEntrega = item.querySelector('.btn-entrega');
         const btnDevolucao = item.querySelector('.btn-devolucao');
 
         btnEntrega.addEventListener('click', (e) => {
             e.stopPropagation();
-            // NOVO: Verificar pendência antes de iniciar entrega
             verificarPendenciaAntesDaEntrega([nome]);
         });
 
@@ -609,54 +656,56 @@ async function confirmarAssinatura() {
 async function enviarDados() {
     mostrarLoading();
 
+    const agora = new Date();
+    const data = agora.toLocaleDateString('pt-BR');
+    const horario = agora.toLocaleTimeString('pt-BR');
+
+    const registros = funcionariosSelecionados.map((nome, index) => {
+        let tamanho = '';
+
+        if (tipoOperacao === 'entrega') {
+            tamanho = tamanhosEscolhidos[nome];
+        } else {
+            tamanho = tamanhosHistorico[nome] || '';
+        }
+
+        return {
+            data: data,
+            horario: horario,
+            funcionario: nome,
+            tipo: tipoOperacao,
+            tamanho: tamanho,
+            assinatura: assinaturasColetadas[index]
+        };
+    });
+
     try {
-        const agora = new Date();
-        const data = agora.toLocaleDateString('pt-BR');
-        const horario = agora.toLocaleTimeString('pt-BR');
-
-        const registros = funcionariosSelecionados.map((nome, index) => {
-            let tamanho = '';
-
-            if (tipoOperacao === 'entrega') {
-                // Para entrega, usa o tamanho escolhido no modal
-                tamanho = tamanhosEscolhidos[nome];
-            } else {
-                // Para devolução, usa o tamanho do histórico (se existir)
-                tamanho = tamanhosHistorico[nome] || '';
-            }
-
-            return {
-                data: data,
-                horario: horario,
-                funcionario: nome,
-                tipo: tipoOperacao,
-                tamanho: tamanho,
-                assinatura: assinaturasColetadas[index]
-            };
-        });
-
-        // Enviar ao Google Apps Script
-        const response = await fetch(webAppUrl, {
+        // Tentativa normal de envio
+        await fetch(webAppUrl, {
             method: 'POST',
             mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(registros)
         });
 
         esconderLoading();
-
-        // NOVO: Atualizar pendências após registro
         await verificarPendencias();
-
-        // Resetar tudo
         resetarSistema();
 
     } catch (error) {
+        // Sem conexão: salvar na fila offline
         esconderLoading();
-        console.error('Erro ao enviar dados:', error);
-        alert('❌ Erro ao registrar. Por favor, tente novamente.');
+        console.warn('Salvando registro offline.', error);
+
+        try {
+            await oq_salvarNaFila(registros);
+            await oq_atualizarBadge();
+            oq_mostrarToast('Salvo localmente', 'offline');
+            resetarSistema();
+        } catch (dbError) {
+            console.error('Falha ao salvar offline:', dbError);
+            alert('❌ Sem conexão e não foi possível salvar localmente. Tente novamente.');
+        }
     }
 }
 
@@ -686,6 +735,9 @@ function esconderLoading() {
 // 10) EVENT LISTENERS
 // =============================
 document.addEventListener('DOMContentLoaded', () => {
+    // Inicializar fila offline (reenvio automático)
+    oq_inicializar(webAppUrl);
+
     // Carregar funcionários
     carregarFuncionarios();
 
