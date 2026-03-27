@@ -704,7 +704,7 @@ section {
     }
 }
 
-/* SCROLLBAR CUSTOMIZADA */
+/* SCROLLBAR CUSTOMIZADA  */
 #listaFuncionarios::-webkit-scrollbar,
 #listaTamanhosContainer::-webkit-scrollbar {
     width: 8px;
