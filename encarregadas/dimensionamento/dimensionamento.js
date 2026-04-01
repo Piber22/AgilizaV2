@@ -15,18 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
           const parts = dataInput.split("-");
           dataStr = `${parts[2]}/${parts[1]}/${parts[0]}`;
 
-          const agora = new Date();
-          const hora = String(agora.getHours()).padStart(2, '0');
-          const minuto = String(agora.getMinutes()).padStart(2, '0');
-          horarioStr = `${hora}:${minuto}`;
-      } else {
+          } else {
           const data = new Date();
           const dia = String(data.getDate()).padStart(2, '0');
           const mes = String(data.getMonth() + 1).padStart(2, '0');
           const ano = data.getFullYear();
-          const hora = String(data.getHours()).padStart(2, '0');
-          const minuto = String(data.getMinutes()).padStart(2, '0');
-          horarioStr = `${hora}:${minuto}`;
           dataStr = `${dia}/${mes}/${ano}`;
       }
 
@@ -36,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // Armazenar na variável global
       dadosRecebidos = {
           data: dataStr,
-          horario: horarioStr,
           responsavel,
           v5PL: document.getElementById("v5PL").value || "",
           v5GR: document.getElementById("v5GR").value || "",
@@ -44,36 +36,28 @@ document.addEventListener('DOMContentLoaded', () => {
           v4A: document.getElementById("v4A").value || "",
           v4B: document.getElementById("v4B").value || "",
           v3A: document.getElementById("v3A").value || "",
-          v2A: document.getElementById("v2A").value || "",
-          v2B: document.getElementById("v2B").value || "",
-          rouparia: document.getElementById("rouparia").value || "",
-          tint: document.getElementById("tint").value || "",
-          tadm: document.getElementById("tadm").value || "",
+          v2bloco: document.getElementById("v2bloco").value || "",
           usr: document.getElementById("usr").value || "",
           usm: document.getElementById("usm").value || "",
-          r1: document.getElementById("r1").value || "",
-          r2: document.getElementById("r2").value || "",
-          almox: document.getElementById("r2").value || ""
+          terreos: document.getElementById("terreos").value || "",
+          rouparia: document.getElementById("rouparia").value || "",
+          residuos: document.getElementById("residuos").value || ""
       };
 
       // Montar mensagem
-      let msg = `📋 DIMENSIONAMENTO 📋\n📌 Responsável: ${responsavel.toUpperCase()} \n🗓️ Data: ${dataStr} - ${horarioStr}\n\n`;
+      let msg = `📋 DIMENSIONAMENTO 📋\n📌 Responsável: ${responsavel.toUpperCase()}\n🗓️ Data: ${dataStr}\n\n`;
       msg += `5º Andar - Prolongados: ${dadosRecebidos.v5PL}\n`;
       msg += `5º Andar - Giro rápido: ${dadosRecebidos.v5GR}\n`;
       msg += `5º Andar - UTI: ${dadosRecebidos.v5UTI}\n\n`;
       msg += `4º Andar - Lado A: ${dadosRecebidos.v4A}\n`;
       msg += `4º Andar - Lado B: ${dadosRecebidos.v4B}\n\n`;
       msg += `3º Andar: ${dadosRecebidos.v3A}\n\n`;
-      msg += `2º Andar: ${dadosRecebidos.v2A}\n`;
-      msg += `2º Andar - Bloco: ${dadosRecebidos.v2B}\n\n`;
+      msg += `2º Andar/Bloco: ${dadosRecebidos.v2bloco}\n\n`;
       msg += `Saúde Mental - Feminina: ${dadosRecebidos.usr}\n`;
       msg += `Saúde Mental - Masculina: ${dadosRecebidos.usm}\n\n`;
-      msg += `Térreo - Prédio Internação: ${dadosRecebidos.tint}\n`;
-      msg += `Térreo - Prédio ADM: ${dadosRecebidos.tadm}\n\n`;
+      msg += `Térreos - Internação e ADM: ${dadosRecebidos.terreos}\n`;
       msg += `Rouparia: ${dadosRecebidos.rouparia}\n\n`;
-      msg += `Resíduos 1: ${dadosRecebidos.r1}\n`;
-      msg += `Resíduos 2: ${dadosRecebidos.r2}\n\n`;
-      msg += `Almoxarifado: ${dadosRecebidos.almox}\n`;
+      msg += `Resíduos / Área suja: ${dadosRecebidos.residuos}\n`;
 
       document.getElementById("resultado").value = msg;
 
