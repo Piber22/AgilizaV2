@@ -6,6 +6,7 @@
     <title>Gerenciador de Uniformes</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="uniformes.css">
+    <link rel="stylesheet" href="uniformes-pecas.css">
 </head>
 <body>
 
@@ -18,36 +19,76 @@
         <h1>Scrubs</h1>
     </header>
 
-    <!-- Barra de busca e controles -->
-    <section id="controles">
-        <div class="busca-container">
-            <input type="text" id="buscaInput" placeholder="🔍 Buscar funcionário...">
-            <button id="limparSelecaoBtn" style="display:none;">Limpar Seleção (<span id="contadorSelecao">0</span>)</button>
-        </div>
+    <!-- Navegação por abas -->
+    <nav class="abas-nav">
+        <button class="aba-btn ativa" data-aba="autorizados">Autorizados</button>
+        <button class="aba-btn"       data-aba="ci">CI</button>
+        <!-- Futuras abas: adicionar aqui -->
+        <!-- <button class="aba-btn" data-aba="aba3">Aba 3</button> -->
+        <!-- <button class="aba-btn" data-aba="aba4">Aba 4</button> -->
+    </nav>
 
-        <div class="acoes-multiplas" id="acoesMultiplas" style="display:none;">
-            <button id="entregaMultiplaBtn" class="btn-entrega-multipla">
-                📦 Entregar Uniformes (<span id="contadorEntrega">0</span>)
-            </button>
-            <button id="devolucaoMultiplaBtn" class="btn-devolucao-multipla">
-                ✅ Receber Devoluções (<span id="contadorDevolucao">0</span>)
-            </button>
-        </div>
-    </section>
+    <!-- ── ABA: AUTORIZADOS ─────────────────────────────────── -->
+    <div id="aba-autorizados" class="aba-conteudo ativa">
 
-    <!-- Lista de funcionários -->
-    <section id="listaFuncionarios">
-        <div id="funcionariosContainer">
-            <p style="text-align:center; color:#777;">Carregando funcionários...</p>
-        </div>
-    </section>
+        <section id="controles">
+            <div class="busca-container">
+                <input type="text" id="buscaInput" placeholder="🔍 Buscar funcionário...">
+                <button id="limparSelecaoBtn" style="display:none;">
+                    Limpar Seleção (<span id="contadorSelecao">0</span>)
+                </button>
+            </div>
+
+            <div class="acoes-multiplas" id="acoesMultiplas" style="display:none;">
+                <button id="entregaMultiplaBtn" class="btn-entrega-multipla">
+                    📦 Entregar Uniformes (<span id="contadorEntrega">0</span>)
+                </button>
+                <button id="devolucaoMultiplaBtn" class="btn-devolucao-multipla">
+                    ✅ Receber Devoluções (<span id="contadorDevolucao">0</span>)
+                </button>
+            </div>
+        </section>
+
+        <section id="listaFuncionarios">
+            <div id="funcionariosContainer">
+                <p style="text-align:center; color:#777;">Carregando funcionários...</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ── ABA: CI ───────────────────────────────────────────── -->
+    <div id="aba-ci" class="aba-conteudo">
+
+        <section id="controles-ci">
+            <div class="ci-form">
+                <div class="ci-campo">
+                    <label for="ciNomeColaborador">Nome do Colaborador</label>
+                    <input type="text" id="ciNomeColaborador" placeholder="Digite o nome completo...">
+                </div>
+                <div class="ci-campo">
+                    <label for="ciNomeEnfermeiro">Enfermeiro(a) Responsável</label>
+                    <input type="text" id="ciNomeEnfermeiro" placeholder="Digite o nome do(a) enfermeiro(a)...">
+                </div>
+                <button id="ciEntregarBtn" class="btn-entrega-multipla" disabled>
+                    📦 Registrar Entrega
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Futuras abas: seguir o mesmo padrão
+    <div id="aba-aba3" class="aba-conteudo"> ... </div>
+    <div id="aba-aba4" class="aba-conteudo"> ... </div>
+    -->
 
 </main>
 
-<!-- Modal: Seleção de Tamanho -->
+<!-- Modal: Seleção de Tamanho (Jaleco + Calça) -->
 <div id="modalTamanho" class="modal">
     <div class="modal-content">
-        <h2>Selecione o Tamanho</h2>
+        <h2>Selecione os Tamanhos</h2>
         <p id="nomeFuncionarioTamanho"></p>
 
         <div id="listaTamanhosContainer">
@@ -97,7 +138,7 @@
     </div>
 </div>
 
-<!-- Loading  -->
+<!-- Loading -->
 <div id="loadingOverlay" class="loading-overlay" style="display:none;">
     <div class="loading-spinner"></div>
     <p>Salvando...</p>
@@ -107,7 +148,13 @@
     <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
 </footer>
 
+<!-- Ordem de carregamento importa: config → dados → lista → modais → ci → envio → offline -->
+<script src="uniformes-config.js"></script>
+<script src="uniformes-dados.js"></script>
+<script src="uniformes-lista.js"></script>
+<script src="uniformes-modais.js"></script>
+<script src="uniformes-ci.js"></script>
+<script src="uniformes-envio.js"></script>
 <script src="offline-queue.js"></script>
-<script src="uniformes.js"></script>
 </body>
 </html>
