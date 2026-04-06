@@ -516,3 +516,30 @@ section {
 
 #listaFuncionarios::-webkit-scrollbar-thumb:hover,
 #listaTamanhosContainer::-webkit-scrollbar-thumb:hover { background: #FF460A; }
+/* =============================
+   AUTOCOMPLETE CI
+   ============================= */
+.ac-dropdown {
+    position: absolute;
+    z-index: 4000;
+    list-style: none;
+    margin: 2px 0 0;
+    padding: 4px 0;
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.ac-item {
+    padding: 10px 15px;
+    font-size: 14px;
+    color: #ddd;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.ac-item:hover,
+.ac-item.ativo { background-color: #3a3a3a; color: #fff; }

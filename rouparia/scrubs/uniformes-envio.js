@@ -19,6 +19,11 @@ async function enviarDados() {
             const t = tamanhosEscolhidos[nome] || {};
             jaleco  = t.jaleco || '';
             calca   = t.calca  || '';
+        } else if (abaAtiva === 'ci') {
+            // Devolução CI: tamanhos informados manualmente no modal de tamanho
+            const t = tamanhosEscolhidos[nome] || {};
+            jaleco  = t.jaleco || '';
+            calca   = t.calca  || '';
         } else {
             const t = tamanhosHistorico[nome];
             if (t && typeof t === 'object') {
