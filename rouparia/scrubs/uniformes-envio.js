@@ -49,12 +49,17 @@ async function enviarDados() {
     });
 
     try {
-        await fetch(webAppUrl, {
-            method:  'POST',
-            mode:    'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify(registros)
-        });
+        // Dispara Google Sheets e Firebase em paralelo
+        // Promise.allSettled garante que uma falha não cancela a outra
+        await Promise.allSettled([
+            fetch(webAppUrl, {
+                method:  'POST',
+                mode:    'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify(registros)
+            }),
+            fb_enviarRegistros(registros)
+        ]);
 
         esconderLoading();
         await verificarPendencias();
