@@ -23,18 +23,26 @@
         <div class="filtro-data">
             <label for="dataInicio">De:</label>
             <input type="date" id="dataInicio">
+            <input type="time" id="horaInicio" class="input-hora" placeholder="Hora início">
 
             <label for="dataFim">Até:</label>
             <input type="date" id="dataFim">
+            <input type="time" id="horaFim" class="input-hora" placeholder="Hora fim">
 
             <button id="btnFiltrar" class="btn-filtrar">Filtrar</button>
             <button id="btnHoje" class="btn-hoje">Hoje</button>
+            <button id="btnLimparHora" class="btn-limpar-hora" title="Remover filtro de horário">✕ Horário</button>
         </div>
 
-
+        <!-- Filtro de Origem -->
+        <div class="origem-tabs">
+            <button class="origem-btn active" data-origem="todos">🔢 Geral</button>
+            <button class="origem-btn" data-origem="autorizado">✔️ Autorizados</button>
+            <button class="origem-btn" data-origem="ci">📄 CI</button>
+        </div>
     </section>
 
-    <!-- Navegação por Abas -->
+    <!-- Navegação por Abas de Conteúdo -->
     <nav class="tabs">
         <button class="tab-btn active" data-tab="visao-geral">📊 Visão Geral</button>
         <button class="tab-btn" data-tab="por-tamanho">📏 Por Tamanho</button>
@@ -56,7 +64,6 @@
                             <div class="stat-value" id="totalEntregas">0</div>
                         </div>
                     </div>
-
                     <div class="stat-card stat-devolucao">
                         <div class="stat-icon">✅</div>
                         <div class="stat-info">
@@ -64,7 +71,6 @@
                             <div class="stat-value" id="totalDevolucoes">0</div>
                         </div>
                     </div>
-
                     <div class="stat-card stat-pendente">
                         <div class="stat-icon">⏳</div>
                         <div class="stat-info">
@@ -85,26 +91,42 @@
 
         <!-- ABA: Por Tamanho -->
         <div id="por-tamanho" class="tab-pane">
-            <section class="card">
-                <h2 class="card-title">Entregas por Tamanho</h2>
-                <div id="entregasPorTamanho" class="tamanhos-grid">
-                    <!-- Preenchido dinamicamente -->
-                </div>
-            </section>
 
-            <section class="card">
-                <h2 class="card-title">Devoluções por Tamanho</h2>
-                <div id="devolucoesPorTamanho" class="tamanhos-grid">
-                    <!-- Preenchido dinamicamente -->
-                </div>
-            </section>
+            <!-- JALECO -->
+            <div class="peca-section">
+                <div class="peca-header">🥼 Jaleco</div>
 
-            <section class="card">
-                <h2 class="card-title">Pendência por Tamanho</h2>
-                <div id="saldoPorTamanho" class="tamanhos-grid">
-                    <!-- Preenchido dinamicamente -->
-                </div>
-            </section>
+                <section class="card">
+                    <h2 class="card-title">Entregas — Jaleco</h2>
+                    <div id="entregasJaleco" class="tamanhos-grid"></div>
+                </section>
+                <section class="card">
+                    <h2 class="card-title">Devoluções — Jaleco</h2>
+                    <div id="devolucoesJaleco" class="tamanhos-grid"></div>
+                </section>
+                <section class="card">
+                    <h2 class="card-title">Pendência — Jaleco</h2>
+                    <div id="saldoJaleco" class="tamanhos-grid"></div>
+                </section>
+            </div>
+
+            <!-- CALÇA -->
+            <div class="peca-section">
+                <div class="peca-header">👖 Calça</div>
+
+                <section class="card">
+                    <h2 class="card-title">Entregas — Calça</h2>
+                    <div id="entregasCalca" class="tamanhos-grid"></div>
+                </section>
+                <section class="card">
+                    <h2 class="card-title">Devoluções — Calça</h2>
+                    <div id="devolucoesCalca" class="tamanhos-grid"></div>
+                </section>
+                <section class="card">
+                    <h2 class="card-title">Pendência — Calça</h2>
+                    <div id="saldoCalca" class="tamanhos-grid"></div>
+                </section>
+            </div>
         </div>
 
         <!-- ABA: Pendências -->
@@ -118,12 +140,12 @@
 
             <section class="card">
                 <h2 class="card-title">Análise de Pendências</h2>
-                <div id="analisePendencias" class="analise-pendencias">
-                    <!-- Preenchido dinamicamente -->
-                </div>
+                <div id="analisePendencias" class="analise-pendencias"></div>
             </section>
         </div>
     </div>
+
+    <!-- Ações de Relatório -->
     <section id="relatorios" class="controles">
         <div class="acoes-relatorio">
             <button id="btnGerarTexto" class="btn-acao btn-imagem">
@@ -134,16 +156,15 @@
             </button>
         </div>
     </section>
-
 </main>
 
-
+<!-- Loading -->
 <div id="loadingOverlay" class="loading-overlay" style="display:none;">
     <div class="loading-spinner"></div>
     <p id="loadingText">Carregando dados...</p>
 </div>
 
-<!-- Toast de notificações -->
+<!-- Toast -->
 <div id="toast" class="toast"></div>
 
 <footer class="footer">

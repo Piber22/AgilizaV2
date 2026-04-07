@@ -1,59 +1,49 @@
 // ============================================================
 // GERADOR DE RELATÓRIO EM TEXTO — relatorios-texto.js
 //
-// Gera um resumo em texto puro, ideal para colar em e-mail
-// ou mensagem de WhatsApp.
-//
-// Para personalizar o conteúdo do relatório:
-//   - Edite CONFIGURACOES_TEXTO para ligar/desligar seções.
-//   - Ajuste os textos dos cabeçalhos em TEXTOS.
-//   - A função montarTexto() controla a ordem e estrutura
-//     das seções — edite diretamente se quiser reorganizar.
+// Gera resumo em texto puro para colar em e-mail / WhatsApp.
+// Inclui seções separadas por origem (Autorizado / CI) e totais.
 // ============================================================
 
 const CONFIGURACOES_TEXTO = {
-    // Seções que aparecem no relatório de texto
     secoes: {
-        cabecalho: true,
-        resumoGeral: true,
+        cabecalho:          true,
+        resumoGeral:        true,
         detalhesPorTamanho: true,
-        listaPendencias: true,        // Lista individual de quem está com uniforme
-        rodape: true
+        listaPendencias:    true,
+        rodape:             true
     },
 
-    // Máximo de pendências listadas individualmente (0 = todas)
     maxPendenciasListadas: 10,
+    separador:      '─────────────────────────',
+    separadorGrosso:'═════════════════════════',
 
-    // Separadores visuais
-    separador: '─────────────────────────',
-    separadorGrosso: '═════════════════════════',
-
-    // Textos customizáveis
     textos: {
-        titulo: '📋 RELATÓRIO DE UNIFORMES',
-        empresa: 'Manserv — Equipe HSANA',
-        secaoResumo: '📊 RESUMO DO PERÍODO',
-        secaoTamanhos: '📏 MOVIMENTAÇÕES POR TAMANHO',
-        secaoPendencias: '⚠️ PENDÊNCIAS',
-        labelEntregas: '📦 Entregas',
-        labelDevolucoes: '✅ Devoluções',
-        labelPendentes: '⏳ Pendentes',
-        semPendencias: '✅ Nenhuma pendência no período!',
-        rodape: '© 2025 Manserv — Equipe HSANA'
+        titulo:           '📋 RELATÓRIO DE UNIFORMES',
+        empresa:          'Manserv — Equipe HSANA',
+        secaoResumo:      '📊 RESUMO DO PERÍODO',
+        secaoJaleco:      '🥼 MOVIMENTAÇÕES — JALECO',
+        secaoCalca:       '👖 MOVIMENTAÇÕES — CALÇA',
+        secaoPendencias:  '⚠️ PENDÊNCIAS',
+        labelEntregas:    '📦 Entregas',
+        labelDevolucoes:  '✅ Devoluções',
+        labelPendentes:   '⏳ Pendentes',
+        semPendencias:    '✅ Nenhuma pendência no período!',
+        rodape:           '© 2025 Manserv — Equipe HSANA'
     }
 };
 
 // ============================================================
-// FUNÇÃO PRINCIPAL — chamada pelo relatorios.js
+// FUNÇÃO PRINCIPAL
+// origemAtiva: 'todos' | 'autorizado' | 'ci'
 // ============================================================
-function gerarRelatorioTexto(dadosFiltrados, calcularPendencias) {
+function gerarRelatorioTexto(dadosFiltrados, calcularPendencias, origemAtiva) {
     try {
         const dataInicio = document.getElementById('dataInicio').value;
-        const dataFim = document.getElementById('dataFim').value;
+        const dataFim    = document.getElementById('dataFim').value;
         const pendencias = calcularPendencias();
 
-        const texto = montarTexto(dadosFiltrados, pendencias, dataInicio, dataFim);
-
+        const texto = montarTexto(dadosFiltrados, pendencias, dataInicio, dataFim, origemAtiva);
         exibirModalTexto(texto);
         mostrarToast('Relatório gerado! Copie e cole onde quiser.', 'success');
 
@@ -65,10 +55,8 @@ function gerarRelatorioTexto(dadosFiltrados, calcularPendencias) {
 
 // ============================================================
 // MONTAGEM DO TEXTO
-// Edite esta função para reorganizar as seções ou adicionar
-// informações extras ao relatório.
 // ============================================================
-function montarTexto(dadosFiltrados, pendencias, dataInicio, dataFim) {
+function montarTexto(dadosFiltrados, pendencias, dataInicio, dataFim, origemAtiva) {
     const cfg = CONFIGURACOES_TEXTO;
     const txt = cfg.textos;
     const linhas = [];
@@ -77,10 +65,16 @@ function montarTexto(dadosFiltrados, pendencias, dataInicio, dataFim) {
         ? `📅 ${formatarDataTexto(dataInicio)}`
         : `📅 ${formatarDataTexto(dataInicio)} até ${formatarDataTexto(dataFim)}`;
 
+    const origemLabel = origemAtiva === 'ci'
+        ? ' • Filtro: CI'
+        : origemAtiva === 'autorizado'
+            ? ' • Filtro: Autorizado'
+            : ' • Visão: Geral';
+
     // — CABEÇALHO —
     if (cfg.secoes.cabecalho) {
         linhas.push(cfg.separadorGrosso);
-        linhas.push(txt.titulo);
+        linhas.push(txt.titulo + origemLabel);
         linhas.push(periodoLabel);
         linhas.push(cfg.separadorGrosso);
         linhas.push('');
@@ -88,39 +82,61 @@ function montarTexto(dadosFiltrados, pendencias, dataInicio, dataFim) {
 
     // — RESUMO GERAL —
     if (cfg.secoes.resumoGeral) {
-        const totalEntregas = dadosFiltrados.filter(d => d.tipo === 'entrega').length;
+        const totalEntregas   = dadosFiltrados.filter(d => d.tipo === 'entrega').length;
         const totalDevolucoes = dadosFiltrados.filter(d => d.tipo === 'devolucao').length;
-        const totalPendentes = pendencias.length;
+        const totalCI         = dadosFiltrados.filter(d => normalizar(d.origem) === 'ci').length;
+        const totalAutorizado = dadosFiltrados.filter(d => normalizar(d.origem) !== 'ci').length;
+        const totalPendentes  = pendencias.length;
 
         linhas.push(txt.secaoResumo);
         linhas.push(cfg.separador);
         linhas.push(`${txt.labelEntregas}:    ${totalEntregas}`);
         linhas.push(`${txt.labelDevolucoes}: ${totalDevolucoes}`);
         linhas.push(`${txt.labelPendentes}:   ${totalPendentes}`);
+
+        if (origemAtiva === 'todos') {
+            linhas.push('');
+            linhas.push(`  ✔️  Autorizados: ${totalAutorizado}`);
+            linhas.push(`  📄 Com CI:       ${totalCI}`);
+        }
         linhas.push('');
     }
 
-    // — DETALHES POR TAMANHO —
+    // — JALECO POR TAMANHO —
     if (cfg.secoes.detalhesPorTamanho) {
-        const tamanhos = ['P', 'M', 'G', 'GG', 'EG'];
-        const entregas = contarPorTamanhoTexto(dadosFiltrados.filter(d => d.tipo === 'entrega'));
-        const devolucoes = contarPorTamanhoTexto(dadosFiltrados.filter(d => d.tipo === 'devolucao'));
+        const tamanhos = ['P', 'M', 'G', 'GG', 'EG', 'EXG'];
 
-        const temMovimento = tamanhos.some(t => (entregas[t] || 0) > 0 || (devolucoes[t] || 0) > 0);
+        const entJ = contarPorTamanhoTexto(dadosFiltrados.filter(d => d.tipo === 'entrega'),   'jaleco');
+        const devJ = contarPorTamanhoTexto(dadosFiltrados.filter(d => d.tipo === 'devolucao'), 'jaleco');
+        const temJaleco = tamanhos.some(t => (entJ[t] || 0) > 0 || (devJ[t] || 0) > 0);
 
-        if (temMovimento) {
-            linhas.push(txt.secaoTamanhos);
+        if (temJaleco) {
+            linhas.push(txt.secaoJaleco);
             linhas.push(cfg.separador);
-
             tamanhos.forEach(tam => {
-                const e = entregas[tam] || 0;
-                const d = devolucoes[tam] || 0;
+                const e = entJ[tam] || 0;
+                const d = devJ[tam] || 0;
                 if (e > 0 || d > 0) {
-                    // Adicione ou remova campos aqui para customizar o que aparece por tamanho
-                    linhas.push(`  ${tam.padEnd(3)} → 📦 ${e} entrega${e !== 1 ? 's' : ''}  |  ✅ ${d} devoluções${d !== 1 ? '' : ''}`);
+                    linhas.push(`  ${tam.padEnd(3)} → 📦 ${e} entrega${e !== 1 ? 's' : ''}  |  ✅ ${d} devolução${d !== 1 ? 'ões' : ''}`);
                 }
             });
+            linhas.push('');
+        }
 
+        const entC = contarPorTamanhoTexto(dadosFiltrados.filter(d => d.tipo === 'entrega'),   'calca');
+        const devC = contarPorTamanhoTexto(dadosFiltrados.filter(d => d.tipo === 'devolucao'), 'calca');
+        const temCalca = tamanhos.some(t => (entC[t] || 0) > 0 || (devC[t] || 0) > 0);
+
+        if (temCalca) {
+            linhas.push(txt.secaoCalca);
+            linhas.push(cfg.separador);
+            tamanhos.forEach(tam => {
+                const e = entC[tam] || 0;
+                const d = devC[tam] || 0;
+                if (e > 0 || d > 0) {
+                    linhas.push(`  ${tam.padEnd(3)} → 📦 ${e} entrega${e !== 1 ? 's' : ''}  |  ✅ ${d} devolução${d !== 1 ? 'ões' : ''}`);
+                }
+            });
             linhas.push('');
         }
     }
@@ -133,17 +149,46 @@ function montarTexto(dadosFiltrados, pendencias, dataInicio, dataFim) {
         if (pendencias.length === 0) {
             linhas.push(txt.semPendencias);
         } else {
-            const lista = cfg.maxPendenciasListadas > 0
-                ? pendencias.slice(0, cfg.maxPendenciasListadas)
-                : pendencias;
+            // Separar por origem se estiver na visão "todos"
+            if (origemAtiva === 'todos') {
+                const autorizados = pendencias.filter(p => normalizar(p.origem) !== 'ci');
+                const ci          = pendencias.filter(p => normalizar(p.origem) === 'ci');
 
-            lista.forEach((p, i) => {
-                // Edite esta linha para mudar como cada pendência aparece no texto
-                linhas.push(`${i + 1}. ${p.funcionario} — Tam. ${p.tamanho} (${p.diasPendente} dia${p.diasPendente !== 1 ? 's' : ''})`);
-            });
+                if (autorizados.length > 0) {
+                    linhas.push('  ✔️ AUTORIZADOS:');
+                    autorizados.slice(0, cfg.maxPendenciasListadas).forEach((p, i) => {
+                        linhas.push(`    ${i + 1}. ${p.funcionario} — 🥼 ${p.jaleco || '?'} / 👖 ${p.calca || '?'} (${p.diasPendente}d)`);
+                    });
+                    if (autorizados.length > cfg.maxPendenciasListadas) {
+                        linhas.push(`    ... e mais ${autorizados.length - cfg.maxPendenciasListadas} pendência(s).`);
+                    }
+                    linhas.push('');
+                }
 
-            if (cfg.maxPendenciasListadas > 0 && pendencias.length > cfg.maxPendenciasListadas) {
-                linhas.push(`   ... e mais ${pendencias.length - cfg.maxPendenciasListadas} pendência(s).`);
+                if (ci.length > 0) {
+                    linhas.push('  📄 COM CI:');
+                    ci.slice(0, cfg.maxPendenciasListadas).forEach((p, i) => {
+                        const enf = p.enfermeiro ? ` (${p.enfermeiro})` : '';
+                        linhas.push(`    ${i + 1}. ${p.funcionario}${enf} — 🥼 ${p.jaleco || '?'} / 👖 ${p.calca || '?'} (${p.diasPendente}d)`);
+                    });
+                    if (ci.length > cfg.maxPendenciasListadas) {
+                        linhas.push(`    ... e mais ${ci.length - cfg.maxPendenciasListadas} pendência(s).`);
+                    }
+                }
+
+            } else {
+                const lista = cfg.maxPendenciasListadas > 0
+                    ? pendencias.slice(0, cfg.maxPendenciasListadas)
+                    : pendencias;
+
+                lista.forEach((p, i) => {
+                    const enf = (normalizar(p.origem) === 'ci' && p.enfermeiro) ? ` (${p.enfermeiro})` : '';
+                    linhas.push(`${i + 1}. ${p.funcionario}${enf} — 🥼 ${p.jaleco || '?'} / 👖 ${p.calca || '?'} (${p.diasPendente} dia${p.diasPendente !== 1 ? 's' : ''})`);
+                });
+
+                if (cfg.maxPendenciasListadas > 0 && pendencias.length > cfg.maxPendenciasListadas) {
+                    linhas.push(`   ... e mais ${pendencias.length - cfg.maxPendenciasListadas} pendência(s).`);
+                }
             }
         }
 
@@ -160,10 +205,9 @@ function montarTexto(dadosFiltrados, pendencias, dataInicio, dataFim) {
 }
 
 // ============================================================
-// MODAL DE EXIBIÇÃO + BOTÃO COPIAR
+// MODAL DE EXIBIÇÃO
 // ============================================================
 function exibirModalTexto(texto) {
-    // Remove modal anterior se existir
     const modalAnterior = document.getElementById('modalRelatorioTexto');
     if (modalAnterior) modalAnterior.remove();
 
@@ -216,13 +260,11 @@ function exibirModalTexto(texto) {
 
     document.body.appendChild(modal);
 
-    // Fechar
     const fechar = () => modal.remove();
     document.getElementById('fecharModalTexto').addEventListener('click', fechar);
     document.getElementById('fecharModalTexto2').addEventListener('click', fechar);
     modal.addEventListener('click', (e) => { if (e.target === modal) fechar(); });
 
-    // Copiar
     document.getElementById('btnCopiarTexto').addEventListener('click', () => {
         const textarea = document.getElementById('textoRelatorio');
         textarea.select();
@@ -238,12 +280,11 @@ function exibirModalTexto(texto) {
 // ============================================================
 // AUXILIARES
 // ============================================================
-function contarPorTamanhoTexto(dados) {
+function contarPorTamanhoTexto(dados, campo) {
     const contagem = {};
     dados.forEach(item => {
-        if (item.tamanho) {
-            contagem[item.tamanho] = (contagem[item.tamanho] || 0) + 1;
-        }
+        const tam = item[campo];
+        if (tam) contagem[tam] = (contagem[tam] || 0) + 1;
     });
     return contagem;
 }
@@ -252,4 +293,10 @@ function formatarDataTexto(dataISO) {
     if (!dataISO) return '';
     const partes = dataISO.split('-');
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+// normalizar já existe em relatorios.js, mas redeclaramos para independência deste módulo
+function normalizar(str) {
+    if (!str) return '';
+    return str.trim().toLowerCase();
 }

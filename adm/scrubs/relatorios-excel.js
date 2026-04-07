@@ -1,131 +1,114 @@
 // ============================================================
 // GERADOR DE RELATÓRIO EXCEL — relatorios-excel.js
 //
-// Este arquivo controla exclusivamente a geração do .xlsx.
-// Para personalizar o relatório:
-//   - Edite CONFIGURACOES_EXCEL para ajustar nome do arquivo,
-//     abas ativas, colunas exibidas e formatação de saldo.
-//   - Cada aba pode ser habilitada/desabilitada individualmente.
-//   - A coluna "Saldo" usa valor NEGATIVO para indicar pendência
-//     (ex: 3 entregas e 1 devolução = Saldo -2).
+// Estrutura da planilha:
+//   Data | Horário | Funcionário | Tipo | Origem | Enfermeiro | Jaleco | Calça | Assinatura
+//
+// Abas geradas:
+//   1. Movimentações — listagem completa do período filtrado
+//   2. Resumo Jaleco  — entregas/devoluções/saldo por tamanho de jaleco
+//   3. Resumo Calça   — entregas/devoluções/saldo por tamanho de calça
+//   4. Pendências     — quem está com uniforme ainda não devolvido
 // ============================================================
 
 const CONFIGURACOES_EXCEL = {
-    // Nome base do arquivo gerado (datas do filtro serão anexadas)
     nomeArquivo: 'relatorio_uniformes',
+    tamanhos: ['P', 'M', 'G', 'GG', 'EG', 'EXG'],
 
-    // Tamanhos considerados no resumo
-    tamanhos: ['P', 'M', 'G', 'GG', 'EG'],
-
-    // Abas que serão incluídas no Excel
     abas: {
         movimentacoes: true,
-        resumoPorTamanho: true,
-        pendencias: true
+        resumoJaleco:  true,
+        resumoCalca:   true,
+        pendencias:    true
     },
 
-    // Colunas da aba Movimentações
-    // Remova ou reordene os itens para ajustar o que aparece
-    colunasMovimentacoes: ['Data', 'Horário', 'Funcionário', 'Tipo', 'Tamanho'],
+    colunasMovimentacoes: ['Data', 'Horário', 'Funcionário', 'Tipo', 'Origem', 'Enfermeiro', 'Jaleco', 'Calça'],
+    colunasPendencias:    ['Funcionário', 'Origem', 'Enfermeiro', 'Jaleco', 'Calça', 'Data Entrega', 'Horário', 'Dias Pendente'],
 
-    // Colunas da aba Pendências
-    // Remova ou reordene os itens para ajustar o que aparece
-    colunasPendencias: ['Funcionário', 'Tamanho', 'Data Entrega', 'Horário', 'Dias Pendente'],
-
-    // Larguras das colunas (em caracteres) para cada aba
     largurasColunas: {
-        movimentacoes: [12, 10, 30, 12, 10],
-        resumoPorTamanho: [10, 12, 14, 12],
-        pendencias: [30, 10, 14, 10, 14]
+        movimentacoes: [12, 10, 30, 12, 14, 25, 10, 10],
+        resumo:        [10, 12, 14, 12],
+        pendencias:    [30, 14, 25, 10, 10, 14, 10, 14]
     }
 };
 
 // ============================================================
-// FUNÇÃO PRINCIPAL — chamada pelo relatorios.js
-// Recebe: dadosFiltrados, calcularPendencias, contarPorTamanho
+// FUNÇÃO PRINCIPAL
+// origemAtiva: 'todos' | 'autorizado' | 'ci'
 // ============================================================
-function gerarExcel(dadosFiltrados, calcularPendencias, contarPorTamanho) {
+function gerarExcel(dadosFiltrados, calcularPendencias, contarPorTamanho, origemAtiva) {
     mostrarLoading('Gerando Excel...');
 
     try {
         const wb = XLSX.utils.book_new();
         const dataInicio = document.getElementById('dataInicio').value;
-        const dataFim = document.getElementById('dataFim').value;
+        const dataFim    = document.getElementById('dataFim').value;
+        const tamanhos   = CONFIGURACOES_EXCEL.tamanhos;
+
+        const origemLabel = origemAtiva === 'ci' ? ' (CI)' : origemAtiva === 'autorizado' ? ' (Autorizado)' : '';
 
         // — ABA: MOVIMENTAÇÕES —
         if (CONFIGURACOES_EXCEL.abas.movimentacoes) {
-            const linhasMovimentacoes = dadosFiltrados.map(item => {
-                const linha = {};
+            const linhas = dadosFiltrados.map(item => {
                 const mapa = {
-                    'Data': item.data,
-                    'Horário': item.horario,
+                    'Data':        item.data,
+                    'Horário':     item.horario,
                     'Funcionário': item.funcionario,
-                    'Tipo': item.tipo === 'entrega' ? 'ENTREGA' : 'DEVOLUÇÃO',
-                    'Tamanho': item.tamanho
+                    'Tipo':        item.tipo === 'entrega' ? 'ENTREGA' : 'DEVOLUÇÃO',
+                    'Origem':      item.origem,
+                    'Enfermeiro':  item.enfermeiro || '',
+                    'Jaleco':      item.jaleco || '',
+                    'Calça':       item.calca  || ''
                 };
-                CONFIGURACOES_EXCEL.colunasMovimentacoes.forEach(col => {
-                    linha[col] = mapa[col] ?? '';
-                });
+                const linha = {};
+                CONFIGURACOES_EXCEL.colunasMovimentacoes.forEach(col => { linha[col] = mapa[col] ?? ''; });
                 return linha;
             });
 
-            const ws = XLSX.utils.json_to_sheet(linhasMovimentacoes);
+            const ws = XLSX.utils.json_to_sheet(linhas);
             aplicarLarguras(ws, CONFIGURACOES_EXCEL.largurasColunas.movimentacoes);
-            XLSX.utils.book_append_sheet(wb, ws, 'Movimentações');
+            XLSX.utils.book_append_sheet(wb, ws, 'Movimentações' + origemLabel);
         }
 
-        // — ABA: RESUMO POR TAMANHO —
-        if (CONFIGURACOES_EXCEL.abas.resumoPorTamanho) {
-            const entregas = contarPorTamanho(dadosFiltrados.filter(d => d.tipo === 'entrega'));
-            const devolucoes = contarPorTamanho(dadosFiltrados.filter(d => d.tipo === 'devolucao'));
+        // — ABA: RESUMO JALECO —
+        if (CONFIGURACOES_EXCEL.abas.resumoJaleco) {
+            const ws = gerarAbaResumo(dadosFiltrados, contarPorTamanho, 'jaleco', tamanhos);
+            XLSX.utils.book_append_sheet(wb, ws, 'Resumo Jaleco' + origemLabel);
+        }
 
-            // Saldo NEGATIVO = pendência (entregas superam devoluções)
-            // Ex: 3 entregas, 1 devolução → Saldo = -2
-            const resumo = CONFIGURACOES_EXCEL.tamanhos.map(tam => ({
-                'Tamanho': tam,
-                'Entregas': entregas[tam] || 0,
-                'Devoluções': devolucoes[tam] || 0,
-                'Saldo': (devolucoes[tam] || 0) - (entregas[tam] || 0)
-            }));
-
-            // Linha de totais
-            resumo.push({
-                'Tamanho': 'TOTAL',
-                'Entregas': resumo.reduce((s, r) => s + r['Entregas'], 0),
-                'Devoluções': resumo.reduce((s, r) => s + r['Devoluções'], 0),
-                'Saldo': resumo.reduce((s, r) => s + r['Saldo'], 0)
-            });
-
-            const ws = XLSX.utils.json_to_sheet(resumo);
-            aplicarLarguras(ws, CONFIGURACOES_EXCEL.largurasColunas.resumoPorTamanho);
-            XLSX.utils.book_append_sheet(wb, ws, 'Resumo por Tamanho');
+        // — ABA: RESUMO CALÇA —
+        if (CONFIGURACOES_EXCEL.abas.resumoCalca) {
+            const ws = gerarAbaResumo(dadosFiltrados, contarPorTamanho, 'calca', tamanhos);
+            XLSX.utils.book_append_sheet(wb, ws, 'Resumo Calça' + origemLabel);
         }
 
         // — ABA: PENDÊNCIAS —
         if (CONFIGURACOES_EXCEL.abas.pendencias) {
             const pendencias = calcularPendencias();
 
-            const linhasPendencias = pendencias.map(item => {
-                const linha = {};
+            const linhas = pendencias.map(item => {
                 const mapa = {
-                    'Funcionário': item.funcionario,
-                    'Tamanho': item.tamanho,
-                    'Data Entrega': item.data,
-                    'Horário': item.horario,
+                    'Funcionário':   item.funcionario,
+                    'Origem':        item.origem || '',
+                    'Enfermeiro':    item.enfermeiro || '',
+                    'Jaleco':        item.jaleco || '',
+                    'Calça':         item.calca  || '',
+                    'Data Entrega':  item.data,
+                    'Horário':       item.horario,
                     'Dias Pendente': item.diasPendente
                 };
-                CONFIGURACOES_EXCEL.colunasPendencias.forEach(col => {
-                    linha[col] = mapa[col] ?? '';
-                });
+                const linha = {};
+                CONFIGURACOES_EXCEL.colunasPendencias.forEach(col => { linha[col] = mapa[col] ?? ''; });
                 return linha;
             });
 
-            const ws = XLSX.utils.json_to_sheet(linhasPendencias);
+            const ws = XLSX.utils.json_to_sheet(linhas);
             aplicarLarguras(ws, CONFIGURACOES_EXCEL.largurasColunas.pendencias);
-            XLSX.utils.book_append_sheet(wb, ws, 'Pendências');
+            XLSX.utils.book_append_sheet(wb, ws, 'Pendências' + origemLabel);
         }
 
-        const nomeArquivo = `${CONFIGURACOES_EXCEL.nomeArquivo}_${dataInicio}_${dataFim}.xlsx`;
+        const sufixoOrigem = origemAtiva !== 'todos' ? `_${origemAtiva}` : '';
+        const nomeArquivo  = `${CONFIGURACOES_EXCEL.nomeArquivo}${sufixoOrigem}_${dataInicio}_${dataFim}.xlsx`;
         XLSX.writeFile(wb, nomeArquivo);
 
         esconderLoading();
@@ -138,7 +121,34 @@ function gerarExcel(dadosFiltrados, calcularPendencias, contarPorTamanho) {
     }
 }
 
-// Aplica larguras de coluna no worksheet
+// Gera aba de resumo por tamanho para jaleco ou calça
+function gerarAbaResumo(dadosFiltrados, contarPorTamanho, campo, tamanhos) {
+    const entregas   = contarPorTamanho(dadosFiltrados.filter(d => d.tipo === 'entrega'),   campo);
+    const devolucoes = contarPorTamanho(dadosFiltrados.filter(d => d.tipo === 'devolucao'), campo);
+
+    // Coleta todos os tamanhos que apareceram, mesmo fora da lista base
+    const todosTamanhos = [...new Set([...tamanhos, ...Object.keys(entregas), ...Object.keys(devolucoes)])];
+
+    const resumo = todosTamanhos.map(tam => ({
+        'Tamanho':    tam,
+        'Entregas':   entregas[tam]   || 0,
+        'Devoluções': devolucoes[tam] || 0,
+        // Saldo negativo = pendência (mais saídas que retornos)
+        'Saldo':      (devolucoes[tam] || 0) - (entregas[tam] || 0)
+    }));
+
+    resumo.push({
+        'Tamanho':    'TOTAL',
+        'Entregas':   resumo.reduce((s, r) => s + r['Entregas'],   0),
+        'Devoluções': resumo.reduce((s, r) => s + r['Devoluções'], 0),
+        'Saldo':      resumo.reduce((s, r) => s + r['Saldo'],      0)
+    });
+
+    const ws = XLSX.utils.json_to_sheet(resumo);
+    aplicarLarguras(ws, CONFIGURACOES_EXCEL.largurasColunas.resumo);
+    return ws;
+}
+
 function aplicarLarguras(ws, larguras) {
     if (!larguras || larguras.length === 0) return;
     ws['!cols'] = larguras.map(w => ({ wch: w }));
