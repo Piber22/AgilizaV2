@@ -6,7 +6,7 @@ const CONFIG = {
   webAppUrl: 'https://script.google.com/macros/s/AKfycbzU4yan3MMnTxUw3DCyjaX6o0u4FJvAjcEc9XXianDUz17NsTQP3fqrn4ZEg21d_QAXGQ/exec',
 
   // URL do Apps Script dedicado para salvar evidências no Drive
-  evidenciasUrl: 'https://script.google.com/macros/s/AKfycbxD2L28njGa3ka8mJPfY8Enf5EZ3HVs-cQjjz2GEXIC0bWqkorOJcZE1E9IoaoQswg1/exec',
+  evidenciasUrl: 'https://script.google.com/macros/s/AKfycbz8gpvQHe76iNuf89OH2NZTIiq-t2BaUVOCEWngL0U5ONNaKDx_66lsJ-RcjJTxpCK5/exec',
 
   // Intervalo de atualização automática (ms)
   autoRefreshInterval: 5 * 60 * 1000, // 5 minutos

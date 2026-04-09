@@ -268,6 +268,7 @@ async function enviarEvidencias(activity, tipo, arquivos) {
   };
 
   console.log('📤 Enviando evidências ao Drive:', tipo, arquivosComprimidos.length + ' arquivo(s)');
+  console.log('📦 Payload evidências:', JSON.stringify({ row: payload.row, id: payload.id, tipo: payload.tipo, arquivos: payload.arquivos.length }));
 
   await fetch(CONFIG.evidenciasUrl, {
     method: 'POST',
