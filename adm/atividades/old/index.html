@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Controle de Atividades</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="header">
+    <h1 id="monthTitle"></h1>
+    <button id="toggleDone">Ocultar concluídas</button>
+  </header>
+
+  <div class="calendar">
+
+    <!-- Cabeçalho dos dias da semana -->
+    <div class="calendar-header">
+      <div>Seg</div>
+      <div>Ter</div>
+      <div>Qua</div>
+      <div>Qui</div>
+      <div>Sex</div>
+      <div>Sáb</div>
+      <div>Dom</div>
+    </div>
+
+    <!-- Grid do calendário (JS renderiza aqui) -->
+    <div id="calendar" class="calendar-grid"></div>
+
+  </div>
+
+  <!-- MODAL -->
+
+  <div id="turnoModal" class="modal hidden">
+    <div class="modal-content">
+
+      <button id="closeModal" class="close-btn">&times;</button>
+
+      <h3>Reagendar atividade</h3>
+
+      <div class="modal-info">
+        <p class="activity-name" id="modalActivityName"></p>
+        <p class="activity-shift">
+          Turno atual: <span id="modalShift" class="shift-badge"></span>
+        </p>
+      </div>
+
+      <p>Como deseja ajustar o turno?</p>
+
+      <div class="modal-actions">
+        <button id="manterTurno">Manter turno</button>
+        <button id="inverterTurno">Inverter turno</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/drag.js"></script>
+
+</body>
+</html>
