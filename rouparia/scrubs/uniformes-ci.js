@@ -18,7 +18,6 @@ function inicializarAbaCI() {
     }
 
     // Autocomplete: sugere nomes já registrados no histórico
-    ac_inicializarInput(inputNome, () => validarFormularioCI());
 
     inputNome.addEventListener('input', validarFormularioCI);
     inputEnfermeiro.addEventListener('input', validarFormularioCI);

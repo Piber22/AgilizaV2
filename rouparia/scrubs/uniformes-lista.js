@@ -39,10 +39,6 @@ function renderizarFuncionarios(filtro = '') {
                 <div class="checkbox-custom"></div>
                 <span class="funcionario-nome">${nome}${validadeBadge}</span>
             </div>
-            <div class="funcionario-acoes">
-                <button class="btn-acao btn-entrega"   data-nome="${nome}" title="Entregar Uniforme">📦</button>
-                <button class="btn-acao btn-devolucao" data-nome="${nome}" title="Receber Devolução">✅</button>
-            </div>
         `;
 
         item.querySelector('.funcionario-info').addEventListener('click', (e) => {
@@ -50,15 +46,7 @@ function renderizarFuncionarios(filtro = '') {
             toggleSelecao(nome);
         });
 
-        item.querySelector('.btn-entrega').addEventListener('click', (e) => {
-            e.stopPropagation();
-            verificarPendenciaAntesDaEntrega([nome]);
-        });
 
-        item.querySelector('.btn-devolucao').addEventListener('click', (e) => {
-            e.stopPropagation();
-            iniciarOperacao([nome], 'devolucao');
-        });
 
         container.appendChild(item);
     });
