@@ -504,7 +504,7 @@ section {
 
 /* =============================
    SCROLLBAR CUSTOMIZADA
-   ============================= */
+   =============================  */
 #listaFuncionarios::-webkit-scrollbar,
 #listaTamanhosContainer::-webkit-scrollbar { width: 8px; }
 

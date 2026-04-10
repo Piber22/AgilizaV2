@@ -15,7 +15,7 @@ function ac_normalizar(str) {
         .trim();
 }
 
-// ── Capitalizar nome corretamente ─────────────────────────────────────────────
+// ── Capitalizar nome corretamente  ─────────────────────────────────────────────
 function ac_capitalizar(str) {
     const minusculas = ['de', 'da', 'do', 'dos', 'das', 'e'];
     return str.trim().split(' ')
