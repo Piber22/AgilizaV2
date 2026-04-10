@@ -12,18 +12,36 @@ export function render() {
 }
 
 export function renderStats() {
-    let total = 0, vagas = 0, candidatos = 0, demissao = 0;
+    let total = 0, ativos = 0, vagas = 0, candidatos = 0, demissao = 0;
     for (const [teamKey, members] of Object.entries(state)) {
-        const cap    = TEAM_CONFIG[teamKey].capacity;
-        const colabs = members.filter(m => m.tipo === 'colaborador' || m.tipo === 'demissao').length;
-        const cands  = members.filter(m => m.tipo === 'candidato' && !m.substitutoDe).length;
-        total      += colabs;
+        const cfg      = TEAM_CONFIG[teamKey];
+        if (!cfg) continue;
+        const cap      = cfg.capacity;
+        const isNoLimit = cfg.noLimit; // afastados
+
+        const colabs   = members.filter(m => m.tipo === 'colaborador' || m.tipo === 'demissao').length;
+        const cands    = members.filter(m => m.tipo === 'candidato' && !m.substitutoDe).length;
+        const totalFilled = colabs + cands;
+
+        // Total = todos os colaboradores (inclusive afastados e lideranças)
+        total += colabs;
+
+        // Ativos = colaboradores - afastados
+        if (teamKey !== 'afastados') {
+            ativos += members.filter(m => m.tipo === 'colaborador').length;
+        }
+
         candidatos += members.filter(m => m.tipo === 'candidato').length;
         demissao   += members.filter(m => m.tipo === 'demissao').length;
-        const v = cap - colabs - cands;
-        if (v > 0) vagas += v;
+
+        // Vagas abertas: todas as equipes com capacidade definida (exceto afastados)
+        if (!isNoLimit) {
+            const v = cap - totalFilled;
+            if (v > 0) vagas += v;
+        }
     }
     document.getElementById('statTotal').textContent      = total;
+    document.getElementById('statAtivos').textContent     = ativos;
     document.getElementById('statVagas').textContent      = vagas;
     document.getElementById('statCandidatos').textContent = candidatos;
     document.getElementById('statDemissao').textContent   = demissao;
@@ -32,20 +50,45 @@ export function renderStats() {
 export function renderBoard() {
     const board = document.getElementById('board');
     board.innerHTML = '';
-    for (const [teamKey, cfg] of Object.entries(TEAM_CONFIG)) {
-        board.appendChild(renderTeamColumn(teamKey, cfg));
-    }
+
+    // ── Linha principal: equipes operacionais ──
+    const mainTeams   = ['graciela', 'giovana', 'jessica', 'franciele', 'alisson'];
+    const specialTeams = ['liderancas', 'administrativo', 'afastados'];
+
+    const rowMain = document.createElement('div');
+    rowMain.className = 'board-row-main';
+    mainTeams.forEach(key => {
+        const cfg = TEAM_CONFIG[key];
+        if (cfg) rowMain.appendChild(renderTeamColumn(key, cfg));
+    });
+    board.appendChild(rowMain);
+
+    // ── Separador ──
+    const label = document.createElement('div');
+    label.className   = 'board-section-label';
+    label.textContent = 'Outras categorias';
+    board.appendChild(label);
+
+    // ── Linha especial ──
+    const rowSpecial = document.createElement('div');
+    rowSpecial.className = 'board-row-special';
+    specialTeams.forEach(key => {
+        const cfg = TEAM_CONFIG[key];
+        if (cfg) rowSpecial.appendChild(renderTeamColumn(key, cfg));
+    });
+    board.appendChild(rowSpecial);
 }
 
 export function renderTeamColumn(teamKey, cfg) {
     const members      = state[teamKey] || [];
     const cap          = cfg.capacity;
+    const isNoLimit    = cfg.noLimit; // afastados — sem capacidade máxima
     const colabCount   = members.filter(m => m.tipo === 'colaborador' || m.tipo === 'demissao').length;
     const candCount    = members.filter(m => m.tipo === 'candidato' && !m.substitutoDe).length;
     const totalFilled  = colabCount + candCount;
-    const vagasAbertas = Math.max(0, cap - totalFilled);
-    const pct          = Math.min(100, Math.round((totalFilled / cap) * 100));
-    const isFull       = totalFilled >= cap;
+    const vagasAbertas = isNoLimit ? 0 : Math.max(0, cap - totalFilled);
+    const pct          = isNoLimit ? 0 : Math.min(100, Math.round((totalFilled / cap) * 100));
+    const isFull       = isNoLimit ? true : totalFilled >= cap;
     const progressColor = pct >= 100 ? '#22c55e' : pct >= 70 ? cfg.color : '#e94b22';
 
     const col = document.createElement('div');
@@ -55,18 +98,18 @@ export function renderTeamColumn(teamKey, cfg) {
     col.innerHTML = `
         <div class="team-header">
             <div class="team-header-top">
-                <span class="team-name">${cfg.name}</span>
+                <span class="team-name" style="color:${cfg.color}">${cfg.name}</span>
                 <div style="display:flex;align-items:center;gap:6px">
                     <button class="btn-sort" data-team="${teamKey}" title="Ordenar A–Z">
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="9" y2="18"/></svg>
                     </button>
-                    <span class="team-badge ${isFull ? 'badge-ok' : 'badge-warn'}">${totalFilled}/${cap}</span>
+                    <span class="team-badge ${isNoLimit ? '' : (isFull ? 'badge-ok' : 'badge-warn')}">${isNoLimit ? totalFilled : `${totalFilled}/${cap}`}</span>
                 </div>
             </div>
             <div class="team-progress">
-                <div class="team-progress-fill" style="width:${pct}%;background:${progressColor}"></div>
+                <div class="team-progress-fill" style="width:${isNoLimit ? 0 : pct}%;background:${progressColor}"></div>
             </div>
-            <div class="team-capacity">${vagasAbertas > 0 ? `${vagasAbertas} vaga${vagasAbertas > 1 ? 's' : ''} aberta${vagasAbertas > 1 ? 's' : ''}` : 'Equipe completa'}</div>
+            <div class="team-capacity">${isNoLimit ? `${totalFilled} ${totalFilled === 1 ? 'pessoa' : 'pessoas'}` : vagasAbertas > 0 ? `${vagasAbertas} vaga${vagasAbertas > 1 ? 's' : ''} aberta${vagasAbertas > 1 ? 's' : ''}` : 'Equipe completa'}</div>
         </div>
         <div class="team-body" id="body-${teamKey}"></div>
     `;

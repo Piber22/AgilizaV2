@@ -69,11 +69,14 @@ export function subscribeToFirebase(onUpdate) {
 
 // ─── CONFIGURAÇÃO DAS EQUIPES ────────────────
 export const TEAM_CONFIG = {
-    graciela:  { name: 'Graciela',  capacity: 15, color: '#e94b22' },
-    giovana:   { name: 'Giovana',   capacity: 15, color: '#a855f7' },
-    jessica:   { name: 'Jéssica',  capacity: 7,  color: '#3b82f6' },
-    franciele: { name: 'Franciele', capacity: 7,  color: '#22c55e' },
-    alisson:   { name: 'Alisson',   capacity: 4,  color: '#f97316' },
+    graciela:      { name: 'Graciela',      capacity: 15, color: '#e94b22' },
+    giovana:       { name: 'Giovana',        capacity: 15, color: '#a855f7' },
+    jessica:       { name: 'Jéssica',       capacity: 7,  color: '#3b82f6' },
+    franciele:     { name: 'Franciele',      capacity: 7,  color: '#22c55e' },
+    alisson:       { name: 'Alisson',        capacity: 4,  color: '#f97316' },
+    liderancas:    { name: 'Lideranças',     capacity: 5,  color: '#eab308' },
+    administrativo:{ name: 'Administrativo', capacity: 3,  color: '#06b6d4' },
+    afastados:     { name: 'Afastados',      capacity: 99, color: '#6b7280', noLimit: true },
 };
 
 // ─── DADOS INICIAIS ──────────────────────────
@@ -135,6 +138,9 @@ export function makeInitialData() {
             { id: uid(), nome: 'MARISA',          tipo: 'colaborador' },
             { id: uid(), nome: 'ROSANGELA',       tipo: 'colaborador' },
         ],
+        liderancas:     [],
+        administrativo: [],
+        afastados:      [],
     };
 }
 

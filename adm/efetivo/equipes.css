@@ -160,13 +160,61 @@ body {
 }
 
 /* ============ BOARD ============ */
+.board-wrapper {
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 0 24px 40px;
+    /* Scrollbar estilizada */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border2) var(--bg);
+}
+.board-wrapper::-webkit-scrollbar { height: 6px; }
+.board-wrapper::-webkit-scrollbar-track { background: var(--bg); }
+.board-wrapper::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.board-wrapper::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
 .board {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 16px;
-    padding: 20px 24px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 20px;
     min-height: calc(100vh - var(--header-h) - var(--legend-h));
-    align-items: start;
+}
+
+/* Linha principal: 5 colunas de operação */
+.board-row-main {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(200px, 1fr));
+    gap: 16px;
+    min-width: 1050px;
+}
+
+/* Linha secundária: colunas especiais lado a lado com scroll */
+.board-row-special {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(260px, 1fr));
+    gap: 16px;
+    min-width: 1050px;
+}
+
+/* Separador visual entre as linhas */
+.board-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 0 2px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 1050px;
+}
+.board-section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
 }
 
 /* ============ TEAM COLUMN ============ */

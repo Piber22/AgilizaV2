@@ -78,6 +78,11 @@
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-item">
+                    <span class="stat-num" id="statAtivos" style="color: var(--green)">0</span>
+                    <span class="stat-label">Ativos</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
                     <span class="stat-num" id="statVagas" style="color: var(--red)">0</span>
                     <span class="stat-label">Vagas Abertas</span>
                 </div>
@@ -116,7 +121,9 @@
         </div>
     </div>
 
-    <main class="board" id="board"></main>
+    <div class="board-wrapper">
+        <main class="board" id="board"></main>
+    </div>
 
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal" id="modal">

@@ -431,10 +431,18 @@ document.addEventListener('keydown', e => {
 async function initApp() {
     let loaded = await loadStateFromFirebase();
     if (!loaded) loaded = loadStateLocal();
-    setState(loaded || makeInitialData());
+    const base = loaded || makeInitialData();
+    // Garante que novas colunas existam mesmo em states antigos
+    if (!base.liderancas)     base.liderancas     = [];
+    if (!base.administrativo) base.administrativo = [];
+    if (!base.afastados)      base.afastados      = [];
+    setState(base);
     localStorage.setItem('hsana_equipes_v3', JSON.stringify(state));
     render();
     subscribeToFirebase(remoteState => {
+        if (!remoteState.liderancas)     remoteState.liderancas     = [];
+        if (!remoteState.administrativo) remoteState.administrativo = [];
+        if (!remoteState.afastados)      remoteState.afastados      = [];
         setState(remoteState);
         localStorage.setItem('hsana_equipes_v3', JSON.stringify(state));
         render();
