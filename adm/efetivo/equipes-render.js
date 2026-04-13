@@ -26,9 +26,10 @@ export function renderStats() {
         // Total = todos os colaboradores (inclusive afastados e lideranças)
         total += colabs;
 
-        // Ativos = colaboradores - afastados
+        // Ativos = colaboradores efetivados exceto afastados
+        // "demissao" é apenas flag visual — a pessoa ainda está ativa
         if (teamKey !== 'afastados') {
-            ativos += members.filter(m => m.tipo === 'colaborador').length;
+            ativos += members.filter(m => m.tipo === 'colaborador' || m.tipo === 'demissao').length;
         }
 
         candidatos += members.filter(m => m.tipo === 'candidato').length;
