@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HigiControl — Checklist de Leitos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Background grid -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">⊕</span>
+        <div class="logo-text">
+          <span class="logo-main">HIGI<span class="logo-accent">CONTROL</span></span>
+          <span class="logo-sub">Checklists Leitos</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="registro">
+      <span class="tab-icon">✦</span>
+      <span>Registro</span>
+    </button>
+    <button class="tab-btn" data-tab="assinatura">
+      <span class="tab-icon">✎</span>
+      <span>Assinaturas</span>
+    </button>
+    <button class="tab-btn" data-tab="historico">
+      <span class="tab-icon">◈</span>
+      <span>Histórico</span>
+    </button>
+  </nav>
+
+  <main class="app-main">
+    <!-- ABA: REGISTRO -->
+    <section class="tab-panel active" id="tab-registro">
+      <div class="panel-header">
+        <h2>Novo Registro</h2>
+      </div>
+
+      <form class="registro-form" id="registroForm" autocomplete="off">
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label class="form-label" for="responsavel">
+              <span class="label-icon">◆</span> Responsável
+            </label>
+            <input type="text" id="responsavel" class="form-input" placeholder="Nome do responsável" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="higienista">
+              <span class="label-icon">◆</span> Higienista
+            </label>
+            <input type="text" id="higienista" class="form-input" placeholder="Nome do higienista" required />
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label" for="setor">
+              <span class="label-icon">◆</span> Setor
+            </label>
+            <select id="setor" class="form-select" required>
+              <option value="" disabled selected>Selecione o setor</option>
+              <option value="5 - Prolongados">5º — Prolongados</option>
+              <option value="5 - Giro Rápido">5º — Giro Rápido</option>
+              <option value="5 - UTI">5º — UTI</option>
+              <option value="4 - Lado A">4º — Lado A</option>
+              <option value="4 - Lado B">4º — Lado B</option>
+              <option value="3">3º Andar</option>
+              <option value="2">2º Andar</option>
+              <option value="USR">USR</option>
+              <option value="USMM">USMM</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="quarto">
+              <span class="label-icon">◆</span> Quarto
+            </label>
+            <select id="quarto" class="form-select" required>
+              <option value="" disabled selected>Selecione o quarto</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="leito">
+              <span class="label-icon">◆</span> Leito
+            </label>
+            <div class="leito-grid" id="leitoGrid">
+              <button type="button" class="leito-btn" data-leito="A">A</button>
+              <button type="button" class="leito-btn" data-leito="B">B</button>
+              <button type="button" class="leito-btn" data-leito="C">C</button>
+              <button type="button" class="leito-btn" data-leito="D">D</button>
+              <button type="button" class="leito-btn" data-leito="E">E</button>
+              <button type="button" class="leito-btn" data-leito="F">F</button>
+            </div>
+            <input type="hidden" id="leito" required />
+          </div>
+
+        </div><!-- /form-grid -->
+
+        <div class="checklist-section">
+          <div class="checklist-title">
+            <span class="label-icon">◈</span> Itens do Checklist
+          </div>
+          <div class="checklist-grid" id="checklistGrid">
+            <label class="check-item"><input type="checkbox" /><span>Porta de entrada</span></label>
+            <label class="check-item"><input type="checkbox" /><span>Paredes</span></label>
+            <label class="check-item"><input type="checkbox" /><span>Piso</span></label>
+            <label class="check-item"><input type="checkbox" /><span>Roupeiro</span></label>
+            <label class="check-item"><input type="checkbox" /><span>Móveis/Utensilios</span></label>
+            <label class="check-item"><input type="checkbox" /><span>Cama</span></label>
+            <label class="check-item"><input type="checkbox" /><span>Janelas</span></label>
+            <label class="check-item"><input type="checkbox" /><span>Dispensers</span></label>
+            <label class="check-item"><input type="checkbox" /><span>Lixeiras</span></label>
+            <label class="check-item"><input type="checkbox" /><span>Paredes limpas</span></label>
+          </div>
+          <div class="checklist-progress">
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <span class="progress-label" id="progressLabel">0 / 10</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="btnLimpar">Limpar</button>
+          <button type="submit" class="btn-primary" id="btnFinalizar">
+            <span class="btn-icon">✔</span> Finalizar Checklist
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- ABA: COLETAR ASSINATURA -->
+    <section class="tab-panel" id="tab-assinatura">
+      <div class="panel-header">
+        <h2>Coleta de Assinatura</h2>
+      </div>
+      <div id="assinaturaContent"></div>
+    </section>
+
+    <!-- ABA: HISTÓRICO -->
+    <section class="tab-panel" id="tab-historico">
+      <div class="panel-header">
+        <h2>Histórico de Registros</h2>
+        <div class="historico-actions">
+          <input type="text" id="searchHistorico" class="form-input search-input" placeholder="Buscar por quarto, setor, responsável…" />
+          <button class="btn-secondary btn-sm" id="btnExportar">⬇ Exportar CSV</button>
+        </div>
+      </div>
+      <div id="historicoContent"></div>
+    </section>
+  </main>
+
+  <!-- MODAL de sucesso -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+      <div class="modal-icon">✔</div>
+      <h3 class="modal-title">Checklist Finalizado!</h3>
+      <p class="modal-sub" id="modalSub"></p>
+      <div class="modal-actions">
+        <button class="btn-primary" id="btnModalAssinar">Coletar Assinatura</button>
+        <button class="btn-secondary" id="btnModalFechar">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="registro.js"></script>
+  <script src="assinatura.js"></script>
+  <script src="historico.js"></script>
+</body>
+</html>
