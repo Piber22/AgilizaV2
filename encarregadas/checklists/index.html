@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HigiControl — Checklist de Leitos</title>
+  <title>Agiliza Aí!</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -15,17 +15,12 @@
   <div class="bg-grid"></div>
   <div class="bg-glow"></div>
 
-  <header class="app-header">
-    <div class="header-inner">
-      <div class="logo">
-        <span class="logo-icon">⊕</span>
-        <div class="logo-text">
-          <span class="logo-main">HIGI<span class="logo-accent">CONTROL</span></span>
-          <span class="logo-sub">Checklists Leitos</span>
-        </div>
-      </div>
-    </div>
-  </header>
+  <header class="header">
+    <a href="#" class="logo-link">
+        <img src="logo.png" alt="Logo" class="logo">
+    </a>
+    <h1>Checklists de leito</h1>
+</header>
 
   <nav class="tab-nav">
     <button class="tab-btn active" data-tab="registro">
@@ -45,9 +40,7 @@
   <main class="app-main">
     <!-- ABA: REGISTRO -->
     <section class="tab-panel active" id="tab-registro">
-      <div class="panel-header">
-        <h2>Novo Registro</h2>
-      </div>
+
 
       <form class="registro-form" id="registroForm" autocomplete="off">
         <div class="form-grid">
@@ -144,23 +137,17 @@
 
     <!-- ABA: COLETAR ASSINATURA -->
     <section class="tab-panel" id="tab-assinatura">
-      <div class="panel-header">
-        <h2>Coleta de Assinatura</h2>
-      </div>
       <div id="assinaturaContent"></div>
     </section>
 
     <!-- ABA: HISTÓRICO -->
     <section class="tab-panel" id="tab-historico">
-      <div class="panel-header">
-        <h2>Histórico de Registros</h2>
-        <div class="historico-actions">
-          <input type="text" id="searchHistorico" class="form-input search-input" placeholder="Buscar por quarto, setor, responsável…" />
-          <button class="btn-secondary btn-sm" id="btnExportar">⬇ Exportar CSV</button>
-        </div>
-      </div>
-      <div id="historicoContent"></div>
-    </section>
+  <div class="historico-filtros">
+    <input type="text" id="searchHistorico" class="form-input search-input" placeholder="Buscar por quarto, setor, responsável…" />
+  </div>
+  <div id="historicoStatus"></div>
+  <div id="historicoContent"></div>
+  </section>
   </main>
 
   <!-- MODAL de sucesso -->

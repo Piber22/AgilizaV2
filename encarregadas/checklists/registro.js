@@ -2,6 +2,27 @@
    registro.js — Aba "Registro"
    ============================================================ */
 
+// URL do seu Web App do Google Apps Script (substitua pela sua)
+const SHEETS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzkR3FNn0-EeRNYRSIY4DPKO-Np11G-nuBvEBmHEkANDOrW6j1SUh9zFBxbajYG1jKvjw/exec';
+
+async function enviarParaSheets(registro, metodo = 'POST') {
+  try {
+    await fetch(SHEETS_WEBAPP_URL, {
+      method: metodo,
+      mode: 'no-cors',        // 👈 muda para no-cors
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(registro),
+    });
+    console.log(`📤 Enviado para Sheets (${registro.id}) - modo no-cors`);
+    return true;
+  } catch (error) {
+    console.error('❌ Erro ao enviar para Sheets:', error);
+    return false;
+  }
+}
+
 (function () {
   'use strict';
 
@@ -164,6 +185,9 @@ setorSelect.addEventListener('change', (e) => {
     const registros = JSON.parse(localStorage.getItem('higicontrol_registros') || '[]');
     registros.unshift(record);
     localStorage.setItem('higicontrol_registros', JSON.stringify(registros));
+
+    // Envia para o Google Sheets (novo registro, sem assinatura)
+    enviarParaSheets(record, 'POST');
 
     // Modal
     document.getElementById('modalSub').textContent =

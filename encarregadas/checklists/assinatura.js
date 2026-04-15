@@ -2,6 +2,30 @@
    assinatura.js — Aba "Coletar Assinatura" (AGRUPADO POR SETOR)
    ============================================================ */
 
+async function enviarParaSheets(registro, metodo = 'POST') {
+  try {
+    // Para no-cors, só podemos usar POST. Enviamos o método real dentro do corpo.
+    const payload = {
+      ...registro,
+      _method: metodo    // 'POST' ou 'PUT'
+    };
+
+    await fetch(SHEETS_WEBAPP_URL, {
+      method: 'POST',               // sempre POST
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    console.log(`📤 Enviado para Sheets (${registro.id}) como ${metodo}`);
+    return true;
+  } catch (error) {
+    console.error('❌ Erro ao enviar para Sheets:', error);
+    return false;
+  }
+}
+
 (function () {
   'use strict';
 
@@ -35,13 +59,14 @@
 
     // Inicializa os canvases e listeners para cada grupo
     for (const [setor, registrosGrupo] of grupos.entries()) {
-      initCanvas(setor);
-      // Armazena os IDs dos registros do grupo no próprio canvas para uso no save
-      const canvas = document.getElementById(`sigCanvas-${setor}`);
-      if (canvas) {
-        canvas.dataset.registrosIds = JSON.stringify(registrosGrupo.map(r => r.id));
-      }
-    }
+     const setorId = setor.replace(/\s/g, '');  // 👈 limpa espaços
+     initCanvas(setorId);                        // 👈 passa o ID limpo
+     // Armazena os IDs dos registros do grupo no próprio canvas para uso no save
+     const canvas = document.getElementById(`sigCanvas-${setorId}`);
+        if (canvas) {
+     canvas.dataset.registrosIds = JSON.stringify(registrosGrupo.map(r => r.id));
+  }
+}
   };
 
   function buildGrupo(setor, registros) {
@@ -52,7 +77,7 @@
         <div class="grupo-registro-item">
           <span><strong>Quarto ${r.quarto} — Leito ${r.leito}</strong> (${r.data} ${r.hora})</span>
           <span>Responsável: ${r.responsavel} | Higienista: ${r.higienista}</span>
-          <span>Checklist: ${r.marcados}/${r.totalItems} (${pct}%)</span>
+
         </div>
       `;
     }).join('');
@@ -60,8 +85,8 @@
     return `
     <div class="grupo-assinatura-card" id="grupo-${setor.replace(/\s/g, '')}">
       <div class="grupo-header">
-        <span class="grupo-titulo">📌 Setor: ${setor}</span>
-        <span class="grupo-qtd">${registros.length} checklist(s)</span>
+        <span class="grupo-titulo">Setor: ${setor}</span>
+        <span class="grupo-qtd">${registros.length}</span>
       </div>
       <div class="grupo-registros">
         ${listaItems}
@@ -81,8 +106,8 @@
         <div class="sig-toolbar">
           <span class="sig-note">Assine com o dedo ou mouse na área branca</span>
           <div style="display:flex;gap:8px">
-            <button class="btn-secondary btn-sm" onclick="clearSigGrupo('${setor.replace(/\s/g, '')}')">↺ Limpar</button>
-            <button class="btn-primary btn-sm" onclick="saveSigGrupo('${setor.replace(/\s/g, '')}')">✔ Salvar Assinatura (para todos do setor)</button>
+            <button class="btn-secondary btn-sm" onclick="clearSigGrupo('${setor.replace(/\s/g, '')}')">Limpar</button>
+            <button class="btn-primary btn-sm" onclick="saveSigGrupo('${setor.replace(/\s/g, '')}')">Salvar Assinatura</button>
           </div>
         </div>
       </div>
@@ -203,6 +228,14 @@
     if (atualizados > 0) {
       localStorage.setItem('higicontrol_registros', JSON.stringify(registros));
     }
+
+    // Envia atualização para cada registro modificado
+    ids.forEach(async id => {
+      const registroAtualizado = registros.find(r => r.id === id);
+      if (registroAtualizado) {
+        await enviarParaSheets(registroAtualizado, 'PUT');
+      }
+    });
 
     // Feedback visual: remove o grupo inteiro ou mostra mensagem
     const grupoDiv = document.getElementById(`grupo-${setorId}`);
