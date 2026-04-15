@@ -642,6 +642,8 @@ section, .panel-header, .registro-form, .pending-card, .grupo-assinatura-card {
     .leito-grid { grid-template-columns: repeat(3, 1fr); }
     .historico-actions { flex-direction: column; align-items: stretch; }
     .search-input { width: 100%; }
+    .header h1 { font-size: 1.3em; }
+    .logo { width: 30px; }
 }
 
 /* =============================
