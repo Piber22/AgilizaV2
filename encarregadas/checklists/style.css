@@ -126,7 +126,7 @@ main {
    ============================= */
 section, .panel-header, .registro-form, .pending-card, .grupo-assinatura-card {
     background-color: #201F20;
-    padding: 25px 30px;
+    padding: 25px 5px;
     /*margin: 10px auto;*/
     border-radius: 10px;
     /*box-shadow: 0 0 10px rgba(0,0,0,0.6);*/
