@@ -156,9 +156,9 @@
       quarto:        get('quarto', 'room'),
       leito:         get('leito', 'bed'),
       marcados, totalItems, pct,
-      nomeAssinante: get('nomeassinante', 'nome_assinante', 'assinante', 'signer', 'nome'),
+      nomeAssinante: get('Nome_Assinante', 'nome_assinante', 'assinante', 'signer', 'nome'),
       coren:         get('coren', 'coren_number', 'coren_no'),
-      assinadoFlag:  get('assinatura', 'assinado', 'signed', 'assinou')
+      status: get('status', 'situacao', 'assinatura_status', 'estado')
     };
   }
 
@@ -179,7 +179,6 @@
             <th>Setor</th>
             <th>Quarto</th>
             <th>Leito</th>
-            <th>Checklist</th>
             <th>Assinante</th>
             <th>COREN</th>
             <th>Assinatura</th>
@@ -191,16 +190,12 @@
   }
 
   function buildRow(r) {
-    const pct = r.pct;
-    const flag = (r.assinadoFlag || '').toLowerCase();
-    const assinou = flag === 'sim' || flag === 'yes' || flag === 'true' || flag === '1';
-    const sigEl = assinou
-      ? `<span class="badge-signed">✔ Sim</span>`
-      : `<span class="sig-pending">Não</span>`;
 
-    const checkHTML = (r.marcados > 0 || r.totalItems > 0)
-      ? `<span class="checklist-count">${r.marcados}/${r.totalItems}<span class="count-bar"><span class="count-fill" style="width:${pct}%"></span></span></span>`
-      : `<span style="color:#666">—</span>`;
+    const statusTexto = (r.status || '').trim();
+const isAssinado = statusTexto.toLowerCase() === 'assinado';
+const sigEl = isAssinado
+  ? `<span class="badge-signed">Assinado</span>`
+  : `<span class="sig-pending">Pendente</span>`;
 
     const search = [r.id, r.responsavel, r.higienista, r.setor, r.quarto, r.leito, r.nomeAssinante]
       .join(' ').toLowerCase();
@@ -215,7 +210,6 @@
       <td>${r.setor}</td>
       <td><span class="badge-quarto">${r.quarto}</span></td>
       <td><span class="badge-leito">${r.leito}</span></td>
-      <td>${checkHTML}</td>
       <td>${r.nomeAssinante || '—'}</td>
       <td>${r.coren || '—'}</td>
       <td>${sigEl}</td>
