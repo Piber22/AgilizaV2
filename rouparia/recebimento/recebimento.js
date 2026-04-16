@@ -7,6 +7,7 @@ const valoresMinimos = {
     camisola: 140,
     cobertor: 100,
     fronha: 140,
+    campoG: 15,
     jalecoP: 10,
     jalecoM: 10,
     jalecoG: 10,
@@ -56,6 +57,9 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     const fronhaQtd = parseInt(document.getElementById("fronhaQtd").value || 0);
     const fronhaPeso = parseFloat(document.getElementById("fronhaPeso").value || 0).toFixed(2);
 
+    const campoGQtd = parseInt(document.getElementById("campoGQtd").value || 0);
+    const campoGPeso = parseFloat(document.getElementById("campoGPeso").value || 0).toFixed(2);
+
     // 🩺 Scrubs
     const jaleco = {
         P: parseInt(document.getElementById("jalecoP").value || 0),
@@ -81,6 +85,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         parseFloat(camisolaPeso) +
         parseFloat(cobertorPeso) +
         parseFloat(fronhaPeso) +
+        parseFloat(campoGPeso) +
         parseFloat(jaleco.Peso) +
         parseFloat(calca.Peso)
     ).toFixed(2);
@@ -90,7 +95,8 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     msg += `📌 Lençol ${lencolQtd} ${validar(lencolQtd, valoresMinimos.lencol)} (peso ${lencolPeso})\n`;
     msg += `📌 Camisola ${camisolaQtd} ${validar(camisolaQtd, valoresMinimos.camisola)} (peso ${camisolaPeso})\n`;
     msg += `📌 Cobertor ${cobertorQtd} ${validar(cobertorQtd, valoresMinimos.cobertor)} (peso ${cobertorPeso})\n`;
-    msg += `📌 Fronha ${fronhaQtd} ${validar(fronhaQtd, valoresMinimos.fronha)} (peso ${fronhaPeso})\n\n`;
+    msg += `📌 Fronha ${fronhaQtd} ${validar(fronhaQtd, valoresMinimos.fronha)} (peso ${fronhaPeso})\n`;
+    msg += `📌 Campo G ${campoGQtd} ${validar(campoGQtd, valoresMinimos.campoG)} (peso ${campoGPeso})\n\n`;
     msg += `📋 ROUPA AZUL\n🥼 JALECO\n`;
     msg += `🥼 P ${jaleco.P} ${validar(jaleco.P, valoresMinimos.jalecoP)}\n`;
     msg += `🥼 M ${jaleco.M} ${validar(jaleco.M, valoresMinimos.jalecoM)}\n`;
@@ -126,6 +132,9 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         fronhaQtd,
         fronhaQtdStatus: validar(fronhaQtd, valoresMinimos.fronha),
         fronhaPeso,
+        campoGQtd,                                     // <-- novo
+        campoGQtdStatus: validar(campoGQtd, valoresMinimos.campoG), // <-- novo
+        campoGPeso,
         jalecoP: jaleco.P,
         jalecoPStatus: validar(jaleco.P, valoresMinimos.jalecoP),
         jalecoM: jaleco.M,
