@@ -48,37 +48,49 @@ async function enviarDados() {
         };
     });
 
+    // ── Enviar para o Google Sheets (fonte de verdade principal) ─────────────
+    // fetch com no-cors nunca rejeita — qualquer exceção aqui é falha de rede real.
+    let sheetsOk = false;
     try {
-        // Dispara Google Sheets e Firebase em paralelo
-        // Promise.allSettled garante que uma falha não cancela a outra
-        await Promise.allSettled([
-            fetch(webAppUrl, {
-                method:  'POST',
-                mode:    'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify(registros)
-            }),
-            fb_enviarRegistros(registros)
-        ]);
+        await fetch(webAppUrl, {
+            method:  'POST',
+            mode:    'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(registros)
+        });
+        sheetsOk = true; // sem exceção = enviado (resposta opaca é esperada com no-cors)
+    } catch (errSheets) {
+        console.warn('Falha ao enviar para Sheets:', errSheets);
+    }
 
+    // ── Se Sheets falhou: salvar na fila offline e parar ─────────────────────
+    // NÃO tenta Firebase antes de confirmar que Sheets falhou,
+    // para evitar qualquer cenário de envio parcial → duplo registro.
+    if (!sheetsOk) {
         esconderLoading();
-        await verificarPendencias();
-        resetarSistema();
-
-    } catch (error) {
-        esconderLoading();
-        console.warn('Salvando registro offline.', error);
-
         try {
             await oq_salvarNaFila(registros);
             await oq_atualizarBadge();
-            oq_mostrarToast('Salvo localmente', 'offline');
+            oq_mostrarToast('Sem conexão — salvo localmente', 'offline');
             resetarSistema();
         } catch (dbError) {
             console.error('Falha ao salvar offline:', dbError);
             alert('❌ Sem conexão e não foi possível salvar localmente. Tente novamente.');
         }
+        return;
     }
+
+    // ── Sheets confirmado: disparar Firebase de forma independente ────────────
+    // Falha no Firebase não afeta o fluxo — já foi salvo no Sheets.
+    try {
+        await fb_enviarRegistros(registros);
+    } catch (errFb) {
+        console.warn('Firebase falhou (ignorado — Sheets já salvou):', errFb);
+    }
+
+    esconderLoading();
+    await verificarPendencias();
+    resetarSistema();
 }
 
 // ── Inicialização ─────────────────────────────────────────────────────────────
