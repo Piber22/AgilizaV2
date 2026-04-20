@@ -3,6 +3,43 @@
 // uniformes-envio.js
 // =============================
 
+// ── Verificar conectividade real ──────────────────────────────────────────────
+// fetch com no-cors NUNCA lança exceção — a resposta opaca é sempre "sucesso"
+// mesmo sem internet. O HEAD com cors no webAppUrl é bloqueado pelo CORS do
+// Google Apps Script. A solução é pingar um recurso externo pequeno que aceita
+// no-cors — se lançar exceção, é NetworkError real (sem internet).
+async function ev_verificarConectividade() {
+    if (!navigator.onLine) return false;
+
+    try {
+        const controller = new AbortController();
+        const timeout    = setTimeout(() => controller.abort(), 5000);
+
+        await fetch('https://www.google.com/favicon.ico', {
+            method: 'GET',
+            mode:   'no-cors',
+            cache:  'no-store',
+            signal: controller.signal
+        });
+
+        clearTimeout(timeout);
+        return true; // respondeu = há internet
+    } catch (e) {
+        return false; // AbortError (timeout) ou NetworkError = sem internet
+    }
+}
+
+// ── Enviar para o Google Sheets (no-cors, fire-and-forget) ───────────────────
+async function ev_enviarParaSheets(registros) {
+    await fetch(webAppUrl, {
+        method:  'POST',
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(registros)
+    });
+    // Com no-cors a resposta é sempre opaca — se não lançou, consideramos enviado
+}
+
 // ── Enviar Dados ─────────────────────────────────────────────────────────────
 async function enviarDados() {
     mostrarLoading();
@@ -48,35 +85,47 @@ async function enviarDados() {
         };
     });
 
+    // ── 1) Verificar conectividade REAL antes de tentar enviar ───────────────
+    // fetch com no-cors nunca lança exceção, mesmo sem internet.
+    // Por isso testamos a conexão separadamente antes de disparar o envio.
+    const temConexao = await ev_verificarConectividade();
+
+    if (!temConexao) {
+        // ── 2a) Sem conexão → salvar na fila offline imediatamente ──────────
+        esconderLoading();
+        try {
+            await oq_salvarNaFila(registros);
+            await oq_atualizarBadge();
+            oq_mostrarToast('📶 Sem sinal — registro salvo. Será enviado automaticamente.', 'offline');
+            resetarSistema();
+        } catch (dbError) {
+            console.error('Falha ao salvar offline:', dbError);
+            alert('❌ Sem conexão e não foi possível salvar localmente. Tente novamente.');
+        }
+        return;
+    }
+
+    // ── 2b) Com conexão → enviar normalmente ────────────────────────────────
     try {
-        // Dispara Google Sheets e Firebase em paralelo
-        // Promise.allSettled garante que uma falha não cancela a outra
-        await Promise.allSettled([
-            fetch(webAppUrl, {
-                method:  'POST',
-                mode:    'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify(registros)
-            }),
-            fb_enviarRegistros(registros)
-        ]);
+        await ev_enviarParaSheets(registros);
 
         esconderLoading();
         await verificarPendencias();
         resetarSistema();
 
     } catch (error) {
+        // Erro inesperado durante o envio (ex: Firebase lançou) → fila offline
         esconderLoading();
-        console.warn('Salvando registro offline.', error);
+        console.warn('Erro durante envio, salvando offline.', error);
 
         try {
             await oq_salvarNaFila(registros);
             await oq_atualizarBadge();
-            oq_mostrarToast('Salvo localmente', 'offline');
+            oq_mostrarToast('⚠️ Erro no envio — registro salvo localmente.', 'offline');
             resetarSistema();
         } catch (dbError) {
             console.error('Falha ao salvar offline:', dbError);
-            alert('❌ Sem conexão e não foi possível salvar localmente. Tente novamente.');
+            alert('❌ Falha no envio e não foi possível salvar localmente. Tente novamente.');
         }
     }
 }
