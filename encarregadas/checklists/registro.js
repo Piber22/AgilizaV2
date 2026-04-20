@@ -3,7 +3,7 @@
    ============================================================ */
 
 // URL do seu Web App do Google Apps Script (substitua pela sua)
-const SHEETS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzkR3FNn0-EeRNYRSIY4DPKO-Np11G-nuBvEBmHEkANDOrW6j1SUh9zFBxbajYG1jKvjw/exec';
+const SHEETS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwk_eMpQZHx4xmXQsLRBXnzvjy2EP2VgHEFE36OHLxU57nRhHOWsnUilUYCDjUU3bUd/exec';
 
 async function enviarParaSheets(registro, metodo = 'POST') {
   try {
@@ -150,6 +150,7 @@ setorSelect.addEventListener('change', (e) => {
     const setor       = document.getElementById('setor').value;
     const quarto      = document.getElementById('quarto').value;
     const leito       = document.getElementById('leito').value;
+    const patrimonio  = document.getElementById('patrimonio').value.trim();
 
     if (!leito) {
       alert('Por favor, selecione o leito (A–F).');
@@ -175,6 +176,7 @@ setorSelect.addEventListener('change', (e) => {
       setor,
       quarto,
       leito,
+      patrimonio,
       checklist:   items,
       totalItems:  total,
       marcados:    checked,
