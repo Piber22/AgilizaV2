@@ -12,7 +12,7 @@ export function render() {
 }
 
 export function renderStats() {
-    let total = 0, ativos = 0, vagas = 0, candidatos = 0, demissao = 0;
+    let total = 0, ativos = 0, vagas = 0, candidatos = 0, demissao = 0, ferias = 0;
     for (const [teamKey, members] of Object.entries(state)) {
         const cfg      = TEAM_CONFIG[teamKey];
         if (!cfg) continue;
@@ -27,13 +27,13 @@ export function renderStats() {
         total += colabs;
 
         // Ativos = colaboradores efetivados exceto afastados
-        // "demissao" é apenas flag visual — a pessoa ainda está ativa
         if (teamKey !== 'afastados') {
             ativos += members.filter(m => m.tipo === 'colaborador' || m.tipo === 'demissao').length;
         }
 
         candidatos += members.filter(m => m.tipo === 'candidato').length;
         demissao   += members.filter(m => m.tipo === 'demissao').length;
+        ferias     += members.filter(m => m.ferias).length;
 
         // Vagas abertas: todas as equipes com capacidade definida (exceto afastados)
         if (!isNoLimit) {
@@ -46,6 +46,7 @@ export function renderStats() {
     document.getElementById('statVagas').textContent      = vagas;
     document.getElementById('statCandidatos').textContent = candidatos;
     document.getElementById('statDemissao').textContent   = demissao;
+    document.getElementById('statFerias').textContent     = ferias;
 }
 
 export function renderBoard() {
@@ -163,11 +164,14 @@ export function renderCard(member, teamKey, substituto = null) {
         const horT = getHorarioLabel(member);
         const horS = getHorarioLabel(substituto);
 
+        const feriasBadge = member.ferias ? '<span class="colab-sub" style="color:var(--yellow);margin-left:4px">Férias</span>' : '';
+
         card.innerHTML = `
             <div class="split-half split-left" data-id="${member.id}">
                 <div class="colab-info">
                     <div class="colab-name" title="${member.nome}">${firstName(member.nome)}</div>
                     <span class="colab-sub" style="color:#873BFF">Saindo</span>
+                    ${feriasBadge}
                     ${horT ? `<span class="colab-horario">${horT}</span>` : ''}
                 </div>
             </div>
@@ -180,6 +184,9 @@ export function renderCard(member, teamKey, substituto = null) {
                 </div>
             </div>
         `;
+
+        // Adiciona classe de férias se o titular estiver de férias
+        if (member.ferias) card.classList.add('ferias');
 
         card.querySelector('.split-left').addEventListener('click', e => {
             e.stopPropagation();
@@ -201,16 +208,20 @@ export function renderCard(member, teamKey, substituto = null) {
         if (member.tipo === 'candidato') subText = '<span class="colab-sub">Candidato</span>';
         if (member.tipo === 'demissao')  subText = '<span class="colab-sub" style="color:#873BFF">Futura Demissão</span>';
 
+        const feriasBadge = member.ferias ? '<span class="colab-sub" style="color:var(--yellow);margin-left:4px">Férias</span>' : '';
+
         const horLabel  = getHorarioLabel(member);
         const horarioEl = horLabel ? `<span class="colab-horario">${horLabel}</span>` : '';
 
         card.innerHTML = `
             <div class="colab-info">
                 <div class="colab-name" title="${member.nome}">${firstName(member.nome)}</div>
-                ${subText}
+                ${subText} ${feriasBadge}
             </div>
             ${horarioEl}
         `;
+
+        if (member.ferias) card.classList.add('ferias');
 
         card.addEventListener('dragstart', e => onDragStart(e, member.id, teamKey));
         card.addEventListener('dragend',   onDragEnd);
@@ -224,24 +235,21 @@ export function renderCard(member, teamKey, substituto = null) {
 }
 
 // ─── DRAG AND DROP ───────────────────────────
-// dragData agora guarda: id, fromTeam, fromIndex (posição no array), e se é reordenação interna
 let dragData = null;
 
 function onDragStart(e, id, fromTeam) {
     const members  = state[fromTeam];
-    // Índice real no array (excluindo substitutos pois ficam embutidos)
     const fromIndex = members.findIndex(m => m.id === id);
     dragData = { id, fromTeam, fromIndex };
     e.currentTarget.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', id); // necessário para Firefox
+    e.dataTransfer.setData('text/plain', id);
 }
 
 function onDragEnd(e) {
     e.currentTarget.classList.remove('dragging');
     document.querySelectorAll('.drag-over, .drop-above, .drop-below')
         .forEach(el => el.classList.remove('drag-over', 'drop-above', 'drop-below'));
-    // Remove placeholder se existir
     document.querySelectorAll('.drop-placeholder').forEach(el => el.remove());
 }
 
@@ -253,7 +261,6 @@ function onDragOver(e) {
     const toTeam = col.dataset.team;
 
     if (dragData && toTeam === dragData.fromTeam) {
-        // Reordenação interna: mostra indicador de posição
         col.classList.remove('drag-over');
         const body    = col.querySelector('.team-body');
         const cards   = [...body.querySelectorAll('.colab-card:not(.dragging)')];
@@ -268,7 +275,6 @@ function onDragOver(e) {
             overCard.classList.add(e.clientY < mid ? 'drop-above' : 'drop-below');
         }
     } else {
-        // Mover para outra equipe
         col.classList.add('drag-over');
     }
 
@@ -294,7 +300,6 @@ function onDrop(e) {
     const toTeam = col.dataset.team;
 
     if (toTeam === dragData.fromTeam) {
-        // ── Reordenação interna ──
         const body    = col.querySelector('.team-body');
         const cards   = [...body.querySelectorAll('.colab-card:not(.dragging)')];
         let insertBefore = null;
@@ -305,12 +310,9 @@ function onDrop(e) {
             if (e.clientY < mid) { insertBefore = c; break; }
         }
 
-        // Descobrir o id do card sobre o qual estamos
         const targetId = insertBefore ? insertBefore.dataset.id : null;
-
         reorderMember(dragData.id, dragData.fromTeam, targetId);
     } else {
-        // ── Mover para outra equipe ──
         moveColaborador(dragData.id, dragData.fromTeam, toTeam);
     }
 
@@ -319,7 +321,6 @@ function onDrop(e) {
     dragData = null;
 }
 
-// ─── REORDENAR dentro da mesma equipe ────────
 function reorderMember(id, teamKey, beforeId) {
     const arr = state[teamKey];
     const fromIdx = arr.findIndex(m => m.id === id);
@@ -328,7 +329,6 @@ function reorderMember(id, teamKey, beforeId) {
     const [member] = arr.splice(fromIdx, 1);
 
     if (!beforeId) {
-        // Soltar no fim
         arr.push(member);
     } else {
         const toIdx = arr.findIndex(m => m.id === beforeId);
@@ -337,11 +337,9 @@ function reorderMember(id, teamKey, beforeId) {
     }
 
     saveState();
-    // Importação dinâmica para evitar circularidade
     import('./equipes-render.js').then(m => m.render());
 }
 
-// ─── MOVER para outra equipe ─────────────────
 export function moveColaborador(id, fromTeam, toTeam) {
     const fromArr = state[fromTeam];
     const idx     = fromArr.findIndex(m => m.id === id);
@@ -357,7 +355,6 @@ export function moveColaborador(id, fromTeam, toTeam) {
     });
 }
 
-// ─── ORDENAR A-Z ─────────────────────────────
 function sortTeamAlpha(teamKey) {
     state[teamKey].sort((a, b) => a.nome.localeCompare(b.nome));
     saveState();

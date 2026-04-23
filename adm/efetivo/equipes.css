@@ -25,6 +25,9 @@
     --purple-border: rgba(135,59,255,0.35);
     --green: #22c55e;
     --green-dim: rgba(34,197,94,0.12);
+    --yellow: #eab308;
+    --yellow-dim: rgba(234,179,8,0.15);
+    --yellow-border: rgba(234,179,8,0.35);
     --header-h: 64px;
     --legend-h: 38px;
     --radius: 10px;
@@ -151,6 +154,7 @@ body {
 .dot-candidato { background: var(--blue-dim); border: 1.5px solid var(--blue); }
 .dot-demissao { background: var(--purple-dim); border: 1.5px solid var(--purple); }
 .dot-vaga { background: var(--red-dim); border: 1.5px solid var(--red); }
+.dot-ferias { background: var(--yellow-dim); border: 1.5px solid var(--yellow); }
 .legend-sep { flex: 1; }
 .legend-hint {
     display: flex; align-items: center; gap: 6px;
@@ -396,6 +400,15 @@ body {
     border-color: var(--purple-border);
 }
 .colab-card.tipo-demissao:hover { background: rgba(135,59,255,0.22); }
+
+/* Card de férias */
+.colab-card.ferias {
+    background: var(--yellow-dim);
+    border-color: var(--yellow-border);
+}
+.colab-card.ferias:hover {
+    background: rgba(234,179,8,0.22);
+}
 
 .colab-avatar {
     width: 28px; height: 28px;
@@ -676,39 +689,31 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
 
 /* ── Split card: estilos por lado ── */
-
-/* LADO ESQUERDO = FUTURA DEMISSÃO (roxo) */
 .colab-card-split .split-left {
     background: var(--purple-dim);
     border-right: 1px solid var(--purple-border);
 }
-
 .colab-card-split .split-left .colab-avatar {
     background: rgba(135,59,255,0.2);
     color: var(--purple);
 }
-
 .colab-card-split .split-left .colab-name {
     color: var(--purple);
 }
-
-/* LADO DIREITO = CANDIDATO (azul) */
 .colab-card-split .split-right {
     background: var(--blue-dim);
 }
-
 .colab-card-split .split-right .colab-avatar {
     background: rgba(59,130,246,0.2);
     color: var(--blue);
 }
-
 .colab-card-split .split-right .colab-name {
     color: var(--blue);
 }
+
 /* ============================================
    DIMENSIONAMENTO — v2
    ============================================ */
-
 .dim-legend-bar {
     height: 46px;
     background: var(--bg2);

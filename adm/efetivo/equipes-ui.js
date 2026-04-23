@@ -222,7 +222,6 @@ export function showContextMenu(e, id, teamKey) {
     const jaTemSub = state[teamKey].some(m => m.substitutoDe === id);
     const isSubst  = !!member.substitutoDe;
 
-    // Nome completo no cabeçalho
     document.getElementById('ctxHeader').textContent = member.nome;
 
     document.getElementById('ctxEfetivar').style.display =
@@ -240,6 +239,17 @@ export function showContextMenu(e, id, teamKey) {
     } else {
         demBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> Marcar futura demissão`;
         demBtn.style.display = 'flex';
+    }
+
+    // Férias
+    const feriasBtn = document.getElementById('ctxFerias');
+    if (member.tipo === 'candidato') {
+        feriasBtn.style.display = 'none';
+    } else {
+        feriasBtn.style.display = 'flex';
+        feriasBtn.innerHTML = member.ferias
+            ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg> Remover férias`
+            : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg> Marcar férias`;
     }
 
     document.getElementById('ctxAddSubstituto').style.display =
@@ -337,6 +347,25 @@ document.getElementById('ctxDemissao').addEventListener('click', () => {
         logAction('demissao_marcada', { nome: found.member.nome, equipe: found.teamKey });
     }
     closeAllMenus(); saveState(); render();
+});
+
+// Férias
+document.getElementById('ctxFerias').addEventListener('click', () => {
+    if (!contextTarget) return;
+    const found = findColaborador(contextTarget.id);
+    if (!found) return;
+    found.member.ferias = !found.member.ferias;
+    closeAllMenus(); saveState(); render();
+    showToast(
+        found.member.ferias
+            ? `${found.member.nome} está de férias`
+            : `${found.member.nome} voltou das férias`,
+        'success'
+    );
+    logAction(
+        found.member.ferias ? 'ferias_marcadas' : 'ferias_removidas',
+        { nome: found.member.nome, equipe: found.teamKey }
+    );
 });
 
 // Adicionar substituto
