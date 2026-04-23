@@ -406,8 +406,14 @@ body {
     background: var(--yellow-dim);
     border-color: var(--yellow-border);
 }
+.colab-card.ferias .colab-name {
+    color: var(--yellow);
+}
 .colab-card.ferias:hover {
     background: rgba(234,179,8,0.22);
+}
+.colab-card.ferias .split-left .colab-name {
+    color: var(--yellow);
 }
 
 .colab-avatar {
@@ -433,6 +439,8 @@ body {
 }
 .tipo-candidato .colab-name { color: var(--blue); }
 .tipo-demissao .colab-name { color: var(--purple); }
+.tipo-ferias .colab-name { color: var(--yellow); }
+
 
 .colab-sub {
     font-size: 9px;
