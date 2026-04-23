@@ -164,7 +164,7 @@ export function renderCard(member, teamKey, substituto = null) {
         const horT = getHorarioLabel(member);
         const horS = getHorarioLabel(substituto);
 
-        const feriasBadge = member.ferias ? '<span class="colab-sub" style="color:var(--yellow);margin-left:4px">Férias</span>' : '';
+        const feriasBadge = member.ferias ? '<span class="colab-sub" style="color:var(--yellow)">Férias</span>' : '';
 
         card.innerHTML = `
             <div class="split-half split-left" data-id="${member.id}">
@@ -185,7 +185,6 @@ export function renderCard(member, teamKey, substituto = null) {
             </div>
         `;
 
-        // Adiciona classe de férias se o titular estiver de férias
         if (member.ferias) card.classList.add('ferias');
 
         card.querySelector('.split-left').addEventListener('click', e => {
@@ -208,7 +207,10 @@ export function renderCard(member, teamKey, substituto = null) {
         if (member.tipo === 'candidato') subText = '<span class="colab-sub">Candidato</span>';
         if (member.tipo === 'demissao')  subText = '<span class="colab-sub" style="color:#873BFF">Futura Demissão</span>';
 
-        const feriasBadge = member.ferias ? '<span class="colab-sub" style="color:var(--yellow);margin-left:4px">Férias</span>' : '';
+        const feriasBadge = member.ferias ? '<span class="colab-sub" style="color:var(--yellow)">Férias</span>' : '';
+
+        // Combina os badges sem espaço fantasma
+        const badges = [subText, feriasBadge].filter(Boolean).join(' ');
 
         const horLabel  = getHorarioLabel(member);
         const horarioEl = horLabel ? `<span class="colab-horario">${horLabel}</span>` : '';
@@ -216,7 +218,7 @@ export function renderCard(member, teamKey, substituto = null) {
         card.innerHTML = `
             <div class="colab-info">
                 <div class="colab-name" title="${member.nome}">${firstName(member.nome)}</div>
-                ${subText} ${feriasBadge}
+                ${badges}
             </div>
             ${horarioEl}
         `;
