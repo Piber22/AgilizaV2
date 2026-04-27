@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Monitor de Checklists | SLA Operacional</title>
+
+    <!-- Fonte (mesma do sistema concorrentes) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS principal (identidade visual copiada) -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Icones (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho com logo (idêntico ao concorrentes.html) -->
+        <header class="header">
+            <a href="../gestao.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Controle de Checklists</h1>
+        </header>
+
+        <!-- Seletor de mês (estilo filtros) -->
+        <section id="filtros">
+            <h3>Período de Análise</h3>
+            <div class="filtros-container">
+                <div class="filtro-item">
+                    <label for="monthSelector">Mês de referência:</label>
+                    <input type="month" id="monthSelector" class="input-data">
+                </div>
+                <button id="btnRefresh" class="btn-filtro-principal">
+                    <i class="fas fa-sync-alt"></i> Atualizar
+                </button>
+            </div>
+        </section>
+
+        <!-- Cards de estatísticas (mesmo grid do concorrentes) -->
+        <section id="estatisticas">
+            <h3>Dashboard de Checklists</h3>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Quantidade de Checklists</div>
+                    <div class="stat-value" id="totalChecklistsValue">0</div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-fill" id="progressChecklist" style="width:0%"></div>
+                    </div>
+                    <div class="stat-meta" id="metaStatusText">📊 0 / 12</div>
+                </div>
+
+                <div class="stat-box destaque">
+                    <div class="stat-label">Nota Média dos Checklists</div>
+                    <div class="stat-value" id="avgNotaValue">0%</div>
+                    <div class="stat-meta" id="avgClassification">📉 Aguardando dados</div>
+                </div>
+
+
+            </div>
+        </section>
+
+        <!-- Indicadores SLA (apenas quantidade e nota, sem geral) -->
+        <section id="desempenho">
+            <h2>Indicadores SLA</h2>
+            <div class="sla-container">
+                <div class="equipe-card">
+                    <div class="equipe-header">
+                        <div class="equipe-nome">🎯 SLA – Quantidade</div>
+                        <div class="equipe-percentual" id="slaQtdScore">0.00</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="slaQtdBar" style="width:0%"></div>
+                    </div>
+                    <div class="equipe-detalhes">
+                        <div class="detalhe-item">
+                            <div class="detalhe-label">Regra</div>
+                            <div class="detalhe-valor" id="slaQtdDesc">≥12 = 1.0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="equipe-card">
+                    <div class="equipe-header">
+                        <div class="equipe-nome">⭐ SLA – Nota Final</div>
+                        <div class="equipe-percentual" id="slaNotaScore">0.00</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="slaNotaBar" style="width:0%"></div>
+                    </div>
+                    <div class="equipe-detalhes">
+                        <div class="detalhe-item">
+                            <div class="detalhe-label">Regra</div>
+                            <div class="detalhe-valor" id="slaNotaDesc">≥85% = 1.0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabela de checklists do mês -->
+        <section id="listaEquipes">
+            <h2>Checklists do mês selecionado</h2>
+            <div id="checklistsTable">
+                <p class="loading">Carregando dados da planilha...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
