@@ -5,6 +5,7 @@ const secaoDados = document.getElementById("dados");
 const dataInput = document.getElementById("dataRecebimento");
 const selectResp = document.getElementById("responsavel");
 const selectSituacao = document.getElementById("situacao");
+const selectMes = document.getElementById("mes");
 const secaoEstatisticas = document.getElementById("estatisticas");
 
 // LINK DO CSV
@@ -88,6 +89,7 @@ function filtrarEExibir() {
     const dataSelecionada = dataInput.value;
     const responsavelSelecionado = selectResp.value;
     const situacaoSelecionada = selectSituacao.value;
+    const mesSelecionado = selectMes.value;
 
     const dataFiltro = dataSelecionada ? new Date(dataSelecionada) : null;
 
@@ -101,8 +103,9 @@ function filtrarEExibir() {
 
         const matchData = !dataFiltro || (dataObj && dataObj < dataFiltro);
         const matchResp = !responsavelSelecionado || respPlanilha === responsavelSelecionado;
+        const matchMes = !mesSelecionado || (dataConvertida && dataConvertida.substring(5, 7) === mesSelecionado);
 
-        return matchData && matchResp;
+        return matchData && matchResp && matchMes;
     });
 
     exibirEstatisticas(filtradosParaCalculo);
@@ -117,6 +120,7 @@ function filtrarEExibir() {
 
         const matchData = !dataSelecionada || dataConvertida === dataSelecionada;
         const matchResp = !responsavelSelecionado || respPlanilha === responsavelSelecionado;
+        const matchMes = !mesSelecionado || (dataConvertida && dataConvertida.substring(5, 7) === mesSelecionado);
 
         let matchSituacao = true;
         if (situacaoSelecionada === "executadas") {
@@ -125,7 +129,7 @@ function filtrarEExibir() {
             matchSituacao = situacaoPlanilha !== "feito";
         }
 
-        return matchData && matchResp && matchSituacao;
+        return matchData && matchResp && matchSituacao && matchMes;
     });
 
     if (filtradosParaTabela.length === 0) {
@@ -199,6 +203,12 @@ async function carregar() {
 dataInput.addEventListener("change", filtrarEExibir);
 selectResp.addEventListener("change", filtrarEExibir);
 selectSituacao.addEventListener("change", filtrarEExibir);
+selectMes.addEventListener("change", filtrarEExibir);
 
 // Inicia
-document.addEventListener("DOMContentLoaded", carregar);
+document.addEventListener("DOMContentLoaded", () => {
+    // Define o mês atual como padrão
+    const mesAtual = String(new Date().getMonth() + 1).padStart(2, '0');
+    selectMes.value = mesAtual;
+    carregar();
+});
