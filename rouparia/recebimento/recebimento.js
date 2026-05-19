@@ -79,6 +79,10 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         Peso: parseFloat(document.getElementById("calcaPeso").value || 0).toFixed(2)
     };
 
+    // 🧹 Limpeza
+    const mopsLimpos = parseInt(document.getElementById("mopsLimpos").value || 0);
+    const panosLimpos = parseInt(document.getElementById("panosLimpos").value || 0);
+
     // ⚖️ Peso total
     const pesoTotal = (
         parseFloat(lencolPeso) +
@@ -111,7 +115,10 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     msg += `👖 GG ${calca.GG} ${validar(calca.GG, valoresMinimos.calcaGG)}\n`;
     msg += `👖 EG ${calca.EG} ${validar(calca.EG, valoresMinimos.calcaEG)}\n`;
     msg += `🧮 Peso: ${calca.Peso}\n\n`;
-    msg += `⚖️ PESO TOTAL: ${pesoTotal}`;
+    msg += `⚖️ PESO TOTAL: ${pesoTotal}\n\n`;
+    msg += `🧹 LIMPEZA\n`;
+    msg += `🧹 Mops limpos: ${mopsLimpos}\n`;
+    msg += `🧹 Panos limpos: ${panosLimpos}`;
 
     document.getElementById("resultado").value = msg;
 
@@ -157,7 +164,9 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
         calcaEG: calca.EG,
         calcaEGStatus: validar(calca.EG, valoresMinimos.calcaEG),
         calcaPeso: calca.Peso,
-        pesoTotal
+        pesoTotal,
+        mopsLimpos,
+        panosLimpos
     };
 });
 
