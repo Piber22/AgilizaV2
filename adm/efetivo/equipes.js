@@ -81,7 +81,7 @@ const TEAM_CONFIG = {
     giovana:   { name: 'Giovana',   capacity: 15, color: '#a855f7',  defaultHorario: 'dia' },
     jessica:   { name: 'Jessica',   capacity: 7,  color: '#3b82f6',  defaultHorario: 'noite' },
     franciele: { name: 'Franciele', capacity: 7,  color: '#22c55e',  defaultHorario: 'noite' },
-    alisson:   { name: 'Alisson',   capacity: 4,  color: '#f97316',  defaultHorario: null },
+    alisson:   { name: 'Alisson',   capacity: 6,  color: '#f97316',  defaultHorario: null },
 };
 
 // ─── DADOS INICIAIS ──────────────────────────
