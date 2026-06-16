@@ -22,7 +22,7 @@ function renderizarFuncionarios(filtro = '') {
         const item = document.createElement('div');
         item.className = 'funcionario-item';
 
-        if (funcionariosComPendencia.has(nome))      item.classList.add('com-pendencia');
+        // if (funcionariosComPendencia.has(nome))      item.classList.add('com-pendencia');
         if (funcionariosSelecionados.includes(nome)) item.classList.add('selecionado');
 
         let validadeBadge = '';

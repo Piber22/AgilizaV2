@@ -60,10 +60,10 @@ async function verificarPendencias() {
             if (item.tipo === 'devolucao') saldo[item.funcionario]--;
         });
 
-        funcionariosComPendencia.clear();
-        Object.keys(saldo).forEach(nome => {
-            if (saldo[nome] > 0) funcionariosComPendencia.add(nome);
-        });
+        // funcionariosComPendencia.clear();
+        // Object.keys(saldo).forEach(nome => {
+        //     if (saldo[nome] > 0) funcionariosComPendencia.add(nome);
+        // });
     } catch (error) {
         console.error('Erro ao verificar pendências:', error);
     }

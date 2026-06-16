@@ -7,44 +7,46 @@ const TAMANHOS = ['P', 'M', 'G', 'GG', 'EG', 'EXG'];
 
 // ── Modal de Confirmação de Pendência ────────────────────────────────────────
 function verificarPendenciaAntesDaEntrega(nomes) {
-    const comPendencia = nomes.filter(n => funcionariosComPendencia.has(n));
+    // const comPendencia = nomes.filter(n => funcionariosComPendencia.has(n));
 
-    if (comPendencia.length > 0) {
-        const lista    = comPendencia.join(', ');
-        const mensagem = comPendencia.length === 1
-            ? `O(A) colaborador(a) ${lista} possui pendências de devolução. Deseja prosseguir mesmo assim?`
-            : `Os colaboradores ${lista} possuem pendências de devolução. Deseja prosseguir mesmo assim?`;
+    // if (comPendencia.length > 0) {
+    //     const lista    = comPendencia.join(', ');
+    //     const mensagem = comPendencia.length === 1
+    //         ? `O(A) colaborador(a) ${lista} possui pendências de devolução. Deseja prosseguir mesmo assim?`
+    //         : `Os colaboradores ${lista} possuem pendências de devolução. Deseja prosseguir mesmo assim?`;
+    //
+    //     abrirModalConfirmacao(mensagem, () => iniciarOperacao(nomes, 'entrega'));
+    // } else {
+    //     iniciarOperacao(nomes, 'entrega');
+    // }
 
-        abrirModalConfirmacao(mensagem, () => iniciarOperacao(nomes, 'entrega'));
-    } else {
-        iniciarOperacao(nomes, 'entrega');
-    }
+    iniciarOperacao(nomes, 'entrega');
 }
 
-function abrirModalConfirmacao(mensagem, callback) {
-    const modal = document.getElementById('modalConfirmacao');
-    document.getElementById('mensagemConfirmacao').textContent = mensagem;
-    modal.style.display = 'block';
-    document.body.classList.add('modal-open');
+// function abrirModalConfirmacao(mensagem, callback) {
+//     const modal = document.getElementById('modalConfirmacao');
+//     document.getElementById('mensagemConfirmacao').textContent = mensagem;
+//     modal.style.display = 'block';
+//     document.body.classList.add('modal-open');
+//
+//     // Substituir botões para remover listeners antigos
+//     ['cancelarConfirmacaoBtn', 'prosseguirConfirmacaoBtn'].forEach(id => {
+//         const el    = document.getElementById(id);
+//         const clone = el.cloneNode(true);
+//         el.parentNode.replaceChild(clone, el);
+//     });
+//
+//     document.getElementById('cancelarConfirmacaoBtn').addEventListener('click', fecharModalConfirmacao);
+//     document.getElementById('prosseguirConfirmacaoBtn').addEventListener('click', () => {
+//         fecharModalConfirmacao();
+//         callback();
+//     });
+// }
 
-    // Substituir botões para remover listeners antigos
-    ['cancelarConfirmacaoBtn', 'prosseguirConfirmacaoBtn'].forEach(id => {
-        const el    = document.getElementById(id);
-        const clone = el.cloneNode(true);
-        el.parentNode.replaceChild(clone, el);
-    });
-
-    document.getElementById('cancelarConfirmacaoBtn').addEventListener('click', fecharModalConfirmacao);
-    document.getElementById('prosseguirConfirmacaoBtn').addEventListener('click', () => {
-        fecharModalConfirmacao();
-        callback();
-    });
-}
-
-function fecharModalConfirmacao() {
-    document.getElementById('modalConfirmacao').style.display = 'none';
-    document.body.classList.remove('modal-open');
-}
+// function fecharModalConfirmacao() {
+//     document.getElementById('modalConfirmacao').style.display = 'none';
+//     document.body.classList.remove('modal-open');
+// }
 
 // ── Iniciar Operação ─────────────────────────────────────────────────────────
 async function iniciarOperacao(nomes, tipo) {
