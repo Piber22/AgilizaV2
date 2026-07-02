@@ -145,8 +145,8 @@ function criarModalRelatorio(colaboradores) {
     `;
 
     // Metas individuais
-    const metaAP = 18;
-    const metaIPSMA = 2;
+    const metaAP = 44;
+    const metaIPSMA = 3;
     const metaOPAI = 4;
 
     // Para cada colaborador, cria um card
@@ -305,9 +305,9 @@ function criarResumoTotal(colaboradores) {
         totalOPAI += parseInt(colab.OPAI || 0);
     });
 
-    const metaTotalAP = 106;
-    const metaTotalIPSMA = 10;
-    const metaTotalOPAI = 20;
+    const metaTotalAP = 88;
+    const metaTotalIPSMA = 6;
+    const metaTotalOPAI = 8;
 
     const gridResumo = document.createElement("div");
     gridResumo.style.cssText = `
