@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ronda de Inspeção Rouparias</title>
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- CSS específico para ronda -->
+    <link rel="stylesheet" href="ronda.css">
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../rouparia.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Ronda de Inspeção Rouparias</h1>
+        </header>
+
+        <!-- Informações -->
+        <section id="info">
+            <h2>Informações</h2>
+            <label>Responsável: <input type="text" id="responsavel" placeholder="Nome:"></label>
+            <label>Data: <span class="info-display" id="dataDisplay">--/--/----</span></label>
+            <label>Início: <span class="info-display" id="inicioDisplay">--:--</span></label>
+        </section>
+
+        <!-- Setores (gerados dinamicamente pelo JS) -->
+        <div id="setoresContainer" class="setores-container"></div>
+
+        <!-- Conclusão -->
+        <section id="conclusao">
+            <h2>Conclusão</h2>
+            <label>Situação do enxoval:
+                <select id="conclusaoSelect">
+                    <option value="sim">Suficiente para entrega noturna</option>
+                    <option value="nao">Insuficiente para entrega noturna</option>
+                </select>
+            </label>
+        </section>
+
+        <!-- Botões -->
+        <button id="salvarBtn" class="login-option">Salvar Mensagem</button>
+
+        <!-- Mensagem gerada -->
+        <section id="mensagem">
+            <h2>Mensagem gerada:</h2>
+            <textarea id="resultado" rows="24" readonly></textarea>
+            <button id="copiarBtn" class="login-option">📋 Copiar Mensagem</button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="ronda.js"></script>
+    <script src="sheet.js"></script>
+</body>
+</html>
