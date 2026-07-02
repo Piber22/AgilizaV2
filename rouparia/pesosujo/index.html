@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesagem Enxoval Sujo</title>
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- CSS específico para pesagem -->
+    <link rel="stylesheet" href="pesagem.css">
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../rouparia.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+            </a>
+            <h1>Pesagem Enxoval Sujo</h1>
+        </header>
+
+        <!-- Informações -->
+        <section id="info">
+            <h2>Informações</h2>
+            <label>Responsável: <input type="text" id="responsavel" placeholder="Nome:"></label>
+        </section>
+
+        <!-- Setores (gerados via JS) -->
+        <div id="setoresContainer"></div>
+
+        <!-- Botão salvar -->
+        <button id="salvarBtn" class="login-option">Salvar Mensagem</button>
+
+        <!-- Mensagem gerada -->
+        <section id="mensagem">
+            <h2>Mensagem gerada:</h2>
+            <textarea id="resultado" rows="20" readonly></textarea>
+            <button id="copiarBtn" class="login-option">📋 Copiar Mensagem</button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="pesagem.js"></script>
+</body>
+</html>
