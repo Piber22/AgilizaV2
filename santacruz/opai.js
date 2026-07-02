@@ -6,13 +6,8 @@ function criarCamposOPAI(container) {
 
   // ===== Mapa de Responsáveis (CHAVES SEM ACENTO) =====
   const MAPA_RESPONSAVEIS = {
-    "Graciela":   { re: "037120", funcao: "Encarregada" },
-    "Giovana":    { re: "054651", funcao: "Encarregada" },
-    "Jessica":    { re: "049971", funcao: "Líder" },        // SEM ACENTO
-    "Alisson": { re: "062229", funcao: "ASG" },
-    "Daiane":     { re: "062074", funcao: "Encarregada" },
-    "Adrisson":   { re: "056367", funcao: "Planejador" },  // SEM ACENTO
-    "Franciele":    { re: "000000", funcao: "Líder" }
+    "Ereni":   { re: "'098398", funcao: "Supervisora" },
+    "Fulana":    { re: "'054651", funcao: "Fulana" }
   };
 
   // ===== Função para normalizar nomes com acentos =====
@@ -45,7 +40,7 @@ function criarCamposOPAI(container) {
   placeholderEquipe.disabled = true;
   placeholderEquipe.selected = true;
   selectEquipe.appendChild(placeholderEquipe);
-  ["Graciela", "Giovana", "Jéssica", "Alisson", "Franciele"].forEach(nome => {
+  ["Higienização", "Jardinagem"].forEach(nome => {
     const opcao = document.createElement("option");
     opcao.value = nome;
     opcao.textContent = nome;
@@ -449,7 +444,7 @@ function criarCamposOPAI(container) {
     isEnviandoOPAI = true;
 
     const dadosFormulario = coletarDadosFormulario();
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbynM8duq920qdEMGBpHZhM-3AZeyD4JcqNGpj12tlzvcSJu-TeGltHUM6oNmxcQBMVsuw/exec';
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzk1Laeg_i1MJOqt6AHk2OA3FYx4pd_sq5e2iW7SpehqfR7BiUdOGewziydt13PZmypGw/exec';
 
     console.log("Dados coletados:", dadosFormulario);
 

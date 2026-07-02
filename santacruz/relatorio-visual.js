@@ -1,7 +1,7 @@
 // ===== GERAÇÃO DE RELATÓRIO VISUAL =====
 
 function gerarRelatorioVisual() {
-    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOCdgTpKJg52io24jaXoqqCL2yXRyUeoK23-LbkNcZTBxzGuy8yxKTWXopmdqcP4bJboGeagpaHLPm/pub?output=csv";
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQXdi5SZr4icWhD1y9BHvb7tJRiLZSWmReZ2eJnJ99BrsUC4iTqTBamCNqt7yGkFsgoWGAadt9_CFnb/pub?output=csv";
 
     Papa.parse(url, {
         download: true,

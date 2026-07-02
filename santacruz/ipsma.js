@@ -4,13 +4,8 @@
 
 // === MAPEAMENTO DE RESPONSÁVEIS (RE + FUNÇÃO) ===
 const MAPA_RESPONSAVEIS = {
-  "Graciela":   { re: "037120", funcao: "Encarregada" },
-  "Giovana":    { re: "054651", funcao: "Encarregada" },
-  "Jéssica":    { re: "049971", funcao: "Líder" },
-  "Alisson": { re: "062229", funcao: "ASG" },
-  "Daiane":     { re: "062074", funcao: "Encarregada" },
-  "Adrisson":   { re: "056367", funcao: "Planejador" },
-  "Franciele":    { re: "000000", funcao: "Líder" }
+  "Ereni":   { re: "098398", funcao: "Supervisora" },
+  "Fulana":    { re: "054651", funcao: "Fulana" }
 };
 
 // Função para obter RE e Função
@@ -200,7 +195,7 @@ function criarCamposIPSMA(container) {
     isEnviando = true;
 
     const dados = coletarDadosFormulario();
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbypJaPZVEuUHub4v3J-sXBYQzdMimdGR2XOLW1lyMMUbCd8Gb8P7ccYuX20ZVGMMb8zxw/exec';
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxRF51jtkvzJ_cHQrMYhWw62pWI2vcUvHPlcinNiF6LtbzCrUbcohQHDzfiIU-sZmcE/exec';
 
     // Mostra o loading
     LoadingManager.show(botaoEnviar, "Enviando IPSMA...");

@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // === ATUALIZAÇÃO DINÂMICA DAS ESTATÍSTICAS ===
-    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOCdgTpKJg52io24jaXoqqCL2yXRyUeoK23-LbkNcZTBxzGuy8yxKTWXopmdqcP4bJboGeagpaHLPm/pub?output=csv";
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQXdi5SZr4icWhD1y9BHvb7tJRiLZSWmReZ2eJnJ99BrsUC4iTqTBamCNqt7yGkFsgoWGAadt9_CFnb/pub?output=csv";
 
     const selectResponsavel = document.getElementById("responsavel");
     const statBoxes = document.querySelectorAll(".stat-box");
@@ -99,9 +99,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     });
                     // Metas da equipe
-                    metaAP = 106;
-                    metaIPSMA = 10;
-                    metaOPAI = 20;
+                    metaAP = 88;
+                    metaIPSMA = 6;
+                    metaOPAI = 8;
                     console.log("📊 Total geral - AP:", ap, "IPSMA:", ipsma, "OPAI:", opai);
                 } else {
                     // COM FILTRO: busca apenas o responsável selecionado + meta individual
@@ -118,8 +118,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         opai = parseInt(registro.OPAI || 0);
                     }
                     // Metas individuais
-                    metaAP = 18;
-                    metaIPSMA = 2;
+                    metaAP = 44;
+                    metaIPSMA = 3;
                     metaOPAI = 4;
                 }
 
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Controla a visibilidade do botão de relatório
         const btnRelatorio = document.getElementById("gerar-relatorio");
-        if (this.value.toLowerCase() === "adrisson" || this.value.toLowerCase() === "ádrisson") {
+        if (this.value.toLowerCase() === "ereni" || this.value.toLowerCase() === "ereni") {
             btnRelatorio.style.display = "block";
         } else {
             btnRelatorio.style.display = "none";

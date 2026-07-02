@@ -226,7 +226,7 @@ function criarCamposAP(container) {
     isEnviandoAP = true;
 
     const dadosRecebimento = coletarDadosFormulario();
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzFQKBdjIUJkb04Hre7XGhNOFQln5cJjfDTL1IEcjCbbT0aMMDaQmwA5ayCBjLcfQuWGg/exec';
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwXWtf3xgiGS0LlXH-Kz3BNUncla-4dXLLcaOu2zDIGj2Wg19rtOEGoWh4niN1czR2z/exec';
 
     // Mostra o loading
     LoadingManager.show(botaoEnviar, "Enviando AP...");
