@@ -11,7 +11,8 @@ const setores = [
     { id: "segundoAndar", nome: "2° andar" },
     { id: "saudeMentalF", nome: "Saúde Mental Feminina" },
     { id: "saudeMentalM", nome: "Saúde Mental Masculina" },
-    { id: "rouparia", nome: "Rouparia" }
+    { id: "rouparia", nome: "Scrubs - Rouparia" },
+    { id: "cobertoresRenova", nome: "Cobertores - Renova" }
 ];
 
 // Guarda o horário de início (capturado ao preencher o responsável)
