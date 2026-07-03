@@ -114,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const terminais_solicitadas = document.getElementById("terminais_solicitadas").value || "";
         const leitos_vestir = document.getElementById("leitos_vestir").value || "";
         const terminais_programadas = document.getElementById("terminais_programadas").value || "";
+        const enxoval = document.getElementById("enxoval").value || "";
         const observacoes = document.getElementById("observacoes").value || "";
 
         const sacolasSelecionadas = Array.from(
@@ -129,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         msg += "*LEITOS PARA VESTIR PENDENTES:* " + leitos_vestir + "\n\n";
         msg += "*TERMINAIS PROGRAMADAS NÃO EXECUTADAS:* " + terminais_programadas + "\n\n";
         msg += "*SACOLAS DEVOLVIDAS:* " + (sacolasSelecionadas.length ? sacolasSelecionadas.join(', ') : 'Nenhuma') + "\n\n";
+        msg += "*ENXOVAL:* " + enxoval + "\n\n";
         msg += "*OBSERVAÇÕES:* " + observacoes + "\n\n";
 
         document.getElementById("resultado").value = msg;
@@ -143,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             terminais_solicitadas,
             leitos_vestir,
             terminais_programadas,
+            enxoval,
             observacoes
         };
     });
