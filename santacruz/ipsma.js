@@ -5,7 +5,9 @@
 // === MAPEAMENTO DE RESPONSÁVEIS (RE + FUNÇÃO) ===
 const MAPA_RESPONSAVEIS = {
   "Ereni":   { re: "098398", funcao: "Supervisora" },
-  "Fulana":    { re: "054651", funcao: "Fulana" }
+  "Diogo":   { re: "'000000", funcao: "Jardinagem" },
+  "Liliane":   { re: "'000000", funcao: "Lider" },
+  "Rosane":    { re: "'000000", funcao: "Limpeza" }
 };
 
 // Função para obter RE e Função

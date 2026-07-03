@@ -6,8 +6,10 @@ function criarCamposOPAI(container) {
 
   // ===== Mapa de Responsáveis (CHAVES SEM ACENTO) =====
   const MAPA_RESPONSAVEIS = {
-    "Ereni":   { re: "'098398", funcao: "Supervisora" },
-    "Fulana":    { re: "'054651", funcao: "Fulana" }
+    "Ereni":   { re: "098398", funcao: "Supervisora" },
+    "Diogo":   { re: "'000000", funcao: "Jardinagem" },
+    "Liliane":   { re: "'000000", funcao: "Lider" },
+    "Rosane":    { re: "'000000", funcao: "Limpeza" }
   };
 
   // ===== Função para normalizar nomes com acentos =====

@@ -118,9 +118,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         opai = parseInt(registro.OPAI || 0);
                     }
                     // Metas individuais
-                    metaAP = 44;
-                    metaIPSMA = 3;
-                    metaOPAI = 4;
+                    metaAP = 22;
+                    metaIPSMA = 2;
+                    metaOPAI = 2;
                 }
 
                 // Atualiza os três boxes com o novo HTML (ordem: IPSMA, OPAI, AP)
