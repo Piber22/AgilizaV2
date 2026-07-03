@@ -1,7 +1,8 @@
 // ==========================
 // Configuração dos setores
 // ==========================
-const setores = [
+// Setores que compõem o peso GERAL (Lençóis, Camisolas, Fronhas e Scrubs)
+const setoresGerais = [
     { id: "pl5", nome: "5° PL" },
     { id: "gr5", nome: "5° GR" },
     { id: "uti", nome: "UTI" },
@@ -11,9 +12,11 @@ const setores = [
     { id: "segundoAndar", nome: "2° andar" },
     { id: "saudeMentalF", nome: "Saúde Mental Feminina" },
     { id: "saudeMentalM", nome: "Saúde Mental Masculina" },
-    { id: "rouparia", nome: "Scrubs - Rouparia" },
-    { id: "cobertoresRenova", nome: "Cobertores - Renova" }
+    { id: "rouparia", nome: "Scrubs - Rouparia" }
 ];
+
+// Setor de Cobertores — peso mantido SEPARADO do peso geral
+const setorCobertores = { id: "cobertoresRenova", nome: "Cobertores - Renova" };
 
 // Guarda o horário de início (capturado ao preencher o responsável)
 let horaInicio = "";
@@ -87,7 +90,7 @@ function renumerarHampers(setorId) {
     });
 }
 
-function criarSetor(setor) {
+function criarSetorHamper(setor) {
     const section = document.createElement("section");
     section.className = "setor";
     section.dataset.setor = setor.id;
@@ -115,11 +118,55 @@ function criarSetor(setor) {
     return section;
 }
 
+// Setor "Panos e Mops": não usa hampers, apenas 4 campos fixos.
+// O peso resultante entra no total GERAL (junto com lençóis, camisolas,
+// fronhas e scrubs), separado do peso de cobertores.
+function criarSetorPanosMops() {
+    const section = document.createElement("section");
+    section.className = "setor";
+    section.dataset.setor = "panosMops";
+
+    const titulo = document.createElement("h2");
+    titulo.textContent = "Panos e Mops";
+    section.appendChild(titulo);
+
+    const campos = [
+        { id: "qtdPanos", texto: "Qtd Panos:", tipo: "number", step: "1" },
+        { id: "pesoPanos", texto: "Peso Panos:", tipo: "number", step: "0.01" },
+        { id: "qtdMops", texto: "Qtd Mops:", tipo: "number", step: "1" },
+        { id: "pesoMops", texto: "Peso Mops:", tipo: "number", step: "0.01" }
+    ];
+
+    campos.forEach(campo => {
+        const label = document.createElement("label");
+        label.textContent = campo.texto;
+
+        const input = document.createElement("input");
+        input.type = campo.tipo;
+        input.id = campo.id;
+        input.min = "0";
+        input.step = campo.step;
+
+        label.appendChild(input);
+        section.appendChild(label);
+    });
+
+    return section;
+}
+
 function montarSetores() {
     const container = document.getElementById("setoresContainer");
-    setores.forEach(setor => {
-        container.appendChild(criarSetor(setor));
+
+    // 1) Setores gerais (hampers)
+    setoresGerais.forEach(setor => {
+        container.appendChild(criarSetorHamper(setor));
     });
+
+    // 2) Panos e Mops (campos fixos, soma ao peso geral)
+    container.appendChild(criarSetorPanosMops());
+
+    // 3) Cobertores (hampers, peso mantido separado)
+    container.appendChild(criarSetorHamper(setorCobertores));
 }
 
 // ==========================
@@ -163,22 +210,40 @@ document.addEventListener("DOMContentLoaded", () => {
             horaInicio = horaFim;
         }
 
+        // ---- Setores gerais (lençóis, camisolas, fronhas e scrubs) ----
         let pesoGeral = 0;
-        let linhasSetores = "";
+        let linhasGerais = "";
 
-        setores.forEach(setor => {
+        setoresGerais.forEach(setor => {
             const total = pesoTotalSetor(setor.id);
             pesoGeral += total;
-            linhasSetores += `*${setor.nome}* - ${formatarPeso(total)} KG’s\n`;
+            linhasGerais += `*${setor.nome}* - ${formatarPeso(total)} KG’s\n`;
         });
+
+        // ---- Panos e Mops (peso entra no total GERAL) ----
+        const qtdPanos = parseInt(document.getElementById("qtdPanos").value) || 0;
+        const pesoPanos = parseFloat(document.getElementById("pesoPanos").value) || 0;
+        const qtdMops = parseInt(document.getElementById("qtdMops").value) || 0;
+        const pesoMops = parseFloat(document.getElementById("pesoMops").value) || 0;
+        pesoGeral += pesoPanos + pesoMops;
+
+        // ---- Cobertores (peso mantido SEPARADO) ----
+        const pesoCobertores = pesoTotalSetor(setorCobertores.id);
 
         let msg = `*PESAGEM ENXOVAL SUJO*\n`;
         msg += `Responsável: ${responsavel}\n`;
         msg += `Data: ${dataStr}\n`;
         msg += `Início: ${horaInicio || "-"}\n`;
         msg += `Fim: ${horaFim}\n\n`;
-        msg += linhasSetores;
-        msg += `\n*Peso total: ${formatarPeso(pesoGeral)} KG’s*`;
+        msg += linhasGerais;
+        msg += `\n*Panos e Mops*\n`;
+        msg += `Qtd Panos: ${qtdPanos}\n`;
+        msg += `Peso Panos: ${formatarPeso(pesoPanos)} KG’s\n`;
+        msg += `Qtd Mops: ${qtdMops}\n`;
+        msg += `Peso Mops: ${formatarPeso(pesoMops)} KG’s\n\n`;
+        msg += `*Peso total - ZION: ${formatarPeso(pesoGeral)} KG’s*\n\n`;
+        msg += `*${setorCobertores.nome}* - ${formatarPeso(pesoCobertores)} KG’s\n`;
+
 
         document.getElementById("resultado").value = msg;
     });

@@ -100,7 +100,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     msg += `📌 Camisola ${camisolaQtd} ${validar(camisolaQtd, valoresMinimos.camisola)} (peso ${camisolaPeso})\n`;
     msg += `📌 Cobertor ${cobertorQtd} ${validar(cobertorQtd, valoresMinimos.cobertor)} (peso ${cobertorPeso})\n`;
     msg += `📌 Fronha ${fronhaQtd} ${validar(fronhaQtd, valoresMinimos.fronha)} (peso ${fronhaPeso})\n`;
-    msg += `📌 Campo G ${campoGQtd} ${validar(campoGQtd, valoresMinimos.campoG)} (peso ${campoGPeso})\n\n`;
+    msg += `📌 Móveis ${campoGQtd} ${validar(campoGQtd, valoresMinimos.campoG)} (peso ${campoGPeso})\n\n`;
     msg += `📋 ROUPA AZUL\n🥼 JALECO\n`;
     msg += `🥼 P ${jaleco.P} ${validar(jaleco.P, valoresMinimos.jalecoP)}\n`;
     msg += `🥼 M ${jaleco.M} ${validar(jaleco.M, valoresMinimos.jalecoM)}\n`;
