@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Indicadores</title>
+
+    <!-- Fontes -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="indicadores.css">
+
+    <!-- PapaParse para leitura do CSV do Google Sheets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="../gestao.html" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo">
+                <span class="header-title">Indicadores SLA</span>
+            </a>
+
+            <div class="header-controles">
+                <div class="filtro-mes-grupo">
+                    <label for="selectMes">Mês</label>
+                    <select id="selectMes" class="input-data select-mes">
+                        <option value="">Carregando...</option>
+                    </select>
+                </div>
+                <p class="last-update" id="ultimaAtualizacao">Consultando base de dados...</p>
+                <button id="btnAtualizar" class="btn-refresh" title="Atualizar dados">↻</button>
+            </div>
+        </header>
+
+        <!-- Manchete: resumo em uma frase -->
+        <section id="hero" class="hero">
+            <span class="hero-icone" id="heroIcone">⏳</span>
+            <div class="hero-textos">
+                <div class="hero-titulo" id="heroTitulo">Carregando indicadores...</div>
+                <div class="hero-subtitulo" id="heroSubtitulo">&nbsp;</div>
+            </div>
+        </section>
+
+        <!-- Chips de filtro rápido -->
+        <section id="resumo">
+            <div class="stats-grid" id="statsGrid">
+                <button class="stat-box" data-filtro="total" title="Mostrar todos os indicadores">
+                    <div class="stat-value" id="totalIndicadores">–</div>
+                    <div class="stat-label">Indicadores</div>
+                </button>
+                <button class="stat-box status-excelente-box" data-filtro="excelentes" title="Filtrar: Excelentes e No prazo">
+                    <div class="stat-value" id="totalExcelentes">–</div>
+                    <div class="stat-label">No prazo / Excelentes</div>
+                </button>
+                <button class="stat-box status-atencao-box" data-filtro="atencao" title="Filtrar: Atenção">
+                    <div class="stat-value" id="totalAtencao">–</div>
+                    <div class="stat-label">Atenção</div>
+                </button>
+                <button class="stat-box status-critico-box" data-filtro="criticos" title="Filtrar: Críticos">
+                    <div class="stat-value" id="totalCriticos">–</div>
+                    <div class="stat-label">Críticos</div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Lista de indicadores -->
+        <section id="indicadores">
+            <div class="indicadores-cabecalho">
+                <h2 id="tituloLista">Todos os indicadores</h2>
+                <button id="btnLimparFiltro" class="btn-limpar-filtro" hidden>✕ Limpar filtro</button>
+            </div>
+            <div id="listaIndicadores" class="grid-indicadores">
+                <p class="loading">Carregando indicadores...</p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="indicadores.js"></script>
+</body>
+</html>
