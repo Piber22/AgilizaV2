@@ -72,7 +72,7 @@ export const TEAM_CONFIG = {
     graciela:      { name: 'Graciela',      capacity: 15, color: '#e0e0e0' },
     giovana:       { name: 'Alisson',        capacity: 15, color: '#e0e0e0' },
     jessica:       { name: 'Jéssica',       capacity: 7,  color: '#e0e0e0' },
-    franciele:     { name: 'Franciele',      capacity: 7,  color: '#e0e0e0' },
+    franciele:     { name: 'Luciane',      capacity: 7,  color: '#e0e0e0' },
     alisson:       { name: '6x1',        capacity: 6,  color: '#e0e0e0' },
     liderancas:    { name: 'Lideranças',     capacity: 5,  color: '#e0e0e0' },
     administrativo:{ name: 'Administrativo', capacity: 3,  color: '#e0e0e0' },

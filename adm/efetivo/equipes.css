@@ -996,3 +996,106 @@ body {
     background: var(--border2);
 }
 .dim-ctx-dot.dim-ctx-dot-active { background: var(--green); }
+
+/* ============================================
+   SETORES — v3 (4 colunas: origem | setores | setores | origem)
+   ============================================ */
+.setores-board-wrapper {
+    overflow-x: auto;
+    padding: 20px 24px 40px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border2) var(--bg);
+}
+.setores-board-wrapper::-webkit-scrollbar { height: 6px; }
+.setores-board-wrapper::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+.setores-board {
+    display: grid;
+    grid-template-columns:
+        minmax(170px, 0.8fr)
+        minmax(230px, 1.2fr)
+        minmax(230px, 1.2fr)
+        minmax(170px, 0.8fr);
+    gap: 16px;
+    min-width: 980px;
+    align-items: start;
+}
+
+/* Badge de alerta (setores descobertos) no header da coluna */
+.dim-col-badge.dim-col-badge-warn {
+    background: var(--red-dim);
+    color: var(--red);
+    border-color: var(--red-border);
+}
+
+/* Corpo da coluna de setores: lista vertical, sem grid */
+.setor-team-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
+}
+
+/* ── Linha de setor ── */
+.setor-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    transition: all 0.15s;
+}
+.setor-row-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    min-width: 58px;
+    flex-shrink: 0;
+    color: var(--text2);
+}
+.setor-row-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    min-height: 24px;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+
+/* Setor coberto */
+.setor-row-ocupado {
+    border-color: rgba(34,197,94,0.35);
+    background: rgba(34,197,94,0.05);
+}
+.setor-row-ocupado .setor-row-label { color: var(--green); }
+
+/* Setor descoberto — VAGA (mesma identidade do vaga-slot do Efetivo) */
+.setor-row-vaga {
+    border-style: dashed;
+    border-color: var(--red-border);
+    background: var(--red-dim);
+}
+.setor-row-vaga .setor-row-label { color: var(--red); }
+.setor-row-vaga-badge {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--red);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.85;
+    pointer-events: none;
+}
+
+/* Drop ativo (arrastando por cima) */
+.setor-row-drop-active .setor-row-content {
+    background: rgba(59,130,246,0.12);
+    outline: 1.5px dashed var(--blue);
+    outline-offset: -2px;
+}

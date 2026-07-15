@@ -89,7 +89,7 @@ function formatDate(dateStr) {
    IDENTIFICAR TURNO
 ========================= */
 function isDayShift(nome) {
-  return ["Giovana", "Graciela"].includes(nome);
+  return ["Alisson", "Graciela"].includes(nome);
 }
 
 let hideDone = false;

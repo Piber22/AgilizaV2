@@ -123,6 +123,10 @@
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
             Dimensionamento
         </button>
+        <button class="tab-btn" data-tab="setores">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Setores
+        </button>
     </nav>
 
     <div id="page-efetivo">
@@ -172,6 +176,24 @@
         </div>
     </div>
 
+    <div id="page-setores" style="display:none">
+        <div class="dim-legend-bar">
+            <div class="dim-bar-left">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span class="dim-date-label">Setores</span>
+            </div>
+            <div class="dim-bar-right">
+                <span class="dim-legend-hint">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>
+                    Clique no colaborador para definir o setor
+                </span>
+            </div>
+        </div>
+        <div class="setores-board-wrapper">
+            <div class="setores-board" id="setores-board"></div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal" id="modal">
             <button class="modal-close" id="modalClose">✕</button>
@@ -180,7 +202,7 @@
         </div>
     </div>
 
-    <div class="context-menu" id="contextMenu">
+    <div class="context-menu" id="contextMenu" style="display:none">
         <div class="ctx-header" id="ctxHeader"></div>
         <button class="ctx-btn" id="ctxMove">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
@@ -252,6 +274,7 @@
     import './equipes-render.js';
     import './equipes-ui.js';
     import { initDimensionamento, initDatePicker, renderDimensionamento, clearDimState } from './dimensionamento.js';
+    import { renderSetores } from './setores.js';
 
     // ── Tab switching ──
     let dimReady = false;
@@ -262,10 +285,14 @@
             const tab = btn.dataset.tab;
             document.getElementById('page-efetivo').style.display         = tab === 'efetivo'         ? '' : 'none';
             document.getElementById('page-dimensionamento').style.display  = tab === 'dimensionamento' ? '' : 'none';
+            document.getElementById('page-setores').style.display         = tab === 'setores'         ? '' : 'none';
             if (tab === 'dimensionamento' && !dimReady) {
                 await initDimensionamento();
                 initDatePicker();
                 dimReady = true;
+            }
+            if (tab === 'setores') {
+                renderSetores();
             }
         });
     });
