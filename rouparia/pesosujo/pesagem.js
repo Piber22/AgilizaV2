@@ -18,6 +18,9 @@ const setoresGerais = [
 // Setor de Cobertores — peso mantido SEPARADO do peso geral
 const setorCobertores = { id: "cobertoresRenova", nome: "Cobertores - Renova" };
 
+// NOVO: Setor "Enxoval sem identificação" — peso SOMADO ao total geral (ZION)
+const setorSemIdentificacao = { id: "semId", nome: "Enxoval sem identificação" };
+
 // Guarda o horário de início (capturado ao preencher o responsável)
 let horaInicio = "";
 
@@ -83,7 +86,6 @@ function renumerarHampers(setorId) {
     const container = document.getElementById(`hampers-${setorId}`);
     const linhas = container.querySelectorAll(".hamper-row label");
     linhas.forEach((label, index) => {
-        // Mantém o input, só troca o texto antes dele
         const input = label.querySelector("input");
         label.innerHTML = `${index + 1}º Hamper – `;
         label.appendChild(input);
@@ -167,6 +169,9 @@ function montarSetores() {
 
     // 3) Cobertores (hampers, peso mantido separado)
     container.appendChild(criarSetorHamper(setorCobertores));
+
+    // 4) NOVO: Enxoval sem identificação (hampers, soma ao peso geral)
+    container.appendChild(criarSetorHamper(setorSemIdentificacao));
 }
 
 // ==========================
@@ -174,6 +179,7 @@ function montarSetores() {
 // ==========================
 function pesoTotalSetor(setorId) {
     const container = document.getElementById(`hampers-${setorId}`);
+    if (!container) return 0;
     const inputs = container.querySelectorAll(".pesoHamper");
     let total = 0;
     inputs.forEach(input => {
@@ -227,9 +233,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const pesoMops = parseFloat(document.getElementById("pesoMops").value) || 0;
         pesoGeral += pesoPanos + pesoMops;
 
+        // ---- NOVO: Enxoval sem identificação (peso entra no total GERAL) ----
+        const pesoSemId = pesoTotalSetor(setorSemIdentificacao.id);
+        pesoGeral += pesoSemId;
+
         // ---- Cobertores (peso mantido SEPARADO) ----
         const pesoCobertores = pesoTotalSetor(setorCobertores.id);
 
+        // ---- Montagem da mensagem ----
         let msg = `*PESAGEM ENXOVAL SUJO*\n`;
         msg += `Responsável: ${responsavel}\n`;
         msg += `Data: ${dataStr}\n`;
@@ -241,9 +252,10 @@ document.addEventListener("DOMContentLoaded", () => {
         msg += `Peso Panos: ${formatarPeso(pesoPanos)} KG’s\n`;
         msg += `Qtd Mops: ${qtdMops}\n`;
         msg += `Peso Mops: ${formatarPeso(pesoMops)} KG’s\n\n`;
+        // Nova linha para o Enxoval sem identificação
+        msg += `*${setorSemIdentificacao.nome}* - ${formatarPeso(pesoSemId)} KG’s\n\n`;
         msg += `*Peso total - ZION: ${formatarPeso(pesoGeral)} KG’s*\n\n`;
         msg += `*${setorCobertores.nome}* - ${formatarPeso(pesoCobertores)} KG’s\n`;
-
 
         document.getElementById("resultado").value = msg;
     });
