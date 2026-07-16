@@ -1,0 +1,193 @@
+/* =============================================
+   DEMISSOES.CSS — aba "Demissões"
+   Reaproveita as variáveis definidas em :root
+   dentro de equipes.css (cores, radius, etc.)
+   ============================================= */
+
+.dem-board-wrapper {
+    overflow-x: auto;
+    padding: 20px 24px 40px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border2) var(--bg);
+}
+.dem-board-wrapper::-webkit-scrollbar { height: 6px; }
+.dem-board-wrapper::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+.dem-board {
+    min-width: 860px;
+}
+
+/* ── Coluna ── */
+.dem-col {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+.dem-col-header {
+    padding: 14px 14px 10px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+    border-top: 3px solid var(--purple);
+}
+.dem-col-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+.dem-col-name {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--purple);
+}
+.dem-col-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: var(--surface);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    white-space: nowrap;
+}
+.dem-col-sub {
+    font-size: 9px;
+    color: var(--text3);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.dem-col-body {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dem-empty {
+    padding: 22px 10px;
+    font-size: 11px;
+    color: var(--text3);
+    text-align: center;
+}
+
+/* ── Linhas (Nome | Previsão | Motivo | Status | Ação) ── */
+.dem-row {
+    display: grid;
+    grid-template-columns: 1.1fr 130px 1.7fr 170px auto;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+.dem-row:not(.dem-row-head) {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: border-color 0.15s, background 0.15s;
+}
+.dem-row:not(.dem-row-head):hover {
+    border-color: var(--border2);
+    background: var(--surface2);
+}
+.dem-row-head {
+    padding: 4px 8px 6px;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dem-cell {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+.dem-cell-nome { gap: 6px; }
+.dem-team-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.dem-nome {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dem-date-input,
+.dem-motivo-input,
+.dem-status-select {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10.5px;
+    padding: 4px 6px;
+    color-scheme: dark;
+    transition: border-color 0.15s;
+}
+.dem-date-input:focus,
+.dem-motivo-input:focus,
+.dem-status-select:focus { outline: none; border-color: var(--purple); }
+.dem-date-input:hover,
+.dem-motivo-input:hover,
+.dem-status-select:hover { border-color: var(--border2); }
+.dem-motivo-input::placeholder { color: var(--text3); }
+
+.dem-status-select { cursor: pointer; }
+
+/* Cores por status */
+.dem-status-previsto {
+    color: var(--text2);
+    border-color: var(--border2);
+}
+.dem-status-deliberacao {
+    color: var(--yellow);
+    border-color: var(--yellow-border);
+    background: var(--yellow-dim);
+}
+.dem-status-aprovado {
+    color: var(--green);
+    border-color: rgba(34,197,94,0.4);
+    background: var(--green-dim);
+}
+.dem-status-reprovado {
+    color: var(--red);
+    border-color: var(--red-border);
+    background: var(--red-dim);
+}
+.dem-status-select option { color: #111; background: #fff; }
+
+.dem-cell-acao { justify-content: flex-end; }
+.dem-remover-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.15s;
+    padding: 0;
+}
+.dem-remover-btn:hover {
+    border-color: rgba(34,197,94,0.4);
+    color: var(--green);
+    background: var(--green-dim);
+}
