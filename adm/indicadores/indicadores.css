@@ -443,7 +443,7 @@ body {
 }
 
 .metrica-item-numero {
-    font-size: 25px;            /* era 22px */
+    font-size: 20px;            /* era 22px */
     font-weight: 800;
     font-family: var(--font-num);
     line-height: 1;
