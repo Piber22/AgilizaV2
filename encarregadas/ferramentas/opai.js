@@ -12,7 +12,7 @@ function criarCamposOPAI(container) {
     "Alisson": { re: "062229", funcao: "ASG" },
     "Daiane":     { re: "062074", funcao: "Encarregada" },
     "Adrisson":   { re: "056367", funcao: "Planejador" },  // SEM ACENTO
-    "Franciele":    { re: "000000", funcao: "Líder" }
+    "Luciane":    { re: "064336", funcao: "Líder" }
   };
 
   // ===== Função para normalizar nomes com acentos =====
@@ -45,7 +45,7 @@ function criarCamposOPAI(container) {
   placeholderEquipe.disabled = true;
   placeholderEquipe.selected = true;
   selectEquipe.appendChild(placeholderEquipe);
-  ["Graciela", "Giovana", "Jéssica", "Alisson", "Franciele"].forEach(nome => {
+  ["Graciela", "Jéssica", "Alisson", "Luciane"].forEach(nome => {
     const opcao = document.createElement("option");
     opcao.value = nome;
     opcao.textContent = nome;

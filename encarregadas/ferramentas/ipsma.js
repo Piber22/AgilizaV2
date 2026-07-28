@@ -10,7 +10,7 @@ const MAPA_RESPONSAVEIS = {
   "Alisson": { re: "062229", funcao: "ASG" },
   "Daiane":     { re: "062074", funcao: "Encarregada" },
   "Adrisson":   { re: "056367", funcao: "Planejador" },
-  "Franciele":    { re: "000000", funcao: "Líder" }
+  "Luciane":    { re: "064336", funcao: "Líder" }
 };
 
 // Função para obter RE e Função
