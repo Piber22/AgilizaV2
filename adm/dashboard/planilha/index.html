@@ -22,8 +22,8 @@
     <div class="sidebar-brand">
       <div class="brand-mark"><i class="fa-solid fa-chart-simple"></i></div>
       <div class="brand-text">
-        <span class="brand-title">Manserv</span>
-        <span class="brand-subtitle">Indicadores SLA</span>
+        <span class="brand-title">UT: HSANA</span>
+        <span class="brand-subtitle">Acompanhamento de indicadores</span>
       </div>
     </div>
 
@@ -41,15 +41,28 @@
     <!-- TOPBAR -->
     <header class="topbar">
       <div class="topbar-title">
-        <h1>Planilha de SLA</h1>
-        <p>Avaliação do SLA por item e peso</p>
+        <h1>Planilha</h1>
+        <p><i class="fa-solid fa-circle-info"></i> Scorecard de avaliação do SLA por item e peso</p>
       </div>
 
       <div class="topbar-actions">
-        <button class="icon-btn" id="resetBtn" title="Reiniciar avaliação">
+        <div class="month-select" id="monthSelect">
+          <i class="fa-regular fa-calendar"></i>
+          <span id="monthLabel">Carregando...</span>
+          <i class="fa-solid fa-chevron-down chev"></i>
+
+          <ul class="month-dropdown" id="monthDropdown">
+            <li class="dropdown-empty">Carregando meses...</li>
+          </ul>
+        </div>
+
+        <button class="icon-btn" title="Exportar">
+          <i class="fa-solid fa-arrow-up-from-bracket"></i>
+        </button>
+        <button class="icon-btn" id="resetBtn" title="Reiniciar avaliação do mês">
           <i class="fa-solid fa-eraser"></i>
         </button>
-        <button class="icon-btn" id="refreshBtn" title="Recalcular">
+        <button class="icon-btn" id="refreshBtn" title="Recarregar">
           <i class="fa-solid fa-rotate-right"></i>
         </button>
       </div>
@@ -60,6 +73,12 @@
       <i class="fa-solid fa-triangle-exclamation"></i>
       <span id="errorMessage">Não foi possível carregar os dados.</span>
       <button id="retryBtn"><i class="fa-solid fa-rotate-right"></i> Tentar novamente</button>
+    </div>
+
+    <!-- LOADING OVERLAY (primeiro carregamento / troca de mês) -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <span>Conectando ao banco de dados compartilhado...</span>
     </div>
 
     <!-- CONTENT -->

@@ -16,6 +16,62 @@
 
 .categoria-panel{ overflow-x:auto; }
 
+/* ---------- Bloco "adicionar mês" dentro do dropdown do topbar ---------- */
+.month-dropdown{ min-width: 270px; }
+
+.month-add-wrap{
+  margin-top:8px;
+  padding-top:10px;
+  border-top:1px solid var(--border);
+  cursor:default;
+}
+.month-add-wrap:hover{ background:none !important; }
+
+.month-add-title{
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  padding:2px 10px 8px;
+}
+
+.month-add-row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:0 6px 4px;
+}
+
+.month-add-select,
+.month-add-input{
+  background:var(--bg-card);
+  border:1px solid var(--border-strong);
+  color:var(--text-primary);
+  border-radius:7px;
+  padding:7px 8px;
+  font-size:12px;
+  font-family:inherit;
+}
+.month-add-select{ flex:1.4; min-width:0; }
+.month-add-input{ flex:1; min-width:0; }
+
+.month-add-btn{
+  flex-shrink:0;
+  width:30px;
+  height:30px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--orange-dim);
+  border:1px solid var(--orange-line);
+  color:var(--orange);
+  border-radius:7px;
+  font-size:13px;
+  transition:background .16s ease;
+}
+.month-add-btn:hover{ background:rgba(255,138,52,0.24); }
+
 /* ---------- CLASSIFICAÇÃO DO PAGAMENTO ---------- */
 .single-col-full{
   display:grid;

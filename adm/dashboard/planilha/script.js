@@ -2,24 +2,62 @@
    ABA: PLANILHA (scorecard de SLA)
    Diferente das outras abas: não vem de planilha do Google
    Sheets — é um formulário interativo. Os itens/categorias/pesos
-   ficam fixos aqui no código (fácil de expandir depois), e as
-   escolhas do usuário (avaliação selecionada + se o item conta
-   ou não na nota) ficam salvas no localStorage do navegador,
-   pra não se perder ao atualizar a página.
+   ficam fixos aqui no código (fácil de expandir depois).
+
+   As respostas (avaliação selecionada + se o item conta na nota)
+   ficam salvas no Firebase Realtime Database, por MÊS, com
+   sincronização em tempo real: qualquer pessoa com a página
+   aberta vê as mudanças de qualquer outra pessoa quase na hora,
+   sem precisar dar refresh.
+
+   Estrutura no banco:
+     /avaliacoes/{ano}-{mes com 2 dígitos}/{itemId} = { bandaIndex, considerado }
+     /meses/{ano}-{mes com 2 dígitos} = { mes, ano }   (índice p/ o dropdown)
 
    Lógica da nota final: "desconsiderar" um item COMPENSA em vez
    de PUNIR — o peso dele sai tanto do numerador quanto do
    denominador do cálculo, então os itens restantes preenchem
    proporcionalmente os 100%, em vez de a nota cair porque um
-   item ficou de fora.
+   item ficou de fora. O mesmo vale pra um item ainda pendente
+   (sem avaliação escolhida): ele fica de fora até ser respondido.
 
    Depende dos helpers genéricos definidos em /script.js
-   (showLoading, showError, hideError, updateLastUpdated, Dashboard).
+   (showLoading, showError, hideError, updateLastUpdated,
+   formatInt, formatDecimal, Dashboard).
 ============================================================ */
 
 /* ============================================================
+   FIREBASE — configuração e inicialização
+   Carregado dinamicamente via import() direto do CDN, sem
+   precisar de build/npm — funciona em qualquer site estático.
+============================================================ */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBIbJHq5f-cERGURwEzPucdMPdPPP_moCg",
+  authDomain: "dashboardsla-bd042.firebaseapp.com",
+  databaseURL: "https://dashboardsla-bd042-default-rtdb.firebaseio.com",
+  projectId: "dashboardsla-bd042",
+  storageBucket: "dashboardsla-bd042.firebasestorage.app",
+  messagingSenderId: "660744454939",
+  appId: "1:660744454939:web:3a7d75d36d8980c4f509be",
+};
+
+const FIREBASE_SDK_VERSION = "10.12.2";
+
+let db = null;
+let fb = {}; // funções do SDK (ref, onValue, set, ...) guardadas aqui após o import
+
+async function initFirebase() {
+  const { initializeApp } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/firebase-app.js`);
+  const { getDatabase, ref, onValue, set } = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/firebase-database.js`);
+
+  const app = initializeApp(FIREBASE_CONFIG);
+  db = getDatabase(app);
+  fb = { ref, onValue, set };
+}
+
+/* ============================================================
    DADOS — categorias e itens do SLA
-   Cada item tem um id estável (usado na chave do localStorage),
+   Cada item tem um id estável (usado como chave no banco),
    uma lista de "bandas" (as faixas de pontuação) e um peso (%).
 ============================================================ */
 const CATEGORIAS = [
@@ -29,7 +67,7 @@ const CATEGORIAS = [
     itens: [
       {
         id: "op-limpeza-concorrente",
-        titulo: "Limpeza concorrente",
+        titulo: "Limpeza Concorrente",
         texto: "Limpezas concorrentes realizadas diariamente em todas as áreas no mês. Tem a finalidade de garantir ambientes higienizados e organizados.",
         peso: 10,
         bandas: [
@@ -41,7 +79,7 @@ const CATEGORIAS = [
       },
       {
         id: "op-limpeza-terminal",
-        titulo: "Terminal programada",
+        titulo: "Limpeza Terminal",
         texto: "Limpezas Terminais Programadas x Realizadas no mês, considerando as frequências e criticidade das áreas, de acordo com as normas da ANVISA e SCIH do Cliente.",
         peso: 10,
         bandas: [
@@ -59,7 +97,7 @@ const CATEGORIAS = [
     itens: [
       {
         id: "qual-checklist-qtd",
-        titulo: "Qtd. checklists de qualidade",
+        titulo: "Qtd. Checklists",
         texto: "Quantidade de Checklist de Qualidade realizados (mínimo 1 checagem mensal, sendo obrigatório 01 medição/mês, realizadas em conjunto entre Cliente e Manserv, com áreas previamente alinhadas através de sorteio).",
         peso: 3,
         bandas: [
@@ -71,7 +109,7 @@ const CATEGORIAS = [
       },
       {
         id: "qual-checklist-nota",
-        titulo: "Nota checklist de qualidade",
+        titulo: "Nota Checklist",
         texto: "Resultado do Checklist de Qualidade - Média do resultado das avaliações de Boas Práticas trimestral.",
         peso: 6,
         bandas: [
@@ -83,7 +121,7 @@ const CATEGORIAS = [
       },
       {
         id: "qual-tempo-espera-higiene",
-        titulo: "Tempo de espera para higiene",
+        titulo: "Tempo de Espera",
         texto: "Tempo Médio de Espera para Higiene.",
         peso: 6,
         bandas: [
@@ -95,7 +133,7 @@ const CATEGORIAS = [
       },
       {
         id: "qual-tempo-limpeza-terminal",
-        titulo: "Tempo de limpeza de quartos",
+        titulo: "Tempo de Limpeza",
         texto: "Tempo Médio de Limpeza Terminal de Quartos.",
         peso: 6,
         bandas: [
@@ -107,7 +145,7 @@ const CATEGORIAS = [
       },
       {
         id: "qual-tempo-limpeza-sala-cirurgica",
-        titulo: "Concorrente de sala cirúrgica",
+        titulo: "Limpeza Sala Cirúrgica",
         texto: "Tempo Médio de Limpeza Concorrente de Sala Cirúrgica (entre as cirurgias).",
         peso: 6,
         bandas: [
@@ -221,43 +259,101 @@ const CATEGORIAS = [
 ];
 
 /* ============================================================
-   STATE — seleção do usuário por item
-   { [itemId]: { bandaIndex: number|null, considerado: boolean } }
+   MESES — nomes em português para exibição
 ============================================================ */
-const STORAGE_KEY = "planilha-sla:avaliacoes";
-let STATE = {};
+const MESES_NOMES = {
+  1: "Janeiro", 2: "Fevereiro", 3: "Março", 4: "Abril",
+  5: "Maio", 6: "Junho", 7: "Julho", 8: "Agosto",
+  9: "Setembro", 10: "Outubro", 11: "Novembro", 12: "Dezembro",
+};
+
+function mesKey(mesNum, ano) {
+  return `${ano}-${String(mesNum).padStart(2, "0")}`;
+}
+
+function labelMes(mesNum, ano) {
+  return `${MESES_NOMES[mesNum]} / ${ano}`;
+}
+
+/* ============================================================
+   ESTADO EM MEMÓRIA
+============================================================ */
+let mesesDisponiveis = {};   // { [chave]: {mes, ano} } — vem do nó /meses
+let mesSelecionado = null;   // {mesNum, ano}
+let AVALIACOES = {};         // { [itemId]: {bandaIndex, considerado} } do mês atual
+let unsubscribeMesAtual = null;
 
 function estadoPadraoItem() {
   return { bandaIndex: null, considerado: true };
 }
 
-function carregarEstado() {
-  STATE = {};
-  CATEGORIAS.forEach(cat => {
-    cat.itens.forEach(item => {
-      STATE[item.id] = estadoPadraoItem();
-    });
-  });
-
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      Object.keys(parsed).forEach(id => {
-        if (STATE[id]) STATE[id] = { ...STATE[id], ...parsed[id] };
-      });
-    }
-  } catch (e) {
-    console.warn("Não foi possível carregar avaliações salvas:", e);
-  }
+function avaliacoesPadrao() {
+  const obj = {};
+  CATEGORIAS.forEach(cat => cat.itens.forEach(item => { obj[item.id] = estadoPadraoItem(); }));
+  return obj;
 }
 
-function salvarEstado() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
-  } catch (e) {
-    console.warn("Não foi possível salvar as avaliações:", e);
+/* ============================================================
+   FIREBASE — leitura/escrita
+============================================================ */
+function subscribeMesesIndex() {
+  fb.onValue(fb.ref(db, "meses"), (snapshot) => {
+    mesesDisponiveis = snapshot.val() || {};
+    renderMonthDropdown();
+  }, (err) => {
+    console.error("Erro ao ler índice de meses:", err);
+  });
+}
+
+function registrarMesNoIndice(mesNum, ano) {
+  const key = mesKey(mesNum, ano);
+  fb.set(fb.ref(db, "meses/" + key), { mes: mesNum, ano })
+    .catch(err => console.warn("Não foi possível registrar o mês:", err));
+}
+
+function selecionarMes(mesNum, ano) {
+  mesSelecionado = { mesNum, ano };
+  const key = mesKey(mesNum, ano);
+
+  // render otimista com os padrões enquanto aguarda o Firebase responder
+  AVALIACOES = avaliacoesPadrao();
+  atualizarLabelMes();
+  renderMonthDropdown();
+  renderAll();
+  showLoading(true);
+
+  if (unsubscribeMesAtual) {
+    unsubscribeMesAtual();
+    unsubscribeMesAtual = null;
   }
+
+  unsubscribeMesAtual = fb.onValue(fb.ref(db, "avaliacoes/" + key), (snapshot) => {
+    const salvo = snapshot.val() || {};
+    const novo = avaliacoesPadrao();
+    Object.keys(salvo).forEach(id => {
+      if (novo[id]) novo[id] = { ...novo[id], ...salvo[id] };
+    });
+    AVALIACOES = novo;
+    showLoading(false);
+    hideError();
+    renderAll();
+  }, (err) => {
+    console.error("Erro ao ler avaliações do mês:", err);
+    showLoading(false);
+    showError("Não foi possível conectar ao banco de dados compartilhado. Suas alterações não serão salvas até a conexão ser restabelecida.");
+  });
+
+  registrarMesNoIndice(mesNum, ano);
+}
+
+function salvarItemNoFirebase(itemId) {
+  if (!mesSelecionado) return;
+  const key = mesKey(mesSelecionado.mesNum, mesSelecionado.ano);
+  fb.set(fb.ref(db, `avaliacoes/${key}/${itemId}`), AVALIACOES[itemId])
+    .catch(err => {
+      console.error("Erro ao salvar:", err);
+      showError("Não foi possível salvar sua alteração. Verifique sua conexão e tente novamente.");
+    });
 }
 
 /* ============================================================
@@ -308,8 +404,8 @@ function todosItens() {
 }
 
 function calcularResultado(item) {
-  const estado = STATE[item.id];
-  if (!estado.considerado || estado.bandaIndex === null || estado.bandaIndex === undefined) {
+  const estado = AVALIACOES[item.id];
+  if (!estado || !estado.considerado || estado.bandaIndex === null || estado.bandaIndex === undefined) {
     return null; // não entra no cálculo
   }
   const banda = item.bandas[estado.bandaIndex];
@@ -333,6 +429,71 @@ function calcularNota(itens) {
 }
 
 /* ============================================================
+   RENDER — seletor de mês (topo da página)
+============================================================ */
+function atualizarLabelMes() {
+  const label = document.getElementById("monthLabel");
+  if (label && mesSelecionado) {
+    label.textContent = labelMes(mesSelecionado.mesNum, mesSelecionado.ano);
+  }
+}
+
+function renderMonthDropdown() {
+  const dropdown = document.getElementById("monthDropdown");
+  if (!dropdown) return;
+  dropdown.innerHTML = "";
+
+  const chaves = Object.keys(mesesDisponiveis).sort().reverse(); // "AAAA-MM" ordena certo como string
+
+  if (!chaves.length) {
+    dropdown.innerHTML = '<li class="dropdown-empty">Nenhum mês criado ainda</li>';
+  } else {
+    chaves.forEach(key => {
+      const { mes, ano } = mesesDisponiveis[key];
+      const isSelected = mesSelecionado && mesSelecionado.mesNum === mes && mesSelecionado.ano === ano;
+      const li = document.createElement("li");
+      li.textContent = labelMes(mes, ano);
+      if (isSelected) li.classList.add("selected");
+      li.addEventListener("click", (e) => {
+        e.stopPropagation();
+        document.getElementById("monthSelect").classList.remove("open");
+        if (!isSelected) selecionarMes(mes, ano);
+      });
+      dropdown.appendChild(li);
+    });
+  }
+
+  // bloco de "adicionar novo mês", sempre disponível
+  const addWrap = document.createElement("li");
+  addWrap.className = "month-add-wrap";
+  addWrap.addEventListener("click", (e) => e.stopPropagation());
+
+  const hoje = new Date();
+  const opcoesMes = Object.keys(MESES_NOMES)
+    .map(num => `<option value="${num}" ${Number(num) === hoje.getMonth() + 1 ? "selected" : ""}>${MESES_NOMES[num]}</option>`)
+    .join("");
+
+  addWrap.innerHTML = `
+    <div class="month-add-title">Adicionar / selecionar mês</div>
+    <div class="month-add-row">
+      <select id="novoMesSelect" class="month-add-select">${opcoesMes}</select>
+      <input type="number" id="novoAnoInput" class="month-add-input" value="${hoje.getFullYear()}" min="2020" max="2100">
+      <button type="button" id="novoMesConfirmar" class="month-add-btn"><i class="fa-solid fa-check"></i></button>
+    </div>
+  `;
+  dropdown.appendChild(addWrap);
+
+  document.getElementById("novoMesConfirmar").addEventListener("click", (e) => {
+    e.stopPropagation();
+    const mesNum = Number(document.getElementById("novoMesSelect").value);
+    const ano = Number(document.getElementById("novoAnoInput").value);
+    if (!mesNum || !ano) return;
+    document.getElementById("monthSelect").classList.remove("open");
+    selecionarMes(mesNum, ano);
+  });
+}
+
+/* ============================================================
    RENDER — resumo geral (topo da página)
 ============================================================ */
 function renderResumo() {
@@ -340,11 +501,11 @@ function renderResumo() {
   const { nota, pesoConsiderado } = calcularNota(itens);
 
   const avaliados = itens.filter(item => {
-    const e = STATE[item.id];
-    return e.considerado && e.bandaIndex !== null && e.bandaIndex !== undefined;
+    const e = AVALIACOES[item.id];
+    return e && e.considerado && e.bandaIndex !== null && e.bandaIndex !== undefined;
   }).length;
 
-  const desconsiderados = itens.filter(item => !STATE[item.id].considerado).length;
+  const desconsiderados = itens.filter(item => AVALIACOES[item.id] && !AVALIACOES[item.id].considerado).length;
   const pendentes = itens.length - avaliados - desconsiderados;
 
   const notaEl = document.getElementById("kpiNotaFinal");
@@ -375,6 +536,7 @@ function renderResumo() {
 function renderClassificacao(nota) {
   const atual = classificar(nota);
   const list = document.getElementById("classificacaoList");
+  if (!list) return;
   list.innerHTML = "";
 
   CLASSIFICACOES.forEach(c => {
@@ -410,7 +572,8 @@ function renderCategoria(categoria) {
    RENDER — uma linha de item (dropdown, resultado, toggle)
 ============================================================ */
 function renderItemRow(item) {
-  const estado = STATE[item.id];
+  const estado = AVALIACOES[item.id];
+  if (!estado) return;
   const row = document.getElementById("row-" + item.id);
   if (!row) return;
 
@@ -419,6 +582,9 @@ function renderItemRow(item) {
   const select = document.getElementById("select-" + item.id);
   select.disabled = !estado.considerado;
   select.value = estado.bandaIndex === null || estado.bandaIndex === undefined ? "" : String(estado.bandaIndex);
+
+  const toggle = document.getElementById("toggle-" + item.id);
+  if (toggle) toggle.checked = !!estado.considerado;
 
   const resultadoEl = document.getElementById("resultado-" + item.id);
   if (!estado.considerado) {
@@ -434,7 +600,8 @@ function renderItemRow(item) {
 }
 
 /* ============================================================
-   RENDER — monta o HTML de todas as categorias (uma vez)
+   RENDER — monta o HTML de todas as categorias (uma vez só;
+   os valores em si são atualizados por renderItemRow/renderCategoria)
 ============================================================ */
 function montarCategorias() {
   const container = document.getElementById("categoriasContainer");
@@ -508,7 +675,7 @@ function montarCategorias() {
         <td class="col-resultado" id="resultado-${item.id}"></td>
         <td class="col-considerar">
           <label class="toggle-switch">
-            <input type="checkbox" id="toggle-${item.id}" ${STATE[item.id].considerado ? "checked" : ""}>
+            <input type="checkbox" id="toggle-${item.id}" checked>
             <span class="toggle-slider"></span>
           </label>
         </td>
@@ -529,16 +696,16 @@ function montarCategorias() {
 
       tr.querySelector(`#select-${item.id}`).addEventListener("change", (e) => {
         const val = e.target.value;
-        STATE[item.id].bandaIndex = val === "" ? null : Number(val);
-        salvarEstado();
+        AVALIACOES[item.id].bandaIndex = val === "" ? null : Number(val);
+        salvarItemNoFirebase(item.id);
         renderItemRow(item);
         renderCategoria(categoriaDoItem(item.id));
         renderResumo();
       });
 
       tr.querySelector(`#toggle-${item.id}`).addEventListener("change", (e) => {
-        STATE[item.id].considerado = e.target.checked;
-        salvarEstado();
+        AVALIACOES[item.id].considerado = e.target.checked;
+        salvarItemNoFirebase(item.id);
         renderItemRow(item);
         renderCategoria(categoriaDoItem(item.id));
         renderResumo();
@@ -564,17 +731,18 @@ function fecharTodosPopovers() {
 document.addEventListener("click", fecharTodosPopovers);
 
 /* ============================================================
-   RESET
+   RESET (zera o mês atual pra todo mundo)
 ============================================================ */
 function reiniciarAvaliacao() {
-  const confirmado = window.confirm("Isso vai apagar todas as avaliações preenchidas e voltar tudo ao padrão. Deseja continuar?");
+  if (!mesSelecionado) return;
+  const confirmado = window.confirm(
+    `Isso vai apagar as avaliações de ${labelMes(mesSelecionado.mesNum, mesSelecionado.ano)} PARA TODOS os que acessam o dashboard, e voltar tudo ao padrão. Deseja continuar?`
+  );
   if (!confirmado) return;
 
-  localStorage.removeItem(STORAGE_KEY);
-  carregarEstado();
-  document.querySelectorAll(".avaliacao-select").forEach(sel => { sel.value = ""; });
-  document.querySelectorAll('input[type="checkbox"][id^="toggle-"]').forEach(chk => { chk.checked = true; });
-  renderAll();
+  const key = mesKey(mesSelecionado.mesNum, mesSelecionado.ano);
+  fb.set(fb.ref(db, "avaliacoes/" + key), null)
+    .catch(err => showError("Não foi possível reiniciar: " + err.message));
 }
 
 /* ============================================================
@@ -589,15 +757,35 @@ function renderAll() {
 
 /* ============================================================
    BOOTSTRAP DESTA ABA
-   Não há fetch de planilha — só monta a estrutura e restaura
-   o que estiver salvo no navegador.
 ============================================================ */
 async function bootstrap() {
   hideError();
-  carregarEstado();
+  showLoading(true);
+
   montarCategorias();
-  renderAll();
-  showLoading(false);
+
+  try {
+    await initFirebase();
+  } catch (err) {
+    console.error("Erro ao conectar ao Firebase:", err);
+    showLoading(false);
+    showError("Não foi possível conectar ao banco de dados compartilhado. Verifique sua conexão e tente novamente.");
+    return;
+  }
+
+  subscribeMesesIndex();
+
+  // espera um instante o índice de meses chegar, pra já abrir no mês mais recente
+  await new Promise(resolve => setTimeout(resolve, 400));
+
+  const chaves = Object.keys(mesesDisponiveis).sort();
+  if (chaves.length) {
+    const maisRecente = mesesDisponiveis[chaves[chaves.length - 1]];
+    selecionarMes(maisRecente.mes, maisRecente.ano);
+  } else {
+    const hoje = new Date();
+    selecionarMes(hoje.getMonth() + 1, hoje.getFullYear());
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
