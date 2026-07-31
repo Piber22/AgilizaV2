@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indicadores SLA &middot; Planilha</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="planilha">
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark"><i class="fa-solid fa-chart-simple"></i></div>
+      <div class="brand-text">
+        <span class="brand-title">UT: HSANA</span>
+        <span class="brand-subtitle">Acompanhamento de indicadores</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-heading">Indicadores</span>
+      <ul id="navList">
+        <!-- gerado por ../shared/nav.js -->
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>Planilha</h1>
+        <p><i class="fa-solid fa-circle-info"></i> Scorecard de avaliação do SLA por item e peso</p>
+      </div>
+
+      <div class="topbar-actions">
+        <button class="icon-btn" title="Exportar">
+          <i class="fa-solid fa-arrow-up-from-bracket"></i>
+        </button>
+        <button class="icon-btn" id="resetBtn" title="Reiniciar avaliação">
+          <i class="fa-solid fa-eraser"></i>
+        </button>
+        <button class="icon-btn" id="refreshBtn" title="Recalcular">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ERROR BANNER -->
+    <div class="error-banner" id="errorBanner">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span id="errorMessage">Não foi possível carregar os dados.</span>
+      <button id="retryBtn"><i class="fa-solid fa-rotate-right"></i> Tentar novamente</button>
+    </div>
+
+    <!-- CONTENT -->
+    <main class="content" id="content">
+
+      <!-- RESUMO GERAL -->
+      <section class="kpi-grid kpi-grid-planilha">
+        <div class="kpi-card featured" id="kpiNotaFinalCard">
+          <div class="kpi-icon icon-green" id="kpiNotaFinalIcon"><i class="fa-solid fa-award"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Nota Final do SLA</span>
+            <span class="kpi-value kpi-value-lg" id="kpiNotaFinal">—</span>
+            <span class="kpi-foot neutral" id="kpiNotaFinalFoot">Nenhum item avaliado ainda</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-blue"><i class="fa-solid fa-list-check"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Itens Avaliados</span>
+            <span class="kpi-value" id="kpiItensAvaliados">—</span>
+            <span class="kpi-foot neutral">Com avaliação selecionada</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-orange"><i class="fa-solid fa-clock"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Pendentes</span>
+            <span class="kpi-value" id="kpiItensPendentes">—</span>
+            <span class="kpi-foot neutral">Ainda sem avaliação</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-red"><i class="fa-solid fa-ban"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Desconsiderados</span>
+            <span class="kpi-value" id="kpiItensDesconsiderados">—</span>
+            <span class="kpi-foot neutral">Fora do cálculo da nota</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CATEGORIAS -->
+      <div class="categorias-wrap" id="categoriasContainer">
+        <!-- gerado por ./script.js -->
+      </div>
+
+      <!-- CLASSIFICAÇÃO DO PAGAMENTO -->
+      <section class="charts-grid single-col-full">
+        <div class="panel classificacao-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Classificação do Pagamento</h2>
+              <p>Faixa aplicável de acordo com a nota final do SLA</p>
+            </div>
+          </div>
+          <div class="classificacao-list" id="classificacaoList"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="app-footer">
+      <span>Painel de indicadores SLA &middot; Equipe Manserv - HSANA</span>
+      <span id="lastUpdated">Última atualização: —</span>
+    </footer>
+  </div>
+</div>
+
+<script src="../shared/nav.js"></script>
+<script src="../script.js"></script>
+<script src="./script.js"></script>
+</body>
+</html>

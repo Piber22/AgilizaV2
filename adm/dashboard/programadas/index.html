@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indicadores SLA &middot; Programadas</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="programadas">
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark"><i class="fa-solid fa-chart-simple"></i></div>
+      <div class="brand-text">
+        <span class="brand-title">Manserv</span>
+        <span class="brand-subtitle">Indicadores SLA</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-heading">Indicadores</span>
+      <ul id="navList">
+        <!-- gerado por ../shared/nav.js -->
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>Programadas</h1>
+        <p>Acompanhamento de atividades programadas</p>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="month-select" id="monthSelect">
+          <i class="fa-regular fa-calendar"></i>
+          <span id="monthLabel">Carregando...</span>
+          <i class="fa-solid fa-chevron-down chev"></i>
+
+          <ul class="month-dropdown" id="monthDropdown">
+            <li class="dropdown-empty">Carregando meses...</li>
+          </ul>
+        </div>
+
+        <button class="icon-btn" title="Exportar">
+          <i class="fa-solid fa-arrow-up-from-bracket"></i>
+        </button>
+        <button class="icon-btn" id="refreshBtn" title="Atualizar dados">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ERROR BANNER -->
+    <div class="error-banner" id="errorBanner">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span id="errorMessage">Não foi possível carregar os dados das planilhas.</span>
+      <button id="retryBtn"><i class="fa-solid fa-rotate-right"></i> Tentar novamente</button>
+    </div>
+
+    <!-- LOADING OVERLAY (first load) -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <span>Carregando dados das planilhas...</span>
+    </div>
+
+    <!-- CONTENT -->
+    <main class="content" id="content">
+
+      <!-- KPI CARDS -->
+      <section class="kpi-grid kpi-grid-extended">
+        <div class="kpi-card">
+          <div class="kpi-icon icon-blue"><i class="fa-solid fa-layer-group"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Total Previsto</span>
+            <span class="kpi-value" id="kpiTotalPrevisto">—</span>
+            <span class="kpi-foot neutral">Base de planejamento mensal</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-orange"><i class="fa-solid fa-bullseye"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Meta: 85% do previsto</span>
+            <span class="kpi-value" id="kpiMeta">—</span>
+            <span class="kpi-foot neutral">Referência para atingimento</span>
+          </div>
+        </div>
+
+        <div class="kpi-card featured" id="kpiAtingidoCard">
+          <div class="kpi-icon icon-green" id="kpiAtingidoIcon"><i class="fa-solid fa-chart-line"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Atingido</span>
+            <span class="kpi-value" id="kpiAtingido">—</span>
+            <span class="kpi-foot positive" id="kpiAtingidoFoot"><i class="fa-solid fa-arrow-trend-up"></i> —% da meta</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-green" id="kpiDiffIcon"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Diferença para a Meta</span>
+            <span class="kpi-value positive-text" id="kpiDiff">—</span>
+            <span class="kpi-foot positive" id="kpiDiffFoot"><i class="fa-solid fa-check"></i> —</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-red"><i class="fa-solid fa-calendar-xmark"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Não Realizadas</span>
+            <span class="kpi-value" id="kpiNaoRealizadas">—</span>
+            <span class="kpi-foot neutral">Atividades não concluídas</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-red"><i class="fa-solid fa-hand"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Termos de recusa</span>
+            <span class="kpi-value" id="kpiRecusas">—</span>
+            <span class="kpi-foot neutral">Registrados no período</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-orange"><i class="fa-solid fa-percent"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">% Recusas</span>
+            <span class="kpi-value" id="kpiPercRecusas">—</span>
+            <span class="kpi-foot neutral">Sobre o total não realizado</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- GAUGE -->
+      <section class="charts-grid single-col">
+        <div class="panel gauge-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Indicador de Meta</h2>
+              <p>Percentual do previsto atingido no período</p>
+            </div>
+          </div>
+
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 220 130" class="gauge-svg">
+              <path class="gauge-track" d="M 20 120 A 90 90 0 0 1 200 120" />
+              <path class="gauge-fill" id="gaugeFill" d="M 20 120 A 90 90 0 0 1 200 120" />
+              <path class="gauge-overshoot" id="gaugeOvershoot" d="M 20 120 A 90 90 0 0 1 200 120" />
+              <circle class="gauge-meta-marker" id="gaugeMetaMarker" r="7" cx="20" cy="120" />
+            </svg>
+            <div class="gauge-center">
+              <span class="gauge-percent" id="gaugePercent">0%</span>
+              <span class="gauge-caption">do previsto atingido</span>
+            </div>
+          </div>
+
+          <div class="gauge-legend">
+            <div class="gauge-legend-item">
+              <span class="dot dot-orange"></span>
+              <div><strong id="gaugeMetaValue">—</strong><small>Meta</small></div>
+            </div>
+            <div class="gauge-legend-item">
+              <span class="dot dot-green" id="gaugeResultDot"></span>
+              <div><strong id="gaugeResultValue">—</strong><small>Resultado</small></div>
+            </div>
+          </div>
+
+          <div class="gauge-status" id="gaugeStatus">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="gaugeStatusText">—</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- TABELA DE RECUSAS -->
+      <section class="lower-grid single-col">
+        <div class="panel recusas-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Atividades não realizadas por termo de recusa</h2>
+              <p>Recusas registradas no período selecionado</p>
+            </div>
+            <span class="panel-tag"><i class="fa-solid fa-hand"></i> <span id="recusasCount">0</span> recusas</span>
+          </div>
+
+          <table class="recusas-table">
+            <thead>
+              <tr>
+                <th class="col-data">Data</th>
+                <th class="col-terminal">Terminal</th>
+                <th class="col-lideranca">Liderança</th>
+              </tr>
+            </thead>
+            <tbody id="recusasBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="app-footer">
+      <span>Painel de indicadores SLA &middot; Equipe Manserv - HSANA</span>
+      <span id="lastUpdated">Última atualização: —</span>
+    </footer>
+  </div>
+</div>
+
+<script src="../shared/nav.js"></script>
+<script src="../script.js"></script>
+<script src="./script.js"></script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indicadores SLA &middot; SSMA</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="ssma">
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark"><i class="fa-solid fa-chart-simple"></i></div>
+      <div class="brand-text">
+        <span class="brand-title">Manserv</span>
+        <span class="brand-subtitle">Indicadores SLA</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-heading">Indicadores</span>
+      <ul id="navList">
+        <!-- gerado por ../shared/nav.js -->
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>SSMA</h1>
+        <p>Saúde, Segurança e Meio Ambiente &middot; conformidade do período</p>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="month-select" id="monthSelect">
+          <i class="fa-regular fa-calendar"></i>
+          <span id="monthLabel">Carregando...</span>
+          <i class="fa-solid fa-chevron-down chev"></i>
+
+          <ul class="month-dropdown" id="monthDropdown">
+            <li class="dropdown-empty">Carregando meses...</li>
+          </ul>
+        </div>
+
+        <button class="icon-btn" title="Exportar">
+          <i class="fa-solid fa-arrow-up-from-bracket"></i>
+        </button>
+        <button class="icon-btn" id="refreshBtn" title="Atualizar dados">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ERROR BANNER -->
+    <div class="error-banner" id="errorBanner">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span id="errorMessage">Não foi possível carregar os dados das planilhas.</span>
+      <button id="retryBtn"><i class="fa-solid fa-rotate-right"></i> Tentar novamente</button>
+    </div>
+
+    <!-- LOADING OVERLAY (first load) -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <span>Carregando dados das planilhas...</span>
+    </div>
+
+    <!-- CONTENT -->
+    <main class="content" id="content">
+
+      <!-- CARDS EMPILHADOS -->
+      <section class="ssma-stack">
+
+        <!-- PCMSO -->
+        <div class="panel ssma-item" id="cardPcmso">
+          <div class="ssma-item-header">
+            <div class="ssma-item-icon" id="cardPcmsoIcon"><i class="fa-solid fa-check"></i></div>
+            <div class="ssma-item-title">
+              <h3>PCMSO</h3>
+              <p>Programa de Controle Médico de Saúde Ocupacional</p>
+            </div>
+            <span class="ssma-item-badge" id="cardPcmsoBadge">—</span>
+          </div>
+          <div class="ssma-item-body">
+            <div class="ssma-fact">
+              <span class="ssma-fact-label">Situação</span>
+              <span class="ssma-fact-value" id="cardPcmsoSituacao">—</span>
+            </div>
+            <div class="ssma-fact">
+              <span class="ssma-fact-label">Validade</span>
+              <span class="ssma-fact-value" id="cardPcmsoValidade">—</span>
+            </div>
+            <div class="ssma-fact">
+              <span class="ssma-fact-label">Vencimento</span>
+              <span class="ssma-fact-value" id="cardPcmsoVencimento">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PGR -->
+        <div class="panel ssma-item" id="cardPgr">
+          <div class="ssma-item-header">
+            <div class="ssma-item-icon" id="cardPgrIcon"><i class="fa-solid fa-check"></i></div>
+            <div class="ssma-item-title">
+              <h3>PGR</h3>
+              <p>Programa de Gerenciamento de Riscos</p>
+            </div>
+            <span class="ssma-item-badge" id="cardPgrBadge">—</span>
+          </div>
+          <div class="ssma-item-body">
+            <div class="ssma-fact">
+              <span class="ssma-fact-label">Situação</span>
+              <span class="ssma-fact-value" id="cardPgrSituacao">—</span>
+            </div>
+            <div class="ssma-fact">
+              <span class="ssma-fact-label">Validade</span>
+              <span class="ssma-fact-value" id="cardPgrValidade">—</span>
+            </div>
+            <div class="ssma-fact">
+              <span class="ssma-fact-label">Vencimento</span>
+              <span class="ssma-fact-value" id="cardPgrVencimento">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- FICHA DE EPI -->
+        <div class="panel ssma-item" id="cardFichaEpi">
+          <div class="ssma-item-header">
+            <div class="ssma-item-icon" id="cardFichaEpiIcon"><i class="fa-solid fa-check"></i></div>
+            <div class="ssma-item-title">
+              <h3>Ficha de EPI</h3>
+              <p>Entrega de Equipamentos de Proteção Individual</p>
+            </div>
+            <span class="ssma-item-badge" id="cardFichaEpiBadge">—</span>
+          </div>
+          <div class="ssma-item-body">
+            <div class="ssma-fact">
+              <span class="ssma-fact-label">Situação</span>
+              <span class="ssma-fact-value" id="cardFichaEpiSituacao">—</span>
+            </div>
+            <div class="ssma-fact">
+              <span class="ssma-fact-label">Cobertura</span>
+              <span class="ssma-fact-value" id="cardFichaEpiCobertura">—</span>
+            </div>
+            <div class="ssma-fact ssma-fact-wide">
+              <span class="ssma-fact-label">Colaboradores com ficha</span>
+              <div class="ssma-progress">
+                <div class="ssma-progress-fill" id="cardFichaEpiProgress"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACIDENTES COM PERFUROCORTANTE -->
+        <div class="panel ssma-item" id="cardAcidentes">
+          <div class="ssma-item-header">
+            <div class="ssma-item-icon" id="cardAcidentesIcon"><i class="fa-solid fa-user-shield"></i></div>
+            <div class="ssma-item-title">
+              <h3>Acidentes com perfurocortante</h3>
+              <p>Meta: 0 ocorrências punitivas no período</p>
+            </div>
+            <span class="ssma-item-badge" id="cardAcidentesBadge">—</span>
+          </div>
+          <div class="ssma-item-body">
+            <div class="ssma-fact">
+              <span class="ssma-fact-label">Ocorrências no período</span>
+              <span class="ssma-fact-value" id="cardAcidentesQtd">—</span>
+            </div>
+            <div class="ssma-fact">
+              <span class="ssma-fact-label">Classificação</span>
+              <span class="ssma-fact-value" id="cardAcidentesClassificacao">—</span>
+            </div>
+          </div>
+          <div class="ssma-ocorrencia-empty" id="ocorrenciaEmpty">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Nenhum acidente registrado neste período.</span>
+          </div>
+          <p class="ssma-descricao" id="ocorrenciaDescricao" style="display:none;"></p>
+        </div>
+
+      </section>
+
+    </main>
+
+    <footer class="app-footer">
+      <span>Painel de indicadores SLA &middot; Equipe Manserv - HSANA</span>
+      <span id="lastUpdated">Última atualização: —</span>
+    </footer>
+  </div>
+</div>
+
+<script src="../shared/nav.js"></script>
+<script src="../script.js"></script>
+<script src="./script.js"></script>
+</body>
+</html>

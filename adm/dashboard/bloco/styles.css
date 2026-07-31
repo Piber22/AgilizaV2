@@ -1,0 +1,165 @@
+/* ============================================================
+   ABA: HIGIENIZAÇÃO DO BLOCO
+   Estilos específicos desta aba (não reutilizados por outras).
+   Depende dos tokens e componentes genéricos definidos em /styles.css
+============================================================ */
+
+/* ---------- KPI grid com 4 cards ---------- */
+.kpi-grid.kpi-grid-compact{
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* ---------- Layout de coluna única (sem gráfico de setor nesta aba) ---------- */
+.charts-grid.single-col{
+  display:grid;
+  grid-template-columns: 1fr;
+  max-width:560px;
+  margin:0 auto;
+  width:100%;
+}
+
+.lower-grid.single-col{
+  display:grid;
+  grid-template-columns: 1fr;
+  padding-bottom:24px;
+}
+
+/* ---------- GAUGE (mesmo visual usado em Programadas/Concorrentes) ---------- */
+.gauge-panel{ display:flex; flex-direction:column; }
+
+.gauge-wrap{
+  position:relative;
+  display:flex; align-items:center; justify-content:center;
+  margin:6px 0 4px;
+}
+
+.gauge-svg{ width:100%; max-width:280px; }
+
+.gauge-track{
+  fill:none;
+  stroke:var(--bg-card-alt);
+  stroke-width:16;
+  stroke-linecap:round;
+}
+
+.gauge-fill{
+  fill:none;
+  stroke:var(--orange);
+  stroke-width:16;
+  stroke-linecap:round;
+  stroke-dasharray:0 300;
+  transition:stroke-dasharray 1.4s cubic-bezier(.16,1,.3,1);
+}
+/* Dentro da meta: preenchimento em verde (tempo médio é menor que o limite) */
+.gauge-fill.good-fill{ stroke:var(--green); }
+
+.gauge-overshoot{
+  fill:none;
+  stroke:var(--green);
+  stroke-width:16;
+  stroke-linecap:round;
+  stroke-dasharray:0 300;
+  filter:drop-shadow(0 0 6px rgba(47,212,144,0.6));
+  transition:stroke-dasharray 1.4s cubic-bezier(.16,1,.3,1) .15s, opacity .3s ease;
+}
+/* Acima da meta: excedente em vermelho (tempo médio ultrapassou o limite) */
+.gauge-overshoot.overshoot-bad{
+  stroke:var(--red);
+  filter:drop-shadow(0 0 6px rgba(255,92,106,0.6));
+}
+
+.gauge-meta-marker{
+  fill:var(--bg-card);
+  stroke:var(--orange);
+  stroke-width:3;
+  filter:drop-shadow(0 0 5px rgba(255,138,52,0.7));
+  transition:cx 1.4s cubic-bezier(.16,1,.3,1), cy 1.4s cubic-bezier(.16,1,.3,1);
+}
+
+.gauge-center{
+  position:absolute;
+  top:58%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  display:flex; flex-direction:column; align-items:center;
+  gap:2px;
+}
+
+.gauge-percent{ font-family:var(--font-display); font-size:34px; font-weight:800; color:var(--green); }
+.gauge-caption{ font-size:11.5px; color:var(--text-muted); font-weight:500; }
+
+.gauge-legend{
+  display:flex;
+  gap:20px;
+  justify-content:center;
+  margin-top:8px;
+  padding-top:16px;
+  border-top:1px solid var(--border);
+}
+
+.gauge-legend-item{ display:flex; align-items:center; gap:9px; }
+.gauge-legend-item div{ display:flex; flex-direction:column; line-height:1.2; }
+.gauge-legend-item strong{ font-size:14px; font-weight:700; }
+.gauge-legend-item small{ font-size:11px; color:var(--text-muted); }
+
+.gauge-status{
+  margin-top:14px;
+  background:var(--green-dim);
+  color:var(--green);
+  border:1px solid var(--green-line);
+  border-radius:var(--radius-sm);
+  padding:10px 14px;
+  font-size:12.5px;
+  font-weight:600;
+  display:flex; align-items:center; gap:8px;
+  justify-content:center;
+}
+.gauge-status.negative{
+  background:var(--red-dim);
+  color:var(--red);
+  border-color:rgba(255,92,106,0.35);
+}
+
+/* ---------- TABELA DE REGISTROS ---------- */
+.registros-table{ width:100%; border-collapse:collapse; }
+
+.registros-table thead th{
+  text-align:left;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  padding:0 10px 12px;
+  border-bottom:1px solid var(--border);
+}
+
+.registros-table tbody td{
+  padding:13px 10px;
+  font-size:13.5px;
+  border-bottom:1px solid var(--border);
+  vertical-align:middle;
+}
+
+.registros-table tbody tr{ transition:background .16s ease; }
+.registros-table tbody tr:hover{ background:var(--bg-hover); }
+.registros-table tbody tr:last-child td{ border-bottom:none; }
+
+.registros-table .col-inicio{ white-space:nowrap; font-variant-numeric:tabular-nums; color:var(--text-secondary); width:200px; }
+.registros-table .col-fim{ white-space:nowrap; font-variant-numeric:tabular-nums; color:var(--text-secondary); width:200px; }
+.registros-table .col-tempo{ font-weight:600; }
+
+.table-empty{
+  text-align:center;
+  color:var(--text-muted);
+  padding:32px 10px !important;
+  font-size:13px;
+}
+
+/* ---------- Delays de animação específicos do layout desta aba ---------- */
+.kpi-grid .kpi-card:nth-child(1){ animation-delay:.08s; }
+.kpi-grid .kpi-card:nth-child(2){ animation-delay:.14s; }
+.kpi-grid .kpi-card:nth-child(3){ animation-delay:.2s; }
+.kpi-grid .kpi-card:nth-child(4){ animation-delay:.26s; }
+.charts-grid .panel{ animation-delay:.1s; }
+.lower-grid .panel{ animation-delay:.16s; }

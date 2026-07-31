@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indicadores SLA &middot; Resumo</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="resumo">
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark"><i class="fa-solid fa-chart-simple"></i></div>
+      <div class="brand-text">
+        <span class="brand-title">Manserv</span>
+        <span class="brand-subtitle">Indicadores SLA</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-heading">Indicadores</span>
+      <ul id="navList">
+        <!-- gerado por ../shared/nav.js -->
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>Resumo</h1>
+        <p>Visão geral do atingimento de meta de todos os indicadores</p>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="month-select" id="monthSelect">
+          <i class="fa-regular fa-calendar"></i>
+          <span id="monthLabel">Carregando...</span>
+          <i class="fa-solid fa-chevron-down chev"></i>
+
+          <ul class="month-dropdown" id="monthDropdown">
+            <li class="dropdown-empty">Carregando meses...</li>
+          </ul>
+        </div>
+
+        <button class="icon-btn" id="refreshBtn" title="Atualizar dados">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ERROR BANNER -->
+    <div class="error-banner" id="errorBanner">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span id="errorMessage">Não foi possível carregar os dados da planilha.</span>
+      <button id="retryBtn"><i class="fa-solid fa-rotate-right"></i> Tentar novamente</button>
+    </div>
+
+    <!-- LOADING OVERLAY (first load) -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <span>Carregando dados da planilha...</span>
+    </div>
+
+    <!-- CONTENT -->
+    <main class="content" id="content">
+
+      <!-- KPI CARDS -->
+      <section class="kpi-grid kpi-grid-compact">
+        <div class="kpi-card">
+          <div class="kpi-icon icon-blue"><i class="fa-solid fa-layer-group"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Indicadores Avaliados</span>
+            <span class="kpi-value" id="kpiTotal">—</span>
+            <span class="kpi-foot neutral">No período selecionado</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-green" id="kpiAtingidasIcon"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Metas Atingidas</span>
+            <span class="kpi-value" id="kpiAtingidas">—</span>
+            <span class="kpi-foot positive" id="kpiAtingidasFoot">—</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-red" id="kpiNaoAtingidasIcon"><i class="fa-solid fa-circle-exclamation"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Metas Não Atingidas</span>
+            <span class="kpi-value" id="kpiNaoAtingidas">—</span>
+            <span class="kpi-foot negative" id="kpiNaoAtingidasFoot">—</span>
+          </div>
+        </div>
+
+        <div class="kpi-card featured">
+          <div class="kpi-icon icon-orange"><i class="fa-solid fa-gauge-high"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-label">Atingimento Médio</span>
+            <span class="kpi-value" id="kpiMedia">—</span>
+            <span class="kpi-foot neutral">Média entre todos os indicadores</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- LISTA DE INDICADORES -->
+      <section class="lower-grid single-col">
+        <div class="panel resumo-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Indicadores do período</h2>
+              <p>Ordenados do menor para o maior atingimento — o que precisa de atenção aparece primeiro</p>
+            </div>
+            <span class="panel-tag"><i class="fa-solid fa-list-check"></i> <span id="resumoCount">0</span> indicadores</span>
+          </div>
+
+          <div class="resumo-list" id="resumoList">
+            <!-- gerado dinamicamente por ./script.js -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="app-footer">
+      <span>Painel de indicadores SLA &middot; Equipe Manserv - HSANA</span>
+      <span id="lastUpdated">Última atualização: —</span>
+    </footer>
+  </div>
+</div>
+
+<script src="../shared/nav.js"></script>
+<script src="../script.js"></script>
+<script src="./script.js"></script>
+</body>
+</html>

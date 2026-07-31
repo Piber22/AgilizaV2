@@ -1,0 +1,205 @@
+/* ============================================================
+   CAPA DO DASHBOARD — CONCEITO 2 (carimbo de conformidade)
+   Depende dos tokens definidos em /styles.css (cores, fontes,
+   --border, --radius-*, .brand-mark/.brand-title/.brand-subtitle,
+   .icon-blue/orange/green/red) para manter o mesmo padrão visual
+   das abas internas.
+============================================================ */
+
+body[data-page="home"]{
+  overflow-x:hidden;
+}
+
+.cover{
+  position:relative;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:36px 24px 28px;
+  overflow:hidden;
+  isolation:isolate;
+}
+
+/* ---------- GLOW AMBIENTE ---------- */
+.cover-glow{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(120px);
+  opacity:.26;
+  z-index:-1;
+  pointer-events:none;
+}
+.cover-glow-a{
+  width:560px; height:560px;
+  top:-220px; right:-160px;
+  background:var(--orange);
+  animation:driftA 16s ease-in-out infinite;
+}
+.cover-glow-b{
+  width:480px; height:480px;
+  bottom:-200px; left:-160px;
+  background:var(--green);
+  opacity:.14;
+  animation:driftB 18s ease-in-out infinite;
+}
+
+@keyframes driftA{
+  0%, 100%{ transform:translate(0, 0) scale(1); }
+  50%{ transform:translate(-30px, 30px) scale(1.08); }
+}
+@keyframes driftB{
+  0%, 100%{ transform:translate(0, 0) scale(1); }
+  50%{ transform:translate(24px, -24px) scale(1.06); }
+}
+
+/* ---------- BRAND ---------- */
+.cover-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  align-self:flex-start;
+}
+
+.cover-logo{
+  height:38px;
+  width:auto;
+  display:block;
+}
+
+/* ---------- HERO ---------- */
+.cover-hero{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:26px;
+  padding:20px 16px;
+  max-width:640px;
+  margin:0 auto;
+}
+
+/* ---------- WORDMARK (elemento de assinatura) ---------- */
+.hero-wordmark{
+  display:inline-flex;
+  flex-direction:column;
+  align-items:flex-start;
+  text-align:left;
+  line-height:1.02;
+  margin:0;
+  animation:wordmarkIn .7s cubic-bezier(.16,1,.3,1) both;
+}
+
+.wm-line{
+  font-family:'Montserrat', sans-serif;
+  text-transform:uppercase;
+  font-size:clamp(32px, 6vw, 56px);
+  letter-spacing:.005em;
+}
+
+.wm-bold{
+  font-weight:600;
+  color:var(--orangelogo);
+}
+.wm-light{
+  font-weight:200;
+  color:var(--text-primary);
+}
+.wm-bold-inline{
+  font-weight:600;
+  color:var(--text-primary);
+}
+
+@keyframes wordmarkIn{
+  from{ opacity:0; transform:translateY(14px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+.cover-subtitle{
+  font-size:14.5px;
+  line-height:1.65;
+  color:var(--text-secondary);
+  max-width:480px;
+  margin:0;
+}
+
+/* ---------- NAV DE ACESSO RÁPIDO ---------- */
+.cover-nav{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:stretch;
+  justify-content:center;
+  gap:10px;
+  width:100%;
+  max-width:980px;
+  margin:8px auto 22px;
+}
+
+.cover-nav-item{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:11px 16px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md, 14px);
+  text-decoration:none;
+  color:var(--text-primary);
+  font-size:13px;
+  font-weight:600;
+  transition:transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.cover-nav-item:hover,
+.cover-nav-item:focus-visible{
+  transform:translateY(-3px);
+  border-color:var(--orange);
+  background:var(--bg-hover);
+  box-shadow:0 10px 24px -12px rgba(255,138,52,0.45);
+}
+.cover-nav-item:focus-visible{
+  outline:2px solid var(--orange);
+  outline-offset:2px;
+}
+
+.cover-nav-icon{
+  width:28px;
+  height:28px;
+  min-width:28px;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+}
+
+.cover-nav-label{ white-space:nowrap; }
+
+/* ---------- FOOTER ---------- */
+.cover-footer{
+  font-size:12px;
+  color:var(--text-muted);
+  letter-spacing:.02em;
+  padding-top:16px;
+  border-top:1px solid var(--border);
+  width:100%;
+  max-width:980px;
+  text-align:center;
+}
+
+/* ---------- RESPONSIVO ---------- */
+@media (max-width: 640px){
+  .cover{ padding:28px 18px 22px; }
+  .cover-nav{ gap:9px; }
+  .cover-nav-item{ flex:1 1 calc(50% - 9px); justify-content:center; }
+  .hero-wordmark .wm-line{ font-size:clamp(26px, 8vw, 40px); }
+}
+
+/* ---------- ACESSIBILIDADE: MOVIMENTO REDUZIDO ---------- */
+@media (prefers-reduced-motion: reduce){
+  .cover-glow-a, .cover-glow-b{ animation:none; }
+  .hero-wordmark{ animation:none; opacity:1; transform:none; }
+  .cover-nav-item{ transition:none; }
+}

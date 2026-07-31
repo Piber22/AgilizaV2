@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indicadores SLA &middot; Evidências</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="evidencias">
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark"><i class="fa-solid fa-chart-simple"></i></div>
+      <div class="brand-text">
+        <span class="brand-title">Manserv</span>
+        <span class="brand-subtitle">Indicadores SLA</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-heading">Indicadores</span>
+      <ul id="navList">
+        <!-- gerado por ../shared/nav.js -->
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>Evidências</h1>
+        <p>Pastas do Drive com as evidências mensais de cada indicador</p>
+      </div>
+
+      <div class="topbar-actions">
+        <!-- Reaproveita o componente de seleção usado nas outras abas,
+             aqui representando o ANO em vez do mês. -->
+        <div class="month-select" id="monthSelect">
+          <i class="fa-regular fa-calendar"></i>
+          <span id="monthLabel">Carregando...</span>
+          <i class="fa-solid fa-chevron-down chev"></i>
+
+          <ul class="month-dropdown" id="monthDropdown">
+            <li class="dropdown-empty">Carregando anos...</li>
+          </ul>
+        </div>
+
+        <button class="icon-btn" id="refreshBtn" title="Atualizar">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ERROR BANNER -->
+    <div class="error-banner" id="errorBanner">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span id="errorMessage">Não foi possível carregar as pastas de evidências.</span>
+      <button id="retryBtn"><i class="fa-solid fa-rotate-right"></i> Tentar novamente</button>
+    </div>
+
+    <!-- LOADING OVERLAY (first load) -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <span>Carregando evidências...</span>
+    </div>
+
+    <!-- CONTENT -->
+    <main class="content" id="content">
+
+      <div class="evidencias-heading">
+        <h2>Pastas de <span id="evidenciasAno">—</span></h2>
+        <p>Clique em um mês para abrir a pasta de evidências correspondente no Drive.</p>
+      </div>
+
+      <!-- CARDS DE MESES -->
+      <section class="evidencias-grid" id="evidenciasGrid">
+        <!-- gerado dinamicamente por ./script.js -->
+      </section>
+
+    </main>
+
+    <footer class="app-footer">
+      <span>Painel de indicadores SLA &middot; Equipe Manserv - HSANA</span>
+      <span id="lastUpdated">Última atualização: —</span>
+    </footer>
+  </div>
+</div>
+
+<script src="../shared/nav.js"></script>
+<script src="../script.js"></script>
+<script src="./script.js"></script>
+</body>
+</html>

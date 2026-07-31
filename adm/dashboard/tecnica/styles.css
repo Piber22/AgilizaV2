@@ -1,0 +1,209 @@
+/* ============================================================
+   ABA: DOCUMENTAÇÃO TÉCNICA
+   Estilos específicos desta aba (não reutilizados por outras).
+   Depende dos tokens e componentes genéricos definidos em /styles.css
+============================================================ */
+
+/* ---------- Layout de coluna única (gauge centralizado) ---------- */
+.charts-grid.single-col{
+  display:grid;
+  grid-template-columns: 1fr;
+  max-width:560px;
+  margin:0 auto;
+  width:100%;
+}
+
+.lower-grid.single-col{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:20px;
+  padding-bottom:24px;
+}
+
+/* ---------- GAUGE (mesmo visual usado nas demais abas) ---------- */
+.gauge-panel{ display:flex; flex-direction:column; }
+
+.gauge-wrap{
+  position:relative;
+  display:flex; align-items:center; justify-content:center;
+  margin:6px 0 4px;
+}
+
+.gauge-svg{ width:100%; max-width:280px; }
+
+.gauge-track{
+  fill:none;
+  stroke:var(--bg-card-alt);
+  stroke-width:16;
+  stroke-linecap:round;
+}
+
+.gauge-fill{
+  fill:none;
+  stroke:var(--orange);
+  stroke-width:16;
+  stroke-linecap:round;
+  stroke-dasharray:0 300;
+  transition:stroke-dasharray 1.4s cubic-bezier(.16,1,.3,1);
+}
+.gauge-fill.over-cap{ stroke:var(--red); }
+
+.gauge-overshoot{
+  fill:none;
+  stroke:var(--green);
+  stroke-width:16;
+  stroke-linecap:round;
+  stroke-dasharray:0 300;
+  filter:drop-shadow(0 0 6px rgba(47,212,144,0.6));
+  transition:stroke-dasharray 1.4s cubic-bezier(.16,1,.3,1) .15s, opacity .3s ease;
+}
+
+.gauge-meta-marker{
+  fill:var(--bg-card);
+  stroke:var(--orange);
+  stroke-width:3;
+  filter:drop-shadow(0 0 5px rgba(255,138,52,0.7));
+  transition:cx 1.4s cubic-bezier(.16,1,.3,1), cy 1.4s cubic-bezier(.16,1,.3,1);
+}
+
+.gauge-center{
+  position:absolute;
+  top:58%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  display:flex; flex-direction:column; align-items:center;
+  gap:2px;
+}
+
+.gauge-percent{ font-family:var(--font-display); font-size:34px; font-weight:800; color:var(--green); }
+.gauge-caption{ font-size:11.5px; color:var(--text-muted); font-weight:500; }
+
+.gauge-legend{
+  display:flex;
+  gap:20px;
+  justify-content:center;
+  margin-top:8px;
+  padding-top:16px;
+  border-top:1px solid var(--border);
+}
+
+.gauge-legend-item{ display:flex; align-items:center; gap:9px; }
+.gauge-legend-item div{ display:flex; flex-direction:column; line-height:1.2; }
+.gauge-legend-item strong{ font-size:14px; font-weight:700; }
+.gauge-legend-item small{ font-size:11px; color:var(--text-muted); }
+
+.gauge-status{
+  margin-top:14px;
+  background:var(--green-dim);
+  color:var(--green);
+  border:1px solid var(--green-line);
+  border-radius:var(--radius-sm);
+  padding:10px 14px;
+  font-size:12.5px;
+  font-weight:600;
+  display:flex; align-items:center; gap:8px;
+  justify-content:center;
+}
+.gauge-status.negative{
+  background:var(--red-dim);
+  color:var(--red);
+  border-color:rgba(255,92,106,0.35);
+}
+
+/* ---------- BARRAS: % de atualização por categoria ---------- */
+.bar-chart{ display:flex; flex-direction:column; gap:14px; position:relative; min-height:60px; }
+
+.bar-row{ display:grid; grid-template-columns:140px 1fr 52px; align-items:center; gap:14px; }
+
+.bar-label{ font-size:13px; font-weight:600; color:var(--text-secondary); }
+
+.bar-track{
+  height:12px;
+  background:var(--bg-card-alt);
+  border-radius:20px;
+  overflow:hidden;
+  position:relative;
+}
+
+.bar-fill{
+  height:100%;
+  width:0%;
+  border-radius:20px;
+  background:linear-gradient(90deg, var(--green), #6ee6b5);
+  box-shadow:0 0 10px rgba(47,212,144,0.35);
+  transition:width 1.1s cubic-bezier(.16,1,.3,1);
+}
+.bar-fill.incomplete{
+  background:linear-gradient(90deg, var(--red), #ff8a8f);
+  box-shadow:0 0 10px rgba(255,92,106,0.35);
+}
+
+.bar-value{ font-size:13px; font-weight:700; text-align:right; font-variant-numeric:tabular-nums; }
+
+.empty-mini{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100px;
+  color:var(--text-muted);
+  font-size:13px;
+  text-align:center;
+}
+
+/* ---------- TABELA DETALHADA ---------- */
+.categoria-table{ width:100%; border-collapse:collapse; }
+
+.categoria-table thead th{
+  text-align:left;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  padding:0 10px 12px;
+  border-bottom:1px solid var(--border);
+}
+.categoria-table thead th.col-num{ text-align:right; }
+.categoria-table thead th.col-status{ text-align:center; width:120px; }
+
+.categoria-table tbody td{
+  padding:13px 10px;
+  font-size:13.5px;
+  border-bottom:1px solid var(--border);
+  vertical-align:middle;
+}
+
+.categoria-table tbody tr{ transition:background .16s ease; }
+.categoria-table tbody tr:hover{ background:var(--bg-hover); }
+.categoria-table tbody tr:last-child td{ border-bottom:none; }
+
+.categoria-table .col-categoria{ font-weight:600; }
+.categoria-table .col-num{ text-align:right; font-variant-numeric:tabular-nums; font-weight:600; }
+.categoria-table .col-status{ text-align:center; }
+
+.status-badge{
+  display:inline-flex;
+  align-items:center;
+  padding:4px 12px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+}
+.status-badge.status-ok{ background:var(--green-dim); color:var(--green); }
+.status-badge.status-pending{ background:var(--red-dim); color:var(--red); }
+
+.table-empty{
+  text-align:center;
+  color:var(--text-muted);
+  padding:32px 10px !important;
+  font-size:13px;
+}
+
+/* ---------- Delays de animação específicos do layout desta aba ---------- */
+.kpi-grid .kpi-card:nth-child(1){ animation-delay:.02s; }
+.kpi-grid .kpi-card:nth-child(2){ animation-delay:.08s; }
+.kpi-grid .kpi-card:nth-child(3){ animation-delay:.14s; }
+.kpi-grid .kpi-card:nth-child(4){ animation-delay:.20s; }
+.charts-grid .panel{ animation-delay:.1s; }
+.lower-grid .panel:nth-child(1){ animation-delay:.16s; }
+.lower-grid .panel:nth-child(2){ animation-delay:.22s; }
