@@ -31,7 +31,7 @@ const NAV_ITEMS = [
   { key: "inspecoes",    label: "Inspeções operacionais",     icon: "fa-magnifying-glass",  href: "../inspecoes/index.html" },
   { key: "ssma",         label: "SSMA",                       icon: "fa-shield-halved",     href: "../ssma/index.html" },
   { key: "doctecnica",   label: "Documentação técnica",       icon: "fa-file-lines",        href: "../tecnica/index.html" },
-  { key: "resumo",       label: "Resumo",                     icon: "fa-clipboard-list",            href: "../resumo/index.html" },
+/*  { key: "resumo",       label: "Resumo",                     icon: "fa-clipboard-list",            href: "../resumo/index.html" },*/
   { key: "evidencias",   label: "Evidências",                 icon: "fa-camera",            href: "../evidencias/index.html" },
   { key: "planilha",     label: "Planilha",                    icon: "fa-table-list",        href: "../planilha/index.html" },
 ];
