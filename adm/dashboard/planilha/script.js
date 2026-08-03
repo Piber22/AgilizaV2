@@ -260,12 +260,26 @@ const CATEGORIAS = [
 
 /* ============================================================
    MESES — nomes em português para exibição
+   Por enquanto o dashboard cobre só o ano de 2026: os 12 meses
+   já aparecem no seletor, clicáveis. Não existe "criar mês" —
+   selecionar um mês só troca onde os dados são lidos/salvos no
+   Firebase; o mês passa a "existir" de fato assim que alguém
+   preenche a primeira avaliação nele.
 ============================================================ */
+const ANO_FIXO = 2026;
+
 const MESES_NOMES = {
   1: "Janeiro", 2: "Fevereiro", 3: "Março", 4: "Abril",
   5: "Maio", 6: "Junho", 7: "Julho", 8: "Agosto",
   9: "Setembro", 10: "Outubro", 11: "Novembro", 12: "Dezembro",
 };
+
+function mesesDoAno() {
+  return Object.keys(MESES_NOMES)
+    .map(n => Number(n))
+    .sort((a, b) => a - b)
+    .map(mesNum => ({ mesNum, ano: ANO_FIXO }));
+}
 
 function mesKey(mesNum, ano) {
   return `${ano}-${String(mesNum).padStart(2, "0")}`;
@@ -278,7 +292,6 @@ function labelMes(mesNum, ano) {
 /* ============================================================
    ESTADO EM MEMÓRIA
 ============================================================ */
-let mesesDisponiveis = {};   // { [chave]: {mes, ano} } — vem do nó /meses
 let mesSelecionado = null;   // {mesNum, ano}
 let AVALIACOES = {};         // { [itemId]: {bandaIndex, considerado} } do mês atual
 let unsubscribeMesAtual = null;
@@ -296,21 +309,6 @@ function avaliacoesPadrao() {
 /* ============================================================
    FIREBASE — leitura/escrita
 ============================================================ */
-function subscribeMesesIndex() {
-  fb.onValue(fb.ref(db, "meses"), (snapshot) => {
-    mesesDisponiveis = snapshot.val() || {};
-    renderMonthDropdown();
-  }, (err) => {
-    console.error("Erro ao ler índice de meses:", err);
-  });
-}
-
-function registrarMesNoIndice(mesNum, ano) {
-  const key = mesKey(mesNum, ano);
-  fb.set(fb.ref(db, "meses/" + key), { mes: mesNum, ano })
-    .catch(err => console.warn("Não foi possível registrar o mês:", err));
-}
-
 function selecionarMes(mesNum, ano) {
   mesSelecionado = { mesNum, ano };
   const key = mesKey(mesNum, ano);
@@ -342,8 +340,6 @@ function selecionarMes(mesNum, ano) {
     showLoading(false);
     showError("Não foi possível conectar ao banco de dados compartilhado. Suas alterações não serão salvas até a conexão ser restabelecida.");
   });
-
-  registrarMesNoIndice(mesNum, ano);
 }
 
 function salvarItemNoFirebase(itemId) {
@@ -443,53 +439,17 @@ function renderMonthDropdown() {
   if (!dropdown) return;
   dropdown.innerHTML = "";
 
-  const chaves = Object.keys(mesesDisponiveis).sort().reverse(); // "AAAA-MM" ordena certo como string
-
-  if (!chaves.length) {
-    dropdown.innerHTML = '<li class="dropdown-empty">Nenhum mês criado ainda</li>';
-  } else {
-    chaves.forEach(key => {
-      const { mes, ano } = mesesDisponiveis[key];
-      const isSelected = mesSelecionado && mesSelecionado.mesNum === mes && mesSelecionado.ano === ano;
-      const li = document.createElement("li");
-      li.textContent = labelMes(mes, ano);
-      if (isSelected) li.classList.add("selected");
-      li.addEventListener("click", (e) => {
-        e.stopPropagation();
-        document.getElementById("monthSelect").classList.remove("open");
-        if (!isSelected) selecionarMes(mes, ano);
-      });
-      dropdown.appendChild(li);
+  mesesDoAno().forEach(({ mesNum, ano }) => {
+    const isSelected = mesSelecionado && mesSelecionado.mesNum === mesNum && mesSelecionado.ano === ano;
+    const li = document.createElement("li");
+    li.textContent = labelMes(mesNum, ano);
+    if (isSelected) li.classList.add("selected");
+    li.addEventListener("click", (e) => {
+      e.stopPropagation();
+      document.getElementById("monthSelect").classList.remove("open");
+      if (!isSelected) selecionarMes(mesNum, ano);
     });
-  }
-
-  // bloco de "adicionar novo mês", sempre disponível
-  const addWrap = document.createElement("li");
-  addWrap.className = "month-add-wrap";
-  addWrap.addEventListener("click", (e) => e.stopPropagation());
-
-  const hoje = new Date();
-  const opcoesMes = Object.keys(MESES_NOMES)
-    .map(num => `<option value="${num}" ${Number(num) === hoje.getMonth() + 1 ? "selected" : ""}>${MESES_NOMES[num]}</option>`)
-    .join("");
-
-  addWrap.innerHTML = `
-    <div class="month-add-title">Adicionar / selecionar mês</div>
-    <div class="month-add-row">
-      <select id="novoMesSelect" class="month-add-select">${opcoesMes}</select>
-      <input type="number" id="novoAnoInput" class="month-add-input" value="${hoje.getFullYear()}" min="2020" max="2100">
-      <button type="button" id="novoMesConfirmar" class="month-add-btn"><i class="fa-solid fa-check"></i></button>
-    </div>
-  `;
-  dropdown.appendChild(addWrap);
-
-  document.getElementById("novoMesConfirmar").addEventListener("click", (e) => {
-    e.stopPropagation();
-    const mesNum = Number(document.getElementById("novoMesSelect").value);
-    const ano = Number(document.getElementById("novoAnoInput").value);
-    if (!mesNum || !ano) return;
-    document.getElementById("monthSelect").classList.remove("open");
-    selecionarMes(mesNum, ano);
+    dropdown.appendChild(li);
   });
 }
 
@@ -773,19 +733,9 @@ async function bootstrap() {
     return;
   }
 
-  subscribeMesesIndex();
-
-  // espera um instante o índice de meses chegar, pra já abrir no mês mais recente
-  await new Promise(resolve => setTimeout(resolve, 400));
-
-  const chaves = Object.keys(mesesDisponiveis).sort();
-  if (chaves.length) {
-    const maisRecente = mesesDisponiveis[chaves[chaves.length - 1]];
-    selecionarMes(maisRecente.mes, maisRecente.ano);
-  } else {
-    const hoje = new Date();
-    selecionarMes(hoje.getMonth() + 1, hoje.getFullYear());
-  }
+  const hoje = new Date();
+  const mesInicial = hoje.getFullYear() === ANO_FIXO ? hoje.getMonth() + 1 : 1;
+  selecionarMes(mesInicial, ANO_FIXO);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
