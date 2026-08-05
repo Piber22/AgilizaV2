@@ -117,8 +117,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const enxoval = document.getElementById("enxoval").value || "";
         const observacoes = document.getElementById("observacoes").value || "";
 
+        // Separa os dois grids: 1º = Sacolas, 2º = Pulses
+        const grids = document.querySelectorAll('.checkbox-grid');
+
         const sacolasSelecionadas = Array.from(
-            document.querySelectorAll('.checkbox-grid input[type="checkbox"]:checked')
+            grids[0].querySelectorAll('input[type="checkbox"]:checked')
+        ).map(cb => cb.value);
+
+        const pulsesSelecionadas = Array.from(
+            grids[1].querySelectorAll('input[type="checkbox"]:checked')
         ).map(cb => cb.value);
 
         let msg = "📋 TROCA DE PLANTÃO 📋\n";
@@ -130,6 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         msg += "*LEITOS PARA VESTIR PENDENTES:* " + leitos_vestir + "\n\n";
         msg += "*TERMINAIS PROGRAMADAS NÃO EXECUTADAS:* " + terminais_programadas + "\n\n";
         msg += "*SACOLAS DEVOLVIDAS:* " + (sacolasSelecionadas.length ? sacolasSelecionadas.join(', ') : 'Nenhuma') + "\n\n";
+        msg += "*PULSES DEVOLVIDOS:* " + (pulsesSelecionadas.length ? pulsesSelecionadas.join(', ') : 'Nenhuma') + "\n\n";
         msg += "*ENXOVAL:* " + enxoval + "\n\n";
         msg += "*OBSERVAÇÕES:* " + observacoes + "\n\n";
 
@@ -140,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             horario: horarioStr,
             responsavel,
             sacolas_entregues: sacolasSelecionadas.join(', '),
+            pulses_entregues: pulsesSelecionadas.join(', '),
             maquinas,
             residuos_roupas,
             terminais_solicitadas,
