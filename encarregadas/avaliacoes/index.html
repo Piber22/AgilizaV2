@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Avaliação de Colaboradores</title>
+
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="avaliacao.css">
+
+    <!-- PapaParse – para ler CSV do Google Sheets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <!-- ===== MODAL DE LOGIN ===== -->
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-modal">
+            <div class="login-header">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="login-logo" onerror="this.style.display='none'">
+                <h2>Acesso</h2>
+                <p class="login-subtitle">Entre com seu usuário e senha</p>
+            </div>
+
+            <form id="login-form" autocomplete="off">
+                <label class="login-label">
+                    <span>Responsável</span>
+                    <select id="login-usuario" required>
+                        <option value="">Selecione...</option>
+                        <option value="ALISSON">ALISSON</option>
+                        <option value="GRACIELA">GRACIELA</option>
+                        <option value="JESSICA">JESSICA</option>
+                        <option value="LUCIANE">LUCIANE</option>
+                        <option value="DAIANE">DAIANE</option>
+                        <option value="CAROLYNE">CAROLYNE</option>
+                        <option value="ADRISSON">ADRISSON</option>
+                        <option value="BIANCA">BIANCA</option>
+                    </select>
+                </label>
+
+                <label class="login-label">
+                    <span>Senha</span>
+                    <input type="password" id="login-senha" placeholder="Digite sua senha" required inputmode="numeric" maxlength="10">
+                </label>
+
+                <p id="login-erro" class="login-erro" hidden>Usuário ou senha incorretos.</p>
+
+                <button type="submit" id="btn-entrar" class="btn-entrar">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== CONTEÚDO PRINCIPAL (oculto até login) ===== -->
+    <div id="app" class="app" hidden>
+        <main>
+            <!-- Cabeçalho -->
+            <header class="header">
+                <a href="#" class="logo-link">
+                    <img src="../../img/icone.png" alt="Logo Manserv" class="logo" onerror="this.style.display='none'">
+                </a>
+                <h1>Avaliação de pessoas</h1>
+                <button type="button" id="btn-sair" class="btn-sair" title="Sair">Sair</button>
+            </header>
+
+            <!-- Responsável logado (somente leitura) -->
+            <section id="info">
+                <label id="respon">
+                    <span>Responsável:</span>
+                    <input type="text" id="responsavel-exibicao" readonly>
+                </label>
+            </section>
+
+            <!-- Status / Contagem -->
+            <section id="status">
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Colaboradores Ativos</div>
+                        <div class="stat-value">
+                            <div class="stat-numbers">
+                                <span class="stat-realizado" id="total-colaboradores">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Avaliados</div>
+                        <div class="stat-value">
+                            <div class="stat-numbers">
+                                <span class="stat-realizado" id="total-avaliados">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lista de Colaboradores -->
+            <section id="lista-colaboradores">
+                <div id="loading" class="loading-msg">Carregando colaboradores...</div>
+                <div id="lista"></div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <script src="avaliacao.js"></script>
+</body>
+</html>

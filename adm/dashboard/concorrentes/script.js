@@ -3,6 +3,11 @@
    Lógica específica desta aba: fontes de dados, parsing,
    estado e renderização dos cards/gráficos/tabela/donut.
 
+   Esta aba considera apenas Total Previsto x Atingido e o
+   percentual de atingimento — sem conceito de meta separada,
+   pra evitar a confusão entre "% da meta" e "% do previsto"
+   que os leitores do relatório relataram.
+
    Depende dos helpers genéricos definidos em /script.js
    (parseCSV, csvToObjects, parseNumberBR, formatInt, formatSigned,
    fetchCSV, showLoading, showError, hideError, updateLastUpdated,
@@ -27,7 +32,7 @@ const MESES_ORDER = {
    STATE
 ============================================================ */
 const STATE = {
-  indicadores: [],   // [{ano, mes, totalPrevisto, meta85, atingido, difMeta}]
+  indicadores: [],   // [{ano, mes, totalPrevisto, atingido}]
   setores: [],        // [{setor, realizado, mes, ano}]
   selected: null,     // {mes, ano}
   loaded: false,
@@ -42,9 +47,7 @@ function mapIndicadores(objs) {
       ano: (o.Ano || "").trim(),
       mes: (o.Mes || "").trim(),
       totalPrevisto: parseNumberBR(o.TotalPrevisto),
-      meta85: parseNumberBR(o.Meta85),
       atingido: parseNumberBR(o.Atingido),
-      difMeta: parseNumberBR(o.DifMeta),
     }))
     .filter(r => r.mes && r.ano);
 }
@@ -120,26 +123,25 @@ function renderMonthDropdown() {
 
 /* ============================================================
    RENDER — KPI cards
+   Só 3 cards agora: Total Previsto, Atingido e Diferença para
+   o Previsto — nada de meta separada.
 ============================================================ */
 function renderKPIs(ind) {
   document.getElementById("kpiTotalPrevisto").textContent = formatInt(ind.totalPrevisto);
-  document.getElementById("kpiMeta").textContent = formatInt(ind.meta85);
   document.getElementById("kpiAtingido").textContent = formatInt(ind.atingido);
 
-  const percentMeta = ind.meta85 > 0 ? (ind.atingido / ind.totalPrevisto) * 100 : 0;
-  const diff = ind.difMeta !== 0 ? ind.difMeta : (ind.atingido - ind.meta85);
+  const percentPrevisto = ind.totalPrevisto > 0 ? (ind.atingido / ind.totalPrevisto) * 100 : 0;
+  const diff = ind.atingido - ind.totalPrevisto;
   const isPositive = diff >= 0;
 
-  // Atingido card foot
   const atingidoFoot = document.getElementById("kpiAtingidoFoot");
   const atingidoIcon = document.getElementById("kpiAtingidoIcon");
-  atingidoFoot.innerHTML = `<i class="fa-solid ${isPositive ? "fa-arrow-trend-up" : "fa-arrow-trend-down"}"></i> ${percentMeta.toFixed(1).replace(".", ",")}% do total previsto`;
+  atingidoFoot.innerHTML = `<i class="fa-solid ${isPositive ? "fa-arrow-trend-up" : "fa-arrow-trend-down"}"></i> ${percentPrevisto.toFixed(1).replace(".", ",")}% do previsto`;
   atingidoFoot.classList.toggle("positive", isPositive);
   atingidoFoot.classList.toggle("negative", !isPositive);
   atingidoIcon.classList.toggle("icon-green", isPositive);
   atingidoIcon.classList.toggle("icon-red", !isPositive);
 
-  // Diff card
   const diffValueEl = document.getElementById("kpiDiff");
   const diffFootEl = document.getElementById("kpiDiffFoot");
   const diffIconEl = document.getElementById("kpiDiffIcon");
@@ -149,8 +151,8 @@ function renderKPIs(ind) {
   diffValueEl.classList.toggle("negative-text", !isPositive);
 
   diffFootEl.innerHTML = isPositive
-    ? '<i class="fa-solid fa-check"></i> Meta superada'
-    : '<i class="fa-solid fa-triangle-exclamation"></i> Abaixo da meta';
+    ? '<i class="fa-solid fa-check"></i> Previsto atingido'
+    : '<i class="fa-solid fa-triangle-exclamation"></i> Abaixo do previsto';
   diffFootEl.classList.toggle("positive", isPositive);
   diffFootEl.classList.toggle("negative", !isPositive);
 
@@ -240,49 +242,40 @@ function renderRanking(sorted, totalSetores, maxQtd) {
 }
 
 /* ============================================================
-   RENDER — Gauge (indicador de meta)
+   RENDER — Gauge (indicador de atingimento)
+   O arco representa 0% a 100%+ do TOTAL PREVISTO. Sem meta:
+   uma única cor de preenchimento, verde quando o previsto foi
+   atingido/superado, vermelho quando ainda está abaixo.
 ============================================================ */
 function renderGauge(ind) {
-  // O arco inteiro representa 0% a 100% do TOTAL PREVISTO.
-  // A meta fica marcada no ponto em que ela cai nessa escala (normalmente 85%),
-  // e o verde é tudo que passou da meta, até o atingido — por isso o arco
-  // preenchido (laranja + verde) sempre bate com o número exibido abaixo dele.
-  const percentAtingidoPrevisto = ind.totalPrevisto > 0 ? (ind.atingido / ind.totalPrevisto) * 100 : 0;
-  const percentMetaPrevisto = ind.totalPrevisto > 0 ? (ind.meta85 / ind.totalPrevisto) * 100 : 0;
-  const isOver = ind.atingido >= ind.meta85;
-  // headroom só pro caso raro de atingido ultrapassar o próprio previsto
-  const SCALE_MAX = Math.max(100, Math.ceil((percentAtingidoPrevisto + 10) / 10) * 10);
+  const percentAtingido = ind.totalPrevisto > 0 ? (ind.atingido / ind.totalPrevisto) * 100 : 0;
+  const isOver = ind.atingido >= ind.totalPrevisto;
+  // headroom só pro caso de atingido ultrapassar o previsto
+  const SCALE_MAX = Math.max(100, Math.ceil((percentAtingido + 10) / 10) * 10);
 
   const fillPath = document.getElementById("gaugeFill");
-  const overshootPath = document.getElementById("gaugeOvershoot");
+  const resultDot = document.getElementById("gaugeResultDot");
   const percentLabel = document.getElementById("gaugePercent");
   const statusBox = document.getElementById("gaugeStatus");
   const statusText = document.getElementById("gaugeStatusText");
 
-  document.getElementById("gaugeMetaValue").textContent = formatInt(ind.meta85);
-  document.getElementById("gaugeResultValue").textContent = formatInt(ind.atingido);
+  document.getElementById("gaugePrevistoValue").textContent = formatInt(ind.totalPrevisto);
+  document.getElementById("gaugeAtingidoValue").textContent = formatInt(ind.atingido);
 
   const totalLength = fillPath.getTotalLength();
-  const metaLength = totalLength * (percentMetaPrevisto / SCALE_MAX);
-  const realLength = totalLength * (Math.min(percentAtingidoPrevisto, SCALE_MAX) / SCALE_MAX);
+  const realLength = totalLength * (Math.min(percentAtingido, SCALE_MAX) / SCALE_MAX);
 
-  if (isOver) {
-    const overshootLength = Math.max(realLength - metaLength, 0);
-    fillPath.classList.remove("over-cap");
-    fillPath.style.strokeDasharray = `${metaLength} ${totalLength}`;
-    overshootPath.style.strokeDasharray = `${overshootLength} ${totalLength}`;
-    overshootPath.style.strokeDashoffset = `-${metaLength}`;
-  } else {
-    // fill only up to actual result (below meta), colored red as warning
-    fillPath.classList.add("over-cap");
-    fillPath.style.strokeDasharray = `${realLength} ${totalLength}`;
-    overshootPath.style.strokeDasharray = `0 ${totalLength}`;
-  }
+  fillPath.classList.toggle("over-cap", !isOver);
+  fillPath.style.strokeDasharray = `${realLength} ${totalLength}`;
+
+  resultDot.classList.toggle("dot-green", isOver);
+  resultDot.classList.toggle("dot-red", !isOver);
 
   statusBox.classList.toggle("negative", !isOver);
+  const excedente = ind.atingido - ind.totalPrevisto;
   statusText.textContent = isOver
-    ? `Meta superada em ${formatInt(Math.abs(ind.atingido - ind.meta85))} atividades`
-    : `Faltam ${formatInt(Math.abs(ind.meta85 - ind.atingido))} atividades para a meta`;
+    ? (excedente > 0 ? `Previsto superado em ${formatInt(excedente)} atividades` : "Previsto atingido")
+    : `Faltam ${formatInt(Math.abs(excedente))} atividades para o previsto`;
   statusBox.querySelector("i").className = isOver ? "fa-solid fa-circle-check" : "fa-solid fa-triangle-exclamation";
 
   let start = null;
@@ -291,7 +284,7 @@ function renderGauge(ind) {
     if (!start) start = ts;
     const progress = Math.min((ts - start) / duration, 1);
     const eased = 1 - Math.pow(1 - progress, 3);
-    const current = percentAtingidoPrevisto * eased;
+    const current = percentAtingido * eased;
     percentLabel.textContent = current.toFixed(1).replace(".", ",") + "%";
     percentLabel.style.color = isOver ? "var(--green)" : "var(--red)";
     if (progress < 1) requestAnimationFrame(step);

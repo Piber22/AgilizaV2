@@ -42,7 +42,7 @@
     <header class="topbar">
       <div class="topbar-title">
         <h1>Concorrentes</h1>
-        <p></i> Higienizações diárias</p>
+        <p><i class="fa-solid fa-circle-info"></i> Higienizações diárias</p>
       </div>
 
       <div class="topbar-actions">
@@ -79,7 +79,7 @@
     <main class="content" id="content">
 
       <!-- KPI CARDS -->
-      <section class="kpi-grid">
+      <section class="kpi-grid kpi-grid-3col">
         <div class="kpi-card">
           <div class="kpi-icon icon-blue"><i class="fa-solid fa-layer-group"></i></div>
           <div class="kpi-body">
@@ -89,28 +89,19 @@
           </div>
         </div>
 
-        <div class="kpi-card">
-          <div class="kpi-icon icon-orange"><i class="fa-solid fa-bullseye"></i></div>
-          <div class="kpi-body">
-            <span class="kpi-label">Meta: 85% do previsto</span>
-            <span class="kpi-value" id="kpiMeta">—</span>
-            <span class="kpi-foot neutral">Referência para atingimento</span>
-          </div>
-        </div>
-
         <div class="kpi-card featured" id="kpiAtingidoCard">
           <div class="kpi-icon icon-green" id="kpiAtingidoIcon"><i class="fa-solid fa-chart-line"></i></div>
           <div class="kpi-body">
             <span class="kpi-label">Atingido</span>
             <span class="kpi-value" id="kpiAtingido">—</span>
-            <span class="kpi-foot positive" id="kpiAtingidoFoot"><i class="fa-solid fa-arrow-trend-up"></i> —% da meta</span>
+            <span class="kpi-foot positive" id="kpiAtingidoFoot"><i class="fa-solid fa-arrow-trend-up"></i> —% do previsto</span>
           </div>
         </div>
 
         <div class="kpi-card">
           <div class="kpi-icon icon-green" id="kpiDiffIcon"><i class="fa-solid fa-circle-check"></i></div>
           <div class="kpi-body">
-            <span class="kpi-label">Diferença para a Meta</span>
+            <span class="kpi-label">Diferença para o Previsto</span>
             <span class="kpi-value positive-text" id="kpiDiff">—</span>
             <span class="kpi-foot positive" id="kpiDiffFoot"><i class="fa-solid fa-check"></i> —</span>
           </div>
@@ -136,7 +127,7 @@
         <div class="panel gauge-panel">
           <div class="panel-header">
             <div>
-              <h2>Indicador de Meta</h2>
+              <h2>Indicador de Atingimento</h2>
               <p>Percentual alcançado no período</p>
             </div>
           </div>
@@ -145,7 +136,6 @@
             <svg viewBox="0 0 220 130" class="gauge-svg">
               <path class="gauge-track" d="M 20 120 A 90 90 0 0 1 200 120" />
               <path class="gauge-fill" id="gaugeFill" d="M 20 120 A 90 90 0 0 1 200 120" />
-              <path class="gauge-overshoot" id="gaugeOvershoot" d="M 20 120 A 90 90 0 0 1 200 120" />
             </svg>
             <div class="gauge-center">
               <span class="gauge-percent" id="gaugePercent">0%</span>
@@ -156,11 +146,11 @@
           <div class="gauge-legend">
             <div class="gauge-legend-item">
               <span class="dot dot-orange"></span>
-              <div><strong id="gaugeMetaValue">—</strong><small>Meta</small></div>
+              <div><strong id="gaugePrevistoValue">—</strong><small>Previsto</small></div>
             </div>
             <div class="gauge-legend-item">
-              <span class="dot dot-green"></span>
-              <div><strong id="gaugeResultValue">—</strong><small>Resultado</small></div>
+              <span class="dot dot-green" id="gaugeResultDot"></span>
+              <div><strong id="gaugeAtingidoValue">—</strong><small>Atingido</small></div>
             </div>
           </div>
 
