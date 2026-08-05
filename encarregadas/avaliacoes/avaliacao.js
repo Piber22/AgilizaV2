@@ -271,9 +271,7 @@ function renderLista() {
         header.innerHTML = `
             <div class="colaborador-nome">${escapeHtml(nome)}</div>
             <div class="colaborador-meta">
-                <span>RE: ${escapeHtml(re)}</span>
                 <span>${escapeHtml(equipe)}</span>
-                ${funcao ? `<span>${escapeHtml(funcao)}</span>` : ''}
                 ${av && av.enviado ? '<span class="badge-enviado">Enviado</span>' : ''}
             </div>
         `;

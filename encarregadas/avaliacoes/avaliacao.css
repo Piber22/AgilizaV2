@@ -159,7 +159,7 @@ select:focus {
     background-color: #2a2a2a;
     border: 2px solid #5b5b5b;
     border-radius: 10px;
-    padding: 16px;
+    padding: 12px;
     margin-bottom: 14px;
     transition: border-color 0.3s ease;
 }
@@ -232,7 +232,7 @@ select:focus {
     border: 2px solid #5b5b5b;
     background-color: #201F20;
     color: #ccc;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
