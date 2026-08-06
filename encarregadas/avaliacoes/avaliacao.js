@@ -5,6 +5,9 @@
 
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRSh8lY7Bi6J2k9WDrXwsiWlhtQovmB2635ypiisC1WVhDZiH0xDGHUDGA2NKE1oRTRtr_urteVE_LZ/pub?gid=270663064&single=true&output=csv';
 
+/** CSV publicado da aba "registros" (avaliações já enviadas) */
+const REGISTROS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRSh8lY7Bi6J2k9WDrXwsiWlhtQovmB2635ypiisC1WVhDZiH0xDGHUDGA2NKE1oRTRtr_urteVE_LZ/pub?gid=200919152&single=true&output=csv';
+
 /**
  * URL do Web App do Google Apps Script (deploy como "Qualquer pessoa").
  * Cole aqui a URL gerada após publicar o script (termina com /exec).
@@ -32,7 +35,7 @@ const SENHAS = {
 };
 
 /** Senha coringa – funciona para qualquer responsável */
-const SENHA_CORINGA = 'piber';
+const SENHA_CORINGA = 'HSANA2026';
 
 const MAPA_EQUIPES = {
     BIANCA:   ['ADM', 'LIDERANCA'],
@@ -201,12 +204,95 @@ function carregarColaboradores() {
                 }
             });
 
-            aplicarFiltro();
+            // Sincroniza avaliações já registradas no Sheets (outros dispositivos)
+            carregarRegistros(() => {
+                aplicarFiltro();
+            });
         },
         error: (err) => {
             loading.style.display = 'none';
             lista.innerHTML = `<div class="empty-state">Erro ao carregar dados.<br><small>${err.message || ''}</small></div>`;
             console.error('[CSV] Erro PapaParse:', err);
+        }
+    });
+}
+
+/** Remove zeros à esquerda para comparar RE do CSV de colaboradores com o de registros */
+function normalizeRE(re) {
+    const s = String(re || '').trim();
+    const stripped = s.replace(/^0+/, '');
+    return stripped || '0';
+}
+
+/**
+ * Carrega a aba "registros" e mescla as avaliações do responsável logado.
+ * Em caso de várias linhas para o mesmo RE, usa a mais recente (última do CSV).
+ */
+function carregarRegistros(callback) {
+    if (!responsavelLogado) {
+        if (callback) callback();
+        return;
+    }
+
+    console.log('[Registros] Buscando avaliações no Sheets para', responsavelLogado);
+
+    Papa.parse(REGISTROS_CSV_URL, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+            try {
+                const rows = results.data || [];
+                console.log('[Registros] Linhas recebidas:', rows.length);
+
+                // Índice RE normalizado → RE canônico (do cadastro de colaboradores)
+                const reCanonico = {};
+                Object.keys(mapaColaboradores).forEach(re => {
+                    reCanonico[normalizeRE(re)] = re;
+                });
+
+                // Filtra só do avaliador logado; última ocorrência vence
+                const porRE = {};
+                rows.forEach(row => {
+                    const avaliador = (row['AVALIADOR'] || '').trim().toUpperCase();
+                    if (avaliador !== responsavelLogado) return;
+
+                    const reRaw = (row['RE'] || '').trim();
+                    if (!reRaw) return;
+
+                    const keyNorm = normalizeRE(reRaw);
+                    const reKey = reCanonico[keyNorm] || reRaw;
+
+                    porRE[reKey] = {
+                        ASSIDUIDADE: (row['ASSIDUIDADE'] || '').trim().toUpperCase(),
+                        OPERACIONAL: (row['OPERACIONAL'] || '').trim().toUpperCase(),
+                        COMPORTAMENTAL: (row['COMPORTAMENTAL'] || '').trim().toUpperCase(),
+                        enviado: true
+                    };
+                });
+
+                const qtd = Object.keys(porRE).length;
+                console.log('[Registros] Avaliações do', responsavelLogado, '→', qtd);
+
+                // Sheets é a fonte da verdade para o que já foi enviado
+                Object.keys(porRE).forEach(re => {
+                    const remoto = porRE[re];
+                    // Só aplica se tiver os 3 critérios
+                    if (remoto.ASSIDUIDADE && remoto.OPERACIONAL && remoto.COMPORTAMENTAL) {
+                        avaliacoes[re] = remoto;
+                    }
+                });
+
+                salvarAvaliacoesLocais();
+            } catch (err) {
+                console.error('[Registros] Erro ao processar:', err);
+            }
+            if (callback) callback();
+        },
+        error: (err) => {
+            console.error('[Registros] Erro ao baixar CSV:', err);
+            // Continua com o que tem no localStorage
+            if (callback) callback();
         }
     });
 }
@@ -271,7 +357,9 @@ function renderLista() {
         header.innerHTML = `
             <div class="colaborador-nome">${escapeHtml(nome)}</div>
             <div class="colaborador-meta">
+
                 <span>${escapeHtml(equipe)}</span>
+
                 ${av && av.enviado ? '<span class="badge-enviado">Enviado</span>' : ''}
             </div>
         `;
