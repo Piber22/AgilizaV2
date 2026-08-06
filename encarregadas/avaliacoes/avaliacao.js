@@ -35,7 +35,7 @@ const SENHAS = {
 };
 
 /** Senha coringa – funciona para qualquer responsável */
-const SENHA_CORINGA = 'HSANA2026';
+const SENHA_CORINGA = 'piber';
 
 const MAPA_EQUIPES = {
     BIANCA:   ['ADM', 'LIDERANCA'],
