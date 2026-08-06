@@ -34,7 +34,7 @@ const SENHAS = {
     ADRISSON: '056367'
 };
 
-/** Senha coringa – funciona para qualquer responsável */
+/** Senha coringa – funciona para qualquer responsável  */
 const SENHA_CORINGA = 'piber';
 
 const MAPA_EQUIPES = {
