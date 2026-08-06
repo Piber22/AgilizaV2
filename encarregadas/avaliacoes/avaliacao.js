@@ -291,7 +291,7 @@ function carregarRegistros(callback) {
         },
         error: (err) => {
             console.error('[Registros] Erro ao baixar CSV:', err);
-            // Continua com o que tem no localStorage
+            // Continua com o que tem no localStorage.
             if (callback) callback();
         }
     });
