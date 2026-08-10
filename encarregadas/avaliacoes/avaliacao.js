@@ -34,8 +34,8 @@ const SENHAS = {
     ADRISSON: '056367'
 };
 
-/** Senha coringa – funciona para qualquer responsável  */
-const SENHA_CORINGA = 'piber';
+/** Senha coringa – funciona para qualquer responsável */
+const SENHA_CORINGA = '2026';
 
 const MAPA_EQUIPES = {
     BIANCA:   ['ADM', 'LIDERANCA'],
@@ -134,7 +134,7 @@ function fazerLogout() {
     document.getElementById('total-avaliados').textContent = '0';
 }
 
-// ===== LOCAL STORAGE =====
+// ===== LOCAL STORAGE  =====
 function storageKey() {
     return STORAGE_PREFIX + (responsavelLogado || 'anon');
 }
