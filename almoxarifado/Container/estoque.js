@@ -7,7 +7,7 @@ const webAppUrl = "https://script.google.com/macros/s/AKfycbySEtbuzVzICf5gVwBz1c
 let itensBD = []; // Onde ficam os itens carregados da planilha (ID + nome)
 
 // =============================
-// 1) Carregar lista de itens via CSV
+// 1) Carregar lista de itens via CS V
 // =============================
 async function carregarItens() {
     try {
