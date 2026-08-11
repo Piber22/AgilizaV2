@@ -1,40 +1,42 @@
 // =============================
-// CONFIGURAÃ‡Ã•ES
+// CONFIGURAÇÕES
 // =============================
 const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMs4JxlOx5o6W5cUGRmytAANh8B5HKO6yhvbLuYinisnZeU01mNM5DBAnopBGg9FYXMg0HXKMnNvek/pub?gid=0&single=true&output=csv";
-const webAppUrl = "https://script.google.com/macros/s/AKfycbz7ukP3DOjd3wlxLWcuE84Jy0AyHhdLIU8D3TEQATCUR2KbmgfG2Zv4fNtbmm5cnNlw/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbySEtbuzVzICf5gVwBz1cZcfQc-E6F-4Sqb5cC52nz0iyNBdWgO39fuq6whPdxzeOYK/exec";
 
 let itensBD = []; // Onde ficam os itens carregados da planilha (ID + nome)
-
 
 // =============================
 // 1) Carregar lista de itens via CSV
 // =============================
 async function carregarItens() {
-    const response = await fetch(sheetCSVUrl);
-    const csvText = await response.text();
+    try {
+        const response = await fetch(sheetCSVUrl);
+        const csvText = await response.text();
 
-    const linhas = csvText.split("\n").map(l => l.trim());
-    const resultado = [];
+        const linhas = csvText.split("\n").map(l => l.trim()).filter(l => l !== "");
+        const resultado = [];
 
-    // Ignora a primeira linha (cabeÃ§alho)
-    for (let i = 1; i < linhas.length; i++) {
-        const col = linhas[i].split(",");
+        // Ignora a primeira linha (cabeçalho)
+        for (let i = 1; i < linhas.length; i++) {
+            const col = linhas[i].split(",");
 
-        if (col.length >= 4) {
-            resultado.push({
-                id: col[0],
-                item: col[1],
-                categoria: col[2],
-            });
+            if (col.length >= 3) {
+                resultado.push({
+                    id: col[0],
+                    item: col[1],
+                    categoria: col[2],
+                });
+            }
         }
+
+        itensBD = resultado;
+        atualizarSelectsDeItens();
+    } catch (erro) {
+        console.error("Erro ao carregar itens:", erro);
+        alert("Não foi possível carregar a lista de itens. Verifique a conexão.");
     }
-
-    itensBD = resultado;
-
-    atualizarSelectsDeItens();
 }
-
 
 // =============================
 // 2) Preencher todos os selects .item
@@ -48,18 +50,24 @@ function atualizarSelectsDeItens() {
     );
 
     selects.forEach(select => {
+        const valorAtual = select.value; // preserva o valor se já estiver selecionado
+
         select.innerHTML = `<option value="">Selecione o item:</option>`;
 
         itensOrdenados.forEach(obj => {
             const option = document.createElement("option");
             option.value = obj.item;
-            option.textContent = `${obj.item}`;
+            option.textContent = obj.item;
             option.dataset.id = obj.id;
             select.appendChild(option);
         });
+
+        // Restaura o valor anterior (útil ao adicionar novos itens)
+        if (valorAtual) {
+            select.value = valorAtual;
+        }
     });
 }
-
 
 // =============================
 // 3) Duplicar item ao clicar em "Adicionar item"
@@ -75,22 +83,11 @@ document.getElementById("addItemBtn").addEventListener("click", () => {
     novo.querySelector(".quantidade").value = "";
     novo.querySelector(".acao").value = "";
 
-
     container.appendChild(novo);
 
-    // Atualiza apenas o novo select
-    const novoSelect = novo.querySelector(".item");
-    novoSelect.innerHTML = `<option value="">Selecione o item:</option>`;
-
-    itensBD.forEach(obj => {
-        const option = document.createElement("option");
-        option.value = obj.item;
-        option.textContent = obj.item;
-        option.dataset.id = obj.id;
-        novoSelect.appendChild(option);
-    });
+    // Reaproveita a função que já existe
+    atualizarSelectsDeItens();
 });
-
 
 // =============================
 // 4) Enviar dados ao WebApp
@@ -98,52 +95,76 @@ document.getElementById("addItemBtn").addEventListener("click", () => {
 document.getElementById("formMovimentos").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const responsavel = document.getElementById("responsavel").value.trim();
-    const itensSecoes = document.querySelectorAll(".item-section");
+    const botaoSalvar = e.target.querySelector('button[type="submit"]');
+    const textoOriginal = botaoSalvar.textContent;
 
-    if (!responsavel) {
-        alert("Informe o responsÃ¡vel.");
-        return;
-    }
+    // Estado de carregamento
+    botaoSalvar.disabled = true;
+    botaoSalvar.textContent = "Salvando...";
+    botaoSalvar.style.opacity = "0.7";
 
-    const agora = new Date();
-    const data = agora.toLocaleDateString("pt-BR");
-    const horario = agora.toLocaleTimeString("pt-BR");
+    try {
+        const responsavel = document.getElementById("responsavel").value.trim();
+        const itensSecoes = document.querySelectorAll(".item-section");
 
-    let registros = [];
+        if (!responsavel) {
+            alert("Informe o responsável.");
+            return;
+        }
 
-    itensSecoes.forEach(secao => {
-        const selectItem = secao.querySelector(".item");
-        const itemNome = selectItem.value;
-        const itemID = selectItem.options[selectItem.selectedIndex]?.dataset?.id || "";
+        const agora = new Date();
+        const data = agora.toLocaleDateString("pt-BR");
+        const horario = agora.toLocaleTimeString("pt-BR");
 
-        registros.push({
-            data: data,
-            horario: horario,
-            id: itemID,
-            item: itemNome,
-            tipo: secao.querySelector(".acao").value,
-            quantidade: secao.querySelector(".quantidade").value,
-            responsavel: responsavel,
+        let registros = [];
+
+        itensSecoes.forEach(secao => {
+            const selectItem = secao.querySelector(".item");
+            const itemNome = selectItem.value;
+            const itemID = selectItem.options[selectItem.selectedIndex]?.dataset?.id || "";
+
+            if (!itemNome) return; // ignora seções vazias
+
+            registros.push({
+                data: data,
+                horario: horario,
+                id: itemID,
+                item: itemNome,
+                tipo: secao.querySelector(".acao").value,
+                quantidade: secao.querySelector(".quantidade").value,
+                responsavel: responsavel,
+            });
         });
-    });
 
-    // Envia ao WebApp
-    const resposta = await fetch(webAppUrl, {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify(registros)
-    });
+        if (registros.length === 0) {
+            alert("Adicione pelo menos um item.");
+            return;
+        }
 
-    // Resetar formulÃ¡rio
-    resetarFormulario();
+        // Envia ao WebApp
+        await fetch(webAppUrl, {
+            method: "POST",
+            mode: "no-cors",
+            body: JSON.stringify(registros)
+        });
 
-    alert("Movimento registrado com sucesso!");
+        // Resetar formulário
+        resetarFormulario();
+        alert("Movimento registrado com sucesso!");
+
+    } catch (erro) {
+        console.error(erro);
+        alert("Erro ao salvar. Tente novamente.");
+    } finally {
+        // Restaura o botão
+        botaoSalvar.disabled = false;
+        botaoSalvar.textContent = textoOriginal;
+        botaoSalvar.style.opacity = "1";
+    }
 });
 
-
 // =============================
-// 5) Resetar formulÃ¡rio
+// 5) Resetar formulário
 // =============================
 function resetarFormulario() {
     document.getElementById("responsavel").value = "";
@@ -151,7 +172,7 @@ function resetarFormulario() {
     const container = document.getElementById("itensContainer");
     const primeiro = document.querySelector(".item-section");
 
-    // MantÃ©m apenas o primeiro
+    // Mantém apenas o primeiro
     container.innerHTML = "";
     container.appendChild(primeiro);
 
@@ -159,10 +180,8 @@ function resetarFormulario() {
     primeiro.querySelector(".quantidade").value = "";
     primeiro.querySelector(".acao").value = "";
 
-
     atualizarSelectsDeItens();
 }
-
 
 // Iniciar sistema
 carregarItens();
