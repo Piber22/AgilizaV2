@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abastecimento</title>
+
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="abastecimento.css">
+</head>
+<body>
+    <main>
+        <!-- Cabeçalho -->
+        <header class="header">
+            <a href="#" class="logo-link">
+                <img src="../../img/icone.png" alt="Logo Manserv" class="logo" onerror="this.style.display='none'">
+            </a>
+            <h1>Abastecimento</h1>
+        </header>
+
+        <!-- Formulário -->
+        <section id="formulario">
+            <label>
+                <span>Responsável:</span>
+                <input type="text" id="responsavel" name="responsavel" placeholder="Nome do responsável" required>
+            </label>
+
+            <label>
+                <span>Máquina:</span>
+                <select id="maquina" name="maquina" required>
+                    <option value="">Selecione a máquina</option>
+                    <option value="APARADOR - PLACA 1112">APARADOR - PLACA 1112</option>
+                    <option value="CORTADOR DE GRAMA - PLACA 1116">CORTADOR DE GRAMA - PLACA 1116</option>
+                    <option value="MOBI - PLACA 0101">MOBI - PLACA 0101</option>
+                    <option value="ROÇADEIRA - PLACA 1114">ROÇADEIRA - PLACA 1114</option>
+                    <option value="ROÇADEIRA - PLACA 1115">ROÇADEIRA - PLACA 1115</option>
+                    <option value="SAVEIRO - PLACA 0773">SAVEIRO - PLACA 0773</option>
+                    <option value="SOPRADOR - PLACA 1117">SOPRADOR - PLACA 1117</option>
+                    <option value="TRATOR GIRO - PLACA 0033">TRATOR GIRO - PLACA 0033</option>
+                    <option value="TRATOR GIRO - PLACA 7501">TRATOR GIRO - PLACA 7501</option>
+                </select>
+            </label>
+
+            <label>
+                <span>Litros abastecidos:</span>
+                <input type="number" id="litros" name="litros" min="0" step="0.01" placeholder="0.00" required>
+            </label>
+
+            <label>
+                <span>Valor:</span>
+                <input type="number" id="valor" name="valor" min="0" step="0.01" placeholder="0.00" required>
+            </label>
+
+            <button type="button" id="btn-salvar">Salvar</button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="abastecimento.js"></script>
+</body>
+</html>
