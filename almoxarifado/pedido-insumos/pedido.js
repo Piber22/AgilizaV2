@@ -1,9 +1,64 @@
 console.log("✅ Script carregado!");
+
 // Variável global para armazenar os dados
 let dadosRecebimento = {};
 
+// 🔹 Lista de itens (id do input no HTML, nome na mensagem e código)
+// Para adicionar/remover um item, basta mexer aqui (e no HTML).
+const listaItens = [
+    { id: "ph",               nome: "Papel higiênico",         codigo: "61777" },
+    { id: "pt",               nome: "Papel toalha",            codigo: "58543" },
+    { id: "toalha",           nome: "Toalha branca",           codigo: "64151" },
+    { id: "perfexV",          nome: "Perfex verde",            codigo: "74692" },
+    { id: "perfexA",          nome: "Perfex azul",             codigo: "74693" },
+
+    { id: "alcool",           nome: "Álcool em gel",           codigo: "51390" },
+    { id: "sabonete",         nome: "Sabonete",                codigo: "40133" },
+    { id: "sabonetebac",      nome: "Sabonete bactericida",    codigo: "46784" },
+    { id: "gojo",             nome: "Gojo",                    codigo: "62967" },
+
+    { id: "sacopicotado",     nome: "Saco picotado",           codigo: "58452" },
+    { id: "sacohamper",       nome: "Saco Hamper",             codigo: "57723" },
+
+    { id: "sp100",            nome: "Saco Preto 100 Litros",   codigo: "55521" },
+    { id: "sv100",            nome: "Saco Verde 100 Litros",   codigo: "46737" },
+    { id: "sb100",            nome: "Saco Branco 100 Litros",  codigo: "55510" },
+    { id: "sp60",             nome: "Saco Preto 60 Litros",    codigo: "55522" },
+    { id: "sv60",             nome: "Saco Verde 60 Litros",    codigo: "58645" },
+    { id: "sb50",             nome: "Saco Branco 50 Litros",   codigo: "56322" },
+    { id: "sl50",             nome: "Saco Laranja 50 Litros",  codigo: "58599" },
+    { id: "sp20",             nome: "Saco Preto 20 Litros",    codigo: "58520" },
+    { id: "sv20",             nome: "Saco Verde 20 Litros",    codigo: "58519" },
+
+    { id: "cv",               nome: "Cartela de validade",     codigo: "58691" },
+    { id: "cl",               nome: "Controle de limpeza",     codigo: "52961" },
+    { id: "adesivo",          nome: "Adesivo",                 codigo: "60084" },
+
+    { id: "canetaazul",       nome: "Caneta azul comum",       codigo: "43248" },
+    { id: "canetatecido",     nome: "Caneta para tecido",      codigo: "58548" },
+    { id: "canetapermanente", nome: "Caneta permanente",       codigo: "43259" },
+    { id: "cordaobranco",     nome: "Cordão branco",           codigo: "58154" },
+
+    { id: "fibrabranca",      nome: "Fibra branca",            codigo: "74691" },
+    { id: "fibraverde",       nome: "Fibra verde",             codigo: "74690" },
+
+    { id: "multibac",         nome: "Multibac BP",             codigo: "73635" },
+    { id: "clorado",          nome: "Detergente clorado",      codigo: "74696" },
+    { id: "hospneutro",       nome: "Hospneutro",              codigo: "74697" }
+];
+
+// Lê o valor de um input de forma segura (não quebra se o id não existir)
+function lerQuantidade(id) {
+    const el = document.getElementById(id);
+    if (!el) {
+        console.warn(`⚠️ Input com id "${id}" não encontrado no HTML`);
+        return 0;
+    }
+    return parseInt(el.value) || 0;
+}
+
 // Função para gerar a mensagem
-document.getElementById("gerarBtn").addEventListener("click", function() {
+document.getElementById("gerarBtn").addEventListener("click", function () {
     // 🔹 Captura automática da data e hora
     const agora = new Date();
     const dia = String(agora.getDate()).padStart(2, '0');
@@ -14,69 +69,16 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     const dataStr = `${dia}/${mes}/${ano}`;
     const horarioStr = `${hora}:${minuto}`;
 
-    // 🔹 Exibe a data atual automaticamente na tela
-    //document.getElementById("dataRecebimento").textContent = dataStr;
-
     // Responsável
     const responsavel = document.getElementById("responsavel").value || "";
 
-    // Inputs dos produtos
-    const ph = parseInt(document.getElementById("ph").value || 0);
-    const pt = parseInt(document.getElementById("pt").value || 0);
-    const toalha = parseInt(document.getElementById("toalha").value || 0);
-    const alcool = parseInt(document.getElementById("alcool").value || 0);
-    const sabonete = parseInt(document.getElementById("sabonete").value || 0);
-    const sabonetebac = parseInt(document.getElementById("sabonetebac").value || 0);
-    const gojo = parseInt(document.getElementById("gojo").value || 0);
-    const sacopicotado = parseInt(document.getElementById("sacopicotado").value || 0);
-    const sacohamper = parseInt(document.getElementById("sacohamper").value || 0);
-    const sp100 = parseInt(document.getElementById("sp100").value || 0);
-    const sv100 = parseInt(document.getElementById("sv100").value || 0);
-    const sb100 = parseInt(document.getElementById("sb100").value || 0);
-    const sl100 = parseInt(document.getElementById("sl100").value || 0);
-    const sp60 = parseInt(document.getElementById("sp60").value || 0);
-    const sv60 = parseInt(document.getElementById("sv60").value || 0);
-    const sb50 = parseInt(document.getElementById("sb50").value || 0);
-    const sl50 = parseInt(document.getElementById("sl50").value || 0);
-    const sp20 = parseInt(document.getElementById("sp20").value || 0);
-    const sv20 = parseInt(document.getElementById("sv20").value || 0);
-    const cv = parseInt(document.getElementById("cv").value || 0);
-    const cl = parseInt(document.getElementById("cl").value || 0);
-    const adesivo = parseInt(document.getElementById("adesivo").value || 0);
-    const canetatecido = parseInt(document.getElementById("canetatecido").value || 0);
-    const canetapermanente = parseInt(document.getElementById("canetapermanente").value || 0);
-    const cordaobranco = parseInt(document.getElementById("cordaobranco").value || 0);
+    // Lê as quantidades de todos os itens
+    const itens = listaItens.map(item => ({
+        ...item,
+        valor: lerQuantidade(item.id)
+    }));
 
-    // Lista de itens com código
-    const itens = [
-        { nome: "Papel higiênico", valor: ph, codigo: "61777" },
-        { nome: "Papel toalha", valor: pt, codigo: "58543" },
-        { nome: "Toalha multiuso", valor: toalha, codigo: "64151" },
-        { nome: "Álcool em gel", valor: alcool, codigo: "51390" },
-        { nome: "Sabonete", valor: sabonete, codigo: "40133" },
-        { nome: "Sabonete bactericida", valor: sabonetebac, codigo: "46784" },
-        { nome: "Gojo", valor: gojo, codigo: "62967" },
-        { nome: "Saco picotado", valor: sacopicotado, codigo: "58452" },
-        { nome: "Saco Hamper", valor: sacohamper, codigo: "57723" },
-        { nome: "Saco Preto 100 Litros", valor: sp100, codigo: "55521" },
-        { nome: "Saco Verde 100 Litros", valor: sv100, codigo: "46737" },
-        { nome: "Saco Branco 100 Litros", valor: sb100, codigo: "55510" },
-        { nome: "Saco Laranja 100 Litros", valor: sl100, codigo: "58518" },
-        { nome: "Saco Preto 60 Litros", valor: sp60, codigo: "55522" },
-        { nome: "Saco Verde 60 Litros", valor: sv60, codigo: "58645" },
-        { nome: "Saco Branco 50 Litros", valor: sb50, codigo: "56322" },
-        { nome: "Saco Laranja 50 Litros", valor: sl50, codigo: "58599" },
-        { nome: "Saco Preto 20 Litros", valor: sp20, codigo: "58520" },
-        { nome: "Saco Verde 20 Litros", valor: sv20, codigo: "58519" },
-        { nome: "Cartela de validade", valor: cv, codigo: "58691" },
-        { nome: "Controle de limpeza", valor: cl, codigo: "52961" },
-        { nome: "Adesivo", valor: adesivo, codigo: "60084" },
-        { nome: "Caneta para tecido", valor: canetatecido, codigo: "58548" },
-        { nome: "Caneta permanente", valor: canetapermanente, codigo: "43259" },
-        { nome: "Cordão branco", valor: cordaobranco, codigo: "58154" }
-    ];
-
-    // 🔹 Montar mensagem (agora com data e horário automáticos)
+    // 🔹 Montar mensagem
     let msg = `📦 PEDIDO DE INSUMOS - ${responsavel.toUpperCase()} 📦\n`;
     msg += `📅 Data: ${dataStr} - ${horarioStr}\n\n`;
     msg += `Código | Produto | Qtde\n`;
@@ -84,30 +86,28 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
     // Adiciona somente os itens com valor maior que 0
     itens.forEach(item => {
         if (item.valor > 0) {
-            msg += `${item.codigo.padEnd(1)} | ${item.nome.padEnd(1)} | ${item.valor}\n`;
+            msg += `${item.codigo} | ${item.nome} | ${item.valor}\n`;
         }
     });
 
     // Exibir mensagem
     document.getElementById("resultado").value = msg;
 
-    // Armazenar dados
+    // Armazenar dados (mesmas chaves de antes: ph, pt, toalha, ... + novos)
     dadosRecebimento = {
         data: dataStr,
         horario: horarioStr,
-        responsavel,
-        ph, pt, toalha, alcool, sabonete, sabonetebac, gojo,
-        sacopicotado, sacohamper, sp100, sv100, sb100, sl100,
-        sp60, sv60, sb50, sl50, sp20, sv20, cv, cl, adesivo,
-        canetatecido, canetapermanente, cordaobranco
+        responsavel
     };
+    itens.forEach(item => {
+        dadosRecebimento[item.id] = item.valor;
+    });
 
-    // Para verificar (opcional)
     console.log("Dados armazenados:", dadosRecebimento);
 });
 
 // Botão copiar e abrir WhatsApp
-document.getElementById("copiarBtn").addEventListener("click", function() {
+document.getElementById("copiarBtn").addEventListener("click", function () {
     const textarea = document.getElementById("resultado");
     if (textarea.value.trim() === "") {
         alert("Não há mensagem para copiar!");
@@ -119,9 +119,8 @@ document.getElementById("copiarBtn").addEventListener("click", function() {
             console.log("📋 Mensagem copiada para área de transferência");
 
             // Número do contato (formato internacional)
-            const phoneNumber = "555180509274"; //piber
+            const phoneNumber = "555192673825"; //piber
             //const phoneNumber = "555195832564"; //daiane
-
 
             // URL para abrir conversa no app do WhatsApp
             const whatsappAppURL = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(textarea.value)}`;
