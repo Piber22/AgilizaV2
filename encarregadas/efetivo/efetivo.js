@@ -136,7 +136,7 @@ selectResponsavel.addEventListener("change", function() {
             { emoji: '🟩', texto: 'Presente', cor: '#4CAF50' },
             { emoji: '🟨', texto: 'Atraso / Saída antecipada', cor: '#FFC107' },
             { emoji: '🟥', texto: 'Falta', cor: '#F44336' },
-            { emoji: '🟦', texto: 'Férias', cor: '#2196F3' }
+            { emoji: '🟦', texto: 'Folga', cor: '#2196F3' }
         ];
 
         legendaItens.forEach(({ emoji, texto, cor }) => {
