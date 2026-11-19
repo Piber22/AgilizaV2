@@ -332,7 +332,7 @@ document.getElementById("gerarBtn").addEventListener("click", function() {
 
     // Adiciona férias
     if (ferias.length > 0) {
-        msg += `🔵 FÉRIAS 🔵\n`;
+        msg += `🔵 FOLGA 🔵\n`;
         ferias.forEach(nome => {
             msg += `${nome}\n`;
         });
