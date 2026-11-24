@@ -1,0 +1,7 @@
+console.log("✅ painel-auth.js carregado!");
+
+// Sem autenticação: qualquer pessoa com o link pode visualizar o painel.
+// Inicia o painel assim que a página carrega.
+document.addEventListener("DOMContentLoaded", () => {
+    iniciarPainel(); // definido em painel.js
+});
