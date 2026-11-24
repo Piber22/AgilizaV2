@@ -1,70 +1,33 @@
 console.log("✅ Script de envio de efetivo carregado!");
 
 // URL do seu Apps Script
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyhTsgQhQVQbjqQci8q4rykBsMDDGAR9FHuCYD2ly93kh3LR18aZ4z3RXi8vkmc9ZZRZw/exec';
+//const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyhTsgQhQVQbjqQci8q4rykBsMDDGAR9FHuCYD2ly93kh3LR18aZ4z3RXi8vkmc9ZZRZw/exec';
 
 // Função para enviar dados para a planilha
 async function enviarParaPlanilhaEfetivo(dadosFormatados) {
     try {
-        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        console.log("📤 INICIANDO ENVIO PARA PLANILHA");
-        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
-        console.log("📊 Total de registros:", dadosFormatados.length);
-
-        // Verifica o primeiro registro em detalhes
-        if (dadosFormatados.length > 0) {
-            console.log("🔍 ANÁLISE DO PRIMEIRO REGISTRO:");
-            const primeiro = dadosFormatados[0];
-            console.log("  📅 Data:", primeiro.data, "| Tipo:", typeof primeiro.data);
-            console.log("  🕐 Horário:", primeiro.horario, "| Tipo:", typeof primeiro.horario);
-            console.log("  👥 Equipe:", primeiro.equipe, "| Tipo:", typeof primeiro.equipe);
-            console.log("  📋 Categoria:", primeiro.categoria, "| Tipo:", typeof primeiro.categoria);
-            console.log("  👤 Colaborador:", primeiro.colaborador, "| Tipo:", typeof primeiro.colaborador);
-        }
-
-        // Prepara o payload
-        const payload = { registros: dadosFormatados };
-        const payloadString = JSON.stringify(payload);
-
-        console.log("📦 Payload completo (JSON):");
-        console.log(payloadString);
-
-        console.log("📏 Tamanho do payload:", payloadString.length, "caracteres");
-
-        // Verifica se o horário está presente no JSON
-        const temHorario = payloadString.includes('"horario"');
-        console.log("🔍 Campo 'horario' presente no JSON?", temHorario ? "✅ SIM" : "❌ NÃO");
-
-        if (temHorario) {
-            const matchHorario = payloadString.match(/"horario":"([^"]+)"/);
-            if (matchHorario) {
-                console.log("🕐 Valor do horário no JSON:", matchHorario[1]);
-            }
-        }
-
-        console.log("🚀 Enviando requisição para:", URL_APPS_SCRIPT);
-
-        await fetch(URL_APPS_SCRIPT, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: payloadString
+        // dd/mm/yyyy -> yyyy-mm-dd (coluna do tipo date)
+        const linhas = dadosFormatados.map(r => {
+            const [d, m, a] = r.data.split("/");
+            return {
+                data: `${a}-${m}-${d}`,
+                horario: r.horario,
+                equipe: r.equipe,
+                categoria: r.categoria,
+                colaborador: r.colaborador
+            };
         });
 
-        console.log("✅ Requisição enviada com sucesso!");
-        console.log("⏳ Aguarde alguns segundos e verifique a planilha.");
-        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        const { error } = await sb
+            .from("efetivo_registros")
+            .upsert(linhas, { onConflict: "data,equipe,colaborador" });
 
+        if (error) throw error;
+
+        console.log(`✅ ${linhas.length} registros salvos no Supabase`);
         return true;
-
     } catch (erro) {
-        console.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        console.error("❌ ERRO AO ENVIAR:");
-        console.error(erro);
-        console.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        console.error("❌ Erro ao salvar no Supabase:", erro);
         return false;
     }
 }
