@@ -1,1 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Efetivo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="painel.css">
+</head>
+<body>
+    <header class="topo">
+        <h1>Painel do Efetivo</h1>
+    </header>
+
+    <main>
+        <div id="telaPainel">
+            <section class="caixa filtros">
+                <div class="campo">
+                    <label for="filtroData">Data</label>
+                    <div class="data-nav">
+                        <button id="diaAnterior" class="btn btn-discreto" aria-label="Dia anterior">‹</button>
+                        <input type="date" id="filtroData">
+                        <button id="diaSeguinte" class="btn btn-discreto" aria-label="Próximo dia">›</button>
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label for="filtroEquipe">Equipe</label>
+                    <select id="filtroEquipe">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+
+                <div class="campo campo-busca">
+                    <label for="filtroBusca">Buscar colaborador</label>
+                    <input type="text" id="filtroBusca" placeholder="Digite um nome">
+                </div>
+
+                <div class="campo campo-toggle">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="modoHistorico">
+                        <span>Histórico do mês</span>
+                    </label>
+                </div>
+
+                <button id="btnAtualizar" class="btn btn-principal">Atualizar</button>
+            </section>
+
+            <p id="status" class="status" role="status"></p>
+
+            <section id="resumo" class="resumo"></section>
+
+            <section id="grupos"></section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="supabase.js"></script>
+    <script src="painel.js"></script>
+    <script src="painel-auth.js"></script>
+</body>
+</html>
 
