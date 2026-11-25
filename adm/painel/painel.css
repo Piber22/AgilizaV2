@@ -357,3 +357,111 @@ input[type="date"] { color-scheme: dark; }
       grid-template-columns: 1fr !important;
   }
 }
+
+
+/* ===== Modo calendário ===== */
+main.largo { max-width: 1400px; }
+
+input[type="month"] {
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 6px;
+  border: 2px solid var(--borda);
+  background-color: var(--fundo);
+  color: var(--texto);
+  font-size: 14px;
+  color-scheme: dark;
+}
+input[type="month"]:focus { outline: 2px solid var(--destaque); outline-offset: 1px; }
+
+.btn-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 9px;
+}
+.btn-icone svg { display: block; }
+
+.bloco-equipe {
+  background-color: var(--fundo);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  border-left: 6px solid var(--destaque);
+  padding: 14px 16px;
+  margin: 14px 0;
+}
+
+.bloco-equipe h3 {
+  font-size: 1em;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.bloco-equipe h3 small {
+  color: var(--texto-suave);
+  font-weight: 400;
+  margin-left: 6px;
+}
+
+.tabela-wrap {
+  overflow-x: auto;
+  border: 1px solid #353435;
+  border-radius: 6px;
+}
+
+.tabela-cal {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  font-size: 13px;
+}
+
+.tabela-cal th,
+.tabela-cal td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #353435;
+  border-right: 1px solid #353435;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.tabela-cal thead th {
+  background-color: var(--superficie);
+  font-weight: 600;
+}
+
+.tabela-cal thead tr:nth-child(2) th {
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--texto-suave);
+}
+
+.tabela-cal th.col-nome,
+.tabela-cal td.col-nome {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  text-align: left;
+  min-width: 220px;
+  background-color: var(--fundo);
+  border-right: 2px solid var(--borda);
+}
+.tabela-cal thead th.col-nome { background-color: var(--superficie); z-index: 2; }
+
+.tabela-cal tbody tr:hover td { background-color: #2a292a; }
+.tabela-cal tbody tr:hover td.col-nome { background-color: #2a292a; }
+
+.cel { font-weight: 600; }
+.cel-verde    { color: var(--verde); }
+.cel-amarelo  { color: var(--amarelo); }
+.cel-vermelho { color: var(--vermelho); }
+.cel-azul     { color: var(--azul); }
+.cel-cinza    { color: var(--cinza); font-weight: 400; }
+.cel-vazio    { color: #555; font-weight: 400; }
+
+.tabela-cal td.cel-vermelho { background-color: rgba(244, 67, 54, 0.12); }
+.tabela-cal td.cel-amarelo  { background-color: rgba(255, 193, 7, 0.10); }
+
+@media (max-width: 768px) {
+  .tabela-cal th.col-nome,
+  .tabela-cal td.col-nome { min-width: 150px; }
+}
