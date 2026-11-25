@@ -10,6 +10,7 @@
 <body>
     <header class="topo">
         <h1>Painel do Efetivo</h1>
+        <button id="btnCalendario" class="btn btn-discreto btn-icone" title="Ver em modo calendário" aria-label="Ver em modo calendário"></button>
     </header>
 
     <main>
@@ -52,16 +53,54 @@
 
             <section id="grupos"></section>
         </div>
+
+        <div id="telaCalendario" hidden>
+            <section class="caixa filtros">
+                <div class="campo">
+                    <label for="calMes">Mês</label>
+                    <div class="data-nav">
+                        <button id="calMesAnterior" class="btn btn-discreto" aria-label="Mês anterior">‹</button>
+                        <input type="month" id="calMes">
+                        <button id="calMesSeguinte" class="btn btn-discreto" aria-label="Próximo mês">›</button>
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label for="calEquipe">Equipe</label>
+                    <select id="calEquipe">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+
+                <div class="campo campo-busca">
+                    <label for="calBusca">Buscar colaborador</label>
+                    <input type="text" id="calBusca" placeholder="Digite um nome">
+                </div>
+
+                <div class="campo campo-toggle">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="calTodosDias">
+                        <span>Todos os dias do mês</span>
+                    </label>
+                </div>
+
+                <button id="calAtualizar" class="btn btn-principal">Atualizar</button>
+            </section>
+
+            <p id="calStatus" class="status" role="status"></p>
+
+            <section id="calTabelas"></section>
+        </div>
     </main>
 
     <footer class="footer">
-        <p>© 2025 <strong>Manserv - Equipe HSANA</strong>. Todos os direitos reservados.</p>
+        
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
     <script src="supabase.js"></script>
     <script src="painel.js"></script>
+    <script src="calendario.js"></script>
     <script src="painel-auth.js"></script>
 </body>
 </html>
-
